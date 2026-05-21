@@ -167,26 +167,36 @@ export default function PopupManager() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleLeadSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your Full Name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-blue focus:outline-none"
-                  />
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Your Phone Number"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-blue focus:outline-none"
-                  />
+                <form onSubmit={handleLeadSubmit} className="space-y-4 text-left">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Your Full Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your first and last name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-blue focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Your Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Enter your 10-digit mobile number"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-blue focus:outline-none"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="w-full h-12 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all"
+                    className="w-full h-12 mt-2 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all cursor-pointer"
                   >
                     <Send className="h-4 w-4" />
                     <span>Request Callback</span>
