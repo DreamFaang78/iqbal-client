@@ -51,8 +51,8 @@ export default function Navbar() {
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0A1628]/90 backdrop-blur-xl border-b border-white/8 shadow-[0_4px_30px_rgba(0,0,0,0.4)]'
-          : 'bg-[#0A1628]/70 backdrop-blur-md border-b border-white/5'
+          ? 'bg-[#0E1F12]/92 backdrop-blur-xl border-b border-[#4CAF6E]/12 shadow-[0_4px_30px_rgba(0,0,0,0.4)]'
+          : 'bg-[#0E1F12]/72 backdrop-blur-md border-b border-[#4CAF6E]/6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,7 +75,7 @@ export default function Navbar() {
                 href={link.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   pathname === link.href
-                    ? 'text-[#00B4D8] bg-[#00B4D8]/10'
+                    ? 'text-[#4CAF6E] bg-[#4CAF6E]/10'
                     : 'text-white/70 hover:text-white hover:bg-white/6'
                 }`}
               >
@@ -135,7 +135,7 @@ export default function Navbar() {
 
       {/* ── MOBILE DROPDOWN ── */}
       {isOpen && (
-        <div className="md:hidden bg-[#0D1F3A]/95 backdrop-blur-xl border-b border-white/8 animate-fade-in">
+        <div className="md:hidden bg-[#132918]/95 backdrop-blur-xl border-b border-[#4CAF6E]/10 animate-fade-in">
           <div className="px-4 pt-3 pb-5 space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -144,7 +144,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   pathname === link.href
-                    ? 'text-[#00B4D8] bg-[#00B4D8]/10'
+                    ? 'text-[#4CAF6E] bg-[#4CAF6E]/10'
                     : 'text-white/70 hover:text-white hover:bg-white/6'
                 }`}
               >

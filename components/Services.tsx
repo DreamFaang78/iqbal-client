@@ -34,17 +34,17 @@ export default function Services() {
   }, []);
 
   return (
-    <section id="services" className="py-24 bg-[#0A1628] relative overflow-hidden font-sans">
-      <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#00B4D8]/8 rounded-full filter blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#E4A900]/5 rounded-full filter blur-[120px] pointer-events-none"></div>
+    <section id="services" className="py-24 bg-[#0E1F12] relative overflow-hidden font-sans">
+      <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#4CAF6E]/6 rounded-full filter blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#C8922A]/5 rounded-full filter blur-[120px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <h2 className="font-accent text-[#00B4D8] font-bold text-sm uppercase tracking-wider">Our Specializations</h2>
+          <h2 className="font-accent text-[#4CAF6E] font-bold text-sm uppercase tracking-wider">Our Specializations</h2>
           <h3 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Kaunsi Bimari Mein Hum Karte Hain <span className="text-[#E4A900]">Guaranteed Help?</span>
+            Kaunsi Bimari Mein Hum Kar Sakte Hain <span className="text-[#C8922A]">HOMOEOPATHY Se Ilaaj?</span>
           </h3>
           <p className="text-white/55 text-base sm:text-lg font-light leading-relaxed">
             Targeted natural recovery programs designed to stimulate constitutional healing for chronic, acute, and lifestyle ailments.
@@ -56,7 +56,7 @@ export default function Services() {
           {services.map((service, index) => (
             <motion.div
               key={service.slug}
-              className="glass-card flex flex-col justify-between p-7 rounded-3xl hover:border-[#00B4D8]/30"
+              className="glass-card flex flex-col justify-between p-7 rounded-3xl hover:border-[#4CAF6E]/30"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
@@ -64,7 +64,7 @@ export default function Services() {
             >
               <div>
                 {/* Icon Container */}
-                <div className="p-3.5 bg-[#00B4D8]/12 text-[#00B4D8] rounded-2xl w-fit mb-6 border border-[#00B4D8]/15">
+                <div className="p-3.5 bg-[#4CAF6E]/12 text-[#4CAF6E] rounded-2xl w-fit mb-6 border border-[#4CAF6E]/15">
                   <DynamicIcon name={service.icon} className="h-6 w-6" />
                 </div>
                 
@@ -81,14 +81,14 @@ export default function Services() {
               <div className="flex items-center justify-between pt-4 border-t border-white/8 mt-auto">
                 <Link
                   href={`/services/${service.slug}`}
-                  className="text-xs font-semibold text-[#00B4D8] hover:text-white flex items-center group/link transition-colors"
+                  className="text-xs font-semibold text-[#4CAF6E] hover:text-white flex items-center group/link transition-colors"
                 >
                   Learn More
                   <Icons.ArrowRight className="h-3 w-3 ml-1 group-hover/link:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link
                   href={`/book?service=${encodeURIComponent(service.title)}`}
-                  className="px-3.5 py-1.5 bg-white/8 hover:bg-[#00B4D8] hover:text-[#0A1628] text-white/70 text-xs font-medium rounded-xl transition-all border border-white/10"
+                  className="px-3.5 py-1.5 bg-white/8 hover:bg-[#4CAF6E] hover:text-[#0E1F12] text-white/70 text-xs font-medium rounded-xl transition-all border border-white/10"
                 >
                   Book Slot
                 </Link>

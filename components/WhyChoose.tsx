@@ -45,16 +45,16 @@ export default function WhyChoose() {
   ];
  
   return (
-    <section id="why-us" className="py-24 bg-[#0A1628] bg-grid relative overflow-hidden font-sans">
-      <div className="absolute top-10 left-10 w-72 h-72 bg-brand-cyan/5 rounded-full filter blur-[100px] pointer-events-none"></div>
+    <section id="why-us" className="py-24 bg-[#0E1F12] bg-grid relative overflow-hidden font-sans">
+      <div className="absolute top-10 left-10 w-72 h-72 bg-[#4CAF6E]/5 rounded-full filter blur-[100px] pointer-events-none"></div>
  
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="text-brand-cyan font-accent text-sm font-semibold uppercase tracking-wider">The HOMMED Advantage</span>
+          <span className="text-[#4CAF6E] font-accent text-sm font-semibold uppercase tracking-wider">The HOMMED Advantage</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Why Choose Our Homeopathy Centre?
+            Why Choose Our HOMOEOPATHY Centre?
           </h3>
           <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
             We provide a modern, patient-first healing environment centered on safety, efficacy, and permanent root-cause healing.
@@ -66,7 +66,7 @@ export default function WhyChoose() {
           {points.map((point, index) => (
             <motion.div
               key={point.id}
-              className="glass-card p-8 rounded-3xl bg-[#162847]/40 border border-white/8 hover:border-brand-cyan/30 flex flex-col justify-between"
+              className="glass-card p-8 rounded-3xl bg-[#1C3A22]/40 border border-[#4CAF6E]/10 hover:border-[#4CAF6E]/30 flex flex-col justify-between"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}

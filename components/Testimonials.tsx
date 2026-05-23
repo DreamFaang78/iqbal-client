@@ -230,7 +230,7 @@ export default function Testimonials() {
                       </button>
 
                       <a
-                        href={`https://wa.me/918756124708?text=${encodeURIComponent(study.whatsappMsg)}`}
+                        href={`https://wa.me/918707868504?text=${encodeURIComponent(study.whatsappMsg)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="h-9 px-3 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/20 hover:border-emerald-500 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all cursor-pointer"

@@ -44,7 +44,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-[#0A1628] bg-grid relative overflow-hidden font-sans">
+    <section id="contact" className="py-24 bg-[#0E1F12] bg-grid relative overflow-hidden font-sans">
       <div className="absolute top-1/3 left-0 w-96 h-96 bg-brand-blue/5 rounded-full filter blur-[120px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -53,10 +53,10 @@ export default function Contact() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="text-brand-cyan font-accent text-sm font-semibold uppercase tracking-wider">Get in Touch</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Consult Dr. Iqbal Today
+            Book Your HOMOEOPATHY Consultation
           </h3>
           <p className="text-slate-300 text-base sm:text-lg font-light">
-            Fill out the form below for consultation queries or reach out directly via WhatsApp.
+            Fill out the form below for HOMOEOPATHY consultation queries or reach out directly via WhatsApp. Serving Kanpur & surrounding areas.
           </p>
         </div>
 
@@ -68,36 +68,36 @@ export default function Contact() {
             {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               
-              <div className="p-6 bg-[#162847]/40 border border-white/10 rounded-3xl space-y-3">
-                <div className="p-2.5 bg-blue-500/10 text-brand-cyan border border-brand-cyan/20 rounded-xl w-fit">
+              <div className="p-6 bg-[#1C3A22]/50 border border-[#4CAF6E]/15 rounded-3xl space-y-3">
+                <div className="p-2.5 bg-[#4CAF6E]/10 text-[#4CAF6E] border border-[#4CAF6E]/20 rounded-xl w-fit">
                   <Phone className="h-5 w-5" />
                 </div>
                 <h4 className="font-heading font-bold text-base text-white">Call Directly</h4>
-                <a href="tel:+918756124708" className="text-slate-300 hover:text-brand-cyan transition-colors text-sm font-semibold">
-                  +91 87561 24708
+                <a href="tel:+918707868504" className="text-slate-300 hover:text-[#4CAF6E] transition-colors text-sm font-semibold">
+                  +91 87078 68504
                 </a>
                 <p className="text-slate-400 text-xs">Mon-Sat, 10am to 8pm</p>
               </div>
 
-              <div className="p-6 bg-[#162847]/40 border border-white/10 rounded-3xl space-y-3">
-                <div className="p-2.5 bg-emerald-500/10 text-brand-green border border-brand-green/20 rounded-xl w-fit">
+              <div className="p-6 bg-[#1C3A22]/50 border border-[#4CAF6E]/15 rounded-3xl space-y-3">
+                <div className="p-2.5 bg-[#3DAA58]/10 text-[#3DAA58] border border-[#3DAA58]/20 rounded-xl w-fit">
                   <MessageSquare className="h-5 w-5" />
                 </div>
                 <h4 className="font-heading font-bold text-base text-white">WhatsApp Support</h4>
                 <a 
-                  href="https://wa.me/918756124708" 
+                  href="https://wa.me/918707868504" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-slate-300 hover:text-brand-green transition-colors text-sm font-semibold"
+                  className="text-slate-300 hover:text-[#3DAA58] transition-colors text-sm font-semibold"
                 >
                   Start WhatsApp Chat
                 </a>
-                <p className="text-slate-400 text-xs">Quick consultation support</p>
+                <p className="text-slate-400 text-xs">Quick HOMOEOPATHY consultation support</p>
               </div>
             </div>
 
-            <div className="p-6 bg-[#162847]/40 border border-white/10 rounded-3xl flex items-start space-x-4">
-              <div className="p-2.5 bg-purple-500/10 text-brand-purple border border-brand-purple/20 rounded-xl shrink-0 mt-0.5">
+            <div className="p-6 bg-[#1C3A22]/50 border border-[#4CAF6E]/15 rounded-3xl flex items-start space-x-4">
+              <div className="p-2.5 bg-[#C8922A]/10 text-[#C8922A] border border-[#C8922A]/20 rounded-xl shrink-0 mt-0.5">
                 <MapPin className="h-5 w-5" />
               </div>
               <div className="space-y-1">
@@ -125,7 +125,7 @@ export default function Contact() {
 
           {/* Right Column: Lead Form */}
           <div className="lg:col-span-6">
-            <div className="bg-[#0D1F3A]/60 border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-sm relative">
+            <div className="bg-[#132918]/70 border border-[#4CAF6E]/15 rounded-[32px] p-8 sm:p-10 shadow-sm relative">
               
               {submitted ? (
                 <div className="text-center py-12 space-y-6">

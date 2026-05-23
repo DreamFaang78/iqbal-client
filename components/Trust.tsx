@@ -336,13 +336,13 @@ function StatCard({
 /* ─── MAIN SECTION ──────────────────────────────────────── */
 export default function Trust() {
   return (
-    <section className="py-20 relative overflow-hidden font-sans" style={{ background: '#0D1F3A' }}>
+    <section className="py-20 relative overflow-hidden font-sans" style={{ background: '#132918' }}>
 
       {/* Background ambient glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[300px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse, rgba(0,180,216,0.07) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse, rgba(76,175,110,0.07) 0%, transparent 70%)' }} />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse, rgba(228,169,0,0.06) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse, rgba(200,146,42,0.07) 0%, transparent 70%)' }} />
 
       {/* Subtle grid */}
       <div className="absolute inset-0 bg-grid opacity-60 pointer-events-none" />
@@ -357,13 +357,13 @@ export default function Trust() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#00B4D8]/20 bg-[#00B4D8]/6 text-[#00B4D8] text-xs font-semibold tracking-[0.12em] uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00B4D8] animate-pulse" />
-            Trusted By Thousands
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4CAF6E]/20 bg-[#4CAF6E]/8 text-[#4CAF6E] text-xs font-semibold tracking-[0.12em] uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF6E] animate-pulse" />
+            Trusted By Thousands in Kanpur
           </span>
           <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white mt-4 tracking-tight">
-            Numbers That{' '}
-            <span className="text-[#E4A900]">Speak For Themselves</span>
+            HOMOEOPATHY Results That{' '}
+            <span className="text-[#C8922A]">Speak For Themselves</span>
           </h2>
         </motion.div>
 

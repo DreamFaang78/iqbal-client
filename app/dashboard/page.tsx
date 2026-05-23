@@ -519,7 +519,7 @@ export default function PatientDashboard() {
                           <td className="py-4">
                             {['Pending', 'Confirmed'].includes(appt.status) ? (
                               <a 
-                                href={`https://wa.me/918756124708?text=Hello%20HOMMED%20clinic%2C%20I%20need%20to%20reschedule%20my%20appointment%20for%20${appt.service}%20on%20${appt.scheduleDate}`}
+                                href={`https://wa.me/918707868504?text=Hello%20HOMMED%20clinic%2C%20I%20need%20to%20reschedule%20my%20appointment%20for%20${appt.service}%20on%20${appt.scheduleDate}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-xs font-bold text-brand-cyan-light hover:text-brand-cyan hover:underline transition-colors"
@@ -591,7 +591,7 @@ export default function PatientDashboard() {
                       <div className="text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Consulting Practitioner: <strong className="text-slate-300">{log.doctor}</strong></span>
                         <a 
-                          href="https://wa.me/918756124708" 
+                          href="https://wa.me/918707868504" 
                           target="_blank" 
                           rel="noopener noreferrer" 
                           className="font-bold text-brand-cyan-light hover:text-brand-cyan hover:underline transition-colors"

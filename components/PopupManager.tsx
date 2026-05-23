@@ -150,7 +150,7 @@ export default function PopupManager() {
               {popup.type === 'whatsapp' ? (
                 <div className="flex flex-col gap-3">
                   <a
-                    href="https://wa.me/918756124708"
+                    href="https://wa.me/918707868504"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={handleClose}

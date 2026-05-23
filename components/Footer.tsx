@@ -6,7 +6,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#060E1A] text-white/50 font-sans mt-auto">
+    <footer className="bg-[#080F0A] text-white/50 font-sans mt-auto">
       {/* Top Banner with Quick Connect */}
       <div className="border-b border-white/6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -16,10 +16,10 @@ export default function Footer() {
               <p className="text-slate-400 text-sm mt-1">Connect with Dr. Iqbal directly on WhatsApp for wellness guidance.</p>
             </div>
             <a
-              href="https://wa.me/918756124708"
+              href="https://wa.me/918707868504"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-6 py-3 bg-[#00C97B] hover:bg-[#00b36b] text-white font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20"
+              className="flex items-center space-x-2 px-6 py-3 bg-[#3DAA58] hover:bg-[#2D7A3A] text-white font-semibold rounded-xl transition-all shadow-lg shadow-green-800/30"
             >
               <MessageSquare className="h-5 w-5 fill-current" />
               <span>Chat on WhatsApp</span>
@@ -37,7 +37,7 @@ export default function Footer() {
               <img src="/logo.png" alt="HomMed Logo" className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm leading-relaxed">
-              Dr. IQBAL’S Homeopathy Centre (HOMMED) offers premium, personalized wellness treatments using advanced homeopathy techniques in Kanpur, Uttar Pradesh.
+              Dr. IQBAL'S Homoeopathy Centre (HOMMED) — An Advanced Homoeopathic Clinic offering premium, personalized HOMOEOPATHY treatments for the people of Kanpur, Uttar Pradesh.
             </p>
             <div className="text-sm">
               <span className="text-white font-semibold block">Consultation Hours:</span>
@@ -102,7 +102,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-brand-blue shrink-0" />
-                <a href="tel:+918756124708" className="hover:text-white transition-colors">+91 87561 24708</a>
+                <a href="tel:+918707868504" className="hover:text-white transition-colors">+91 87078 68504</a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-brand-blue shrink-0" />
@@ -114,10 +114,10 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs">
+      <div className="border-t border-[#1C3A22] bg-[#080F0A] py-6 text-center text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 text-slate-500">
           <div>
-            &copy; {currentYear} HOMMED. All rights reserved.
+            &copy; {currentYear} HOMMED — An Advanced Homoeopathic Clinic. All rights reserved.
           </div>
           <div className="flex space-x-6">
             <Link href="/privacy" className="hover:text-slate-400">Privacy Policy</Link>
