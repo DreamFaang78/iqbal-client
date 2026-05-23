@@ -202,6 +202,23 @@
 .animate-fade-in       { animation: fade-in 0.5s ease-out both; }
 .animate-ping-slow     { animation: ping-slow 2s cubic-bezier(0,0,0.2,1) infinite; }
 
+/* CTA Button — continuous animations */
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-110%) skewX(-12deg); }
+  100% { transform: translateX(210%) skewX(-12deg); }
+}
+@keyframes btn-breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 4px 24px rgba(200,146,42,0.45); }
+  50%       { transform: scale(1.025); box-shadow: 0 8px 36px rgba(200,146,42,0.70); }
+}
+@keyframes gold-ring-ping {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+.animate-shimmer-sweep { animation: shimmer-sweep 2.2s ease-in-out infinite; }
+.animate-btn-breathe   { animation: btn-breathe 2s ease-in-out infinite; }
+.animate-gold-ring     { animation: gold-ring-ping 1.6s ease-out infinite; }
+
 /* ============================================
    SCROLLBAR
 ============================================ */

@@ -35,7 +35,7 @@ const slideIn = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#0E1F12]">
+    <section className="relative flex items-center overflow-hidden bg-[#0E1F12] pb-24 md:pb-0 md:min-h-[92vh]">
 
       {/* ── BACKGROUND GLOWS ─────────────────────────── */}
       <div className="absolute top-0 right-0 w-[700px] h-[500px] blob-cyan opacity-50 pointer-events-none" />
@@ -53,7 +53,7 @@ export default function Hero() {
       {/* subtle grid */}
       <div className="absolute inset-0 bg-grid opacity-100 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 py-16 lg:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-8 pb-10 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
           {/* ════════════════════════════════════════════
@@ -237,6 +237,36 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
+
+      {/* ── MOBILE-ONLY STICKY CTA BAR ─────────────────── */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pt-3 bg-gradient-to-t from-[#0E1F12] via-[#0E1F12]/95 to-transparent">
+        <div className="flex gap-3">
+          {/* Primary — Book Appointment (continuously animated) */}
+          <div className="relative flex-1">
+            <a
+              href="/book"
+              className="relative w-full h-13 flex items-center justify-center gap-2 rounded-2xl overflow-hidden font-bold text-sm text-[#0E1F12] active:scale-[0.97]"
+              style={{ background: 'linear-gradient(110deg, #C8922A 0%, #F5C842 45%, #E8A82A 100%)' }}
+            >
+              {/* Auto-running shimmer sweep */}
+              <span className="animate-shimmer-sweep absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
+              <Calendar className="h-4 w-4 shrink-0 relative z-10 drop-shadow-sm" />
+              <span className="tracking-wide relative z-10 drop-shadow-sm">Book Appointment</span>
+            </a>
+          </div>
+          {/* Secondary — Call */}
+          <a
+            href="tel:8707868504"
+            className="relative flex items-center justify-center gap-2 px-4 h-13 rounded-2xl border border-[#4CAF6E]/40 bg-[#4CAF6E]/10 text-[#4CAF6E] font-semibold text-sm active:scale-[0.97] transition-transform shrink-0"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.77A16 16 0 0 0 14 15l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <span>Call Now</span>
+          </a>
+        </div>
+      </div>
+
     </section>
   );
 }

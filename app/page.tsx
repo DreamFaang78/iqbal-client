@@ -2,6 +2,8 @@ import Hero from "@/components/Hero";
 import Trust from "@/components/Trust";
 import Services from "@/components/Services";
 import DoctorProfile from "@/components/DoctorProfile";
+import DoctorPanel from "@/components/DoctorPanel";
+import ClinicGallery from "@/components/ClinicGallery";
 import WhyChoose from "@/components/WhyChoose";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
@@ -16,6 +18,8 @@ export default function Home() {
       <Trust />
       <Services />
       <DoctorProfile />
+      <DoctorPanel />
+      <ClinicGallery />
       <WhyChoose />
       <Testimonials />
       <FAQ />
@@ -27,3 +31,4 @@ export default function Home() {
     </div>
   );
 }
+
