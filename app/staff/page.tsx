@@ -169,7 +169,7 @@ export default function StaffDashboard() {
       setLoading(true);
       
       // Load Patients
-      const patientsRes = await fetch('/api/staff/patients');
+      const patientsRes = await fetchWithAuth('/api/staff/patients');
       if (patientsRes.ok) {
         const patientsData = await patientsRes.json();
         setPatients(patientsData);
@@ -179,7 +179,7 @@ export default function StaffDashboard() {
       }
 
       // Load Appointments
-      const apptsRes = await fetch('/api/appointments', {
+      const apptsRes = await fetchWithAuth('/api/appointments', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('hommed_token') || ''}` }
       });
       if (apptsRes.ok) {
@@ -200,21 +200,23 @@ export default function StaffDashboard() {
   const loadPatientDetails = async (patientId: string) => {
     try {
       // 1. Fetch prescriptions
-      const rxRes = await fetch(`/api/staff/prescriptions?patientId=${patientId}`);
+      const rxRes = await fetchWithAuth(`/api/staff/prescriptions?patientId=${patientId}`);
       if (rxRes.ok) setPrescriptions(await rxRes.json());
 
       // 2. Fetch timeline
-      const tlRes = await fetch(`/api/staff/timeline?patientId=${patientId}`);
+      const tlRes = await fetchWithAuth(`/api/staff/timeline?patientId=${patientId}`);
       if (tlRes.ok) setTimelineEvents(await tlRes.json());
 
       // 3. Fetch notes
-      const notesRes = await fetch(`/api/staff/notes?patientId=${patientId}`);
+      const notesRes = await fetchWithAuth(`/api/staff/notes?patientId=${patientId}`);
       if (notesRes.ok) setNotes(await notesRes.json());
 
     } catch (e) {
       console.warn("Failed to load details dynamically, fallback simulated.");
     }
   };
+
+  const fetchWithAuth = async (url: string, options: RequestInit = {}) => { const token = localStorage.getItem('hommed_token') || ''; return fetch(url, { ...options, headers: { ...options.headers, 'Authorization': `Bearer ` } }); };
 
   const handleLogout = () => {
     localStorage.removeItem('hommed_token');
@@ -232,7 +234,7 @@ export default function StaffDashboard() {
     }
 
     try {
-      const res = await fetch('/api/staff/patients', {
+      const res = await fetchWithAuth('/api/staff/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patientForm)
@@ -291,7 +293,7 @@ export default function StaffDashboard() {
     };
 
     try {
-      const res = await fetch('/api/staff/prescriptions', {
+      const res = await fetchWithAuth('/api/staff/prescriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -302,7 +304,7 @@ export default function StaffDashboard() {
         setPrescriptions(prev => [newRx, ...prev]);
         
         // Auto add event to patient timeline
-        await fetch('/api/staff/timeline', {
+        await fetchWithAuth('/api/staff/timeline', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -331,7 +333,7 @@ export default function StaffDashboard() {
     if (!newNoteText.trim()) return;
 
     try {
-      const res = await fetch('/api/staff/notes', {
+      const res = await fetchWithAuth('/api/staff/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patient_id: selectedPatientId, note: newNoteText })
@@ -343,7 +345,7 @@ export default function StaffDashboard() {
         setNewNoteText('');
         
         // Log in patient timeline
-        await fetch('/api/staff/timeline', {
+        await fetchWithAuth('/api/staff/timeline', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -368,7 +370,7 @@ export default function StaffDashboard() {
     if (!newTimelineEvent.title) return;
 
     try {
-      const res = await fetch('/api/staff/timeline', {
+      const res = await fetchWithAuth('/api/staff/timeline', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -394,7 +396,7 @@ export default function StaffDashboard() {
   const handleUpdateApptStatus = async (id: string, newStatus: string) => {
     try {
       const token = localStorage.getItem('hommed_token');
-      const res = await fetch('/api/appointments', {
+      const res = await fetchWithAuth('/api/appointments', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -421,7 +423,7 @@ export default function StaffDashboard() {
 
     try {
       const token = localStorage.getItem('hommed_token');
-      const res = await fetch('/api/appointments', {
+      const res = await fetchWithAuth('/api/appointments', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1569,7 +1571,7 @@ export default function StaffDashboard() {
                   <button 
                     onClick={async () => {
                       try {
-                        const res = await fetch(`/api/staff/notes?id=${n.id}`, { method: 'DELETE' });
+                        const res = await fetchWithAuth(`/api/staff/notes?id=${n.id}`, { method: 'DELETE' });
                         if (res.ok) {
                           setNotes(prev => prev.filter(x => x.id !== n.id));
                           triggerFeedback('Note deleted.', 'success');
@@ -1688,3 +1690,4 @@ function getMockAppointments(): AppointmentData[] {
     }
   ];
 }
+

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ConditionalFooter from "@/components/ConditionalFooter";
 
 export const metadata: Metadata = {
   title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className="bg-[#0E1F12] text-white min-h-screen flex flex-col antialiased">
         <Navbar />
         <main className="flex-grow">{children}</main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

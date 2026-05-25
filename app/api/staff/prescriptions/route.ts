@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabase, supabaseAdmin } from '@/lib/supabase';
+import { verifyStaffToken } from '@/lib/server-auth';
 
 export async function GET(request: Request) {
   try {
+    const auth = await verifyStaffToken(request);
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { searchParams } = new URL(request.url);
     const patientId = searchParams.get('patientId');
     const db = supabaseAdmin || supabase;
@@ -29,6 +32,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const auth = await verifyStaffToken(request);
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const payload = await request.json();
     const db = supabaseAdmin || supabase;
 
@@ -94,3 +99,4 @@ function getSimulatedPrescriptions(patientId: string) {
     }
   ];
 }
+

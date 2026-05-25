@@ -47,6 +47,15 @@ export default function Navbar() {
     { name: 'Contact', href: '/#contact' },
   ];
 
+  // Hide the Navbar entirely on Staff, Admin, Dashboard and Auth pages to maximize portal workspace
+  const isPortalOrAuthRoute = ['/staff', '/admin', '/login', '/signup', '/dashboard'].some(
+    path => pathname?.startsWith(path)
+  );
+
+  if (isPortalOrAuthRoute) {
+    return null;
+  }
+
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
