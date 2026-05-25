@@ -37,7 +37,16 @@ export async function POST(request: Request) {
 
     const name = profile?.name || user.user_metadata?.name || 'User';
     const phone = profile?.phone || user.user_metadata?.phone || '';
-    const role = profile?.role || (email.toLowerCase() === 'admin@hommed.com' ? 'admin' : 'patient');
+    
+    // Explicitly check role from profile or check email fallback
+    let role = 'patient';
+    if (profile?.role) {
+      role = profile.role;
+    } else if (email.toLowerCase() === 'admin@hommed.com') {
+      role = 'admin';
+    } else if (email.toLowerCase().includes('staff')) {
+      role = 'staff';
+    }
 
     // Self-healing fallback: insert profile in database if missing
     if (!profile && supabaseAdmin) {

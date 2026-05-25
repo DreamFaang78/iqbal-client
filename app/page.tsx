@@ -1,7 +1,7 @@
 import Hero from "@/components/Hero";
-import Trust from "@/components/Trust";
 import Services from "@/components/Services";
 import DoctorProfile from "@/components/DoctorProfile";
+import Achievements from "@/components/Achievements";
 import DoctorPanel from "@/components/DoctorPanel";
 import ClinicGallery from "@/components/ClinicGallery";
 import WhyChoose from "@/components/WhyChoose";
@@ -15,9 +15,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Hero />
-      <Trust />
       <Services />
       <DoctorProfile />
+      <Achievements />
       <DoctorPanel />
       <ClinicGallery />
       <WhyChoose />

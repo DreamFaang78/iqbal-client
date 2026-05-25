@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Calendar, Bot, ShieldCheck, TrendingUp, Leaf, Star } from 'lucide-react';
+import { Calendar, Bot, ShieldCheck, TrendingUp, Leaf, Star, Award, Users } from 'lucide-react';
 
 /* ─── animation presets ─────────────────────────────────────── */
 const container = {
@@ -152,17 +152,47 @@ export default function Hero() {
             {/* Stat counters */}
             <motion.div
               variants={fadeUp}
-              className="grid grid-cols-4 gap-4 pt-4 border-t border-white/8 max-w-lg"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-5 border-t border-white/8 max-w-lg"
             >
               {[
-                { value: '15+', label: 'Years Exp.' },
-                { value: '10K+', label: 'Patients' },
-                { value: '4.9★', label: 'Google Rating' },
-                { value: '98%', label: 'Success Rate' },
+                { 
+                  value: '15+', 
+                  label: 'Years Exp.', 
+                  icon: <Award className="h-4 w-4 text-[#C8922A]" />,
+                  bg: 'bg-[#1C3A22]/20 border-[#4CAF6E]/15 hover:border-[#4CAF6E]/30'
+                },
+                { 
+                  value: '10K+', 
+                  label: 'Patients', 
+                  icon: <Users className="h-4 w-4 text-[#4CAF6E]" />,
+                  bg: 'bg-[#1C3A22]/20 border-[#4CAF6E]/15 hover:border-[#4CAF6E]/30'
+                },
+                { 
+                  value: '4.9★', 
+                  label: 'Google Rating', 
+                  icon: <Star className="h-3.5 w-3.5 text-[#C8922A] fill-[#C8922A]" />,
+                  bg: 'bg-[#C8922A]/5 border-[#C8922A]/20 hover:border-[#C8922A]/40' 
+                },
+                { 
+                  value: '98%', 
+                  label: 'Success Rate', 
+                  icon: <ShieldCheck className="h-4 w-4 text-[#4CAF6E]" />,
+                  bg: 'bg-[#1C3A22]/20 border-[#4CAF6E]/15 hover:border-[#4CAF6E]/30'
+                },
               ].map((s) => (
-                <div key={s.label} className="text-left">
-                  <div className="text-white font-heading font-bold text-xl">{s.value}</div>
-                  <div className="text-white/45 text-[11px] mt-0.5 leading-tight">{s.label}</div>
+                <div 
+                  key={s.label} 
+                  className={`flex flex-col justify-between p-3 sm:p-3.5 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] ${s.bg}`}
+                >
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span className="text-white font-heading font-extrabold text-lg sm:text-xl tracking-tight leading-none">
+                      {s.value}
+                    </span>
+                    {s.icon}
+                  </div>
+                  <div className="text-white/60 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider mt-2.5 leading-snug">
+                    {s.label}
+                  </div>
                 </div>
               ))}
             </motion.div>

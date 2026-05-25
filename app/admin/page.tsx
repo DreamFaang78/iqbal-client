@@ -71,7 +71,13 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [adminUser, setAdminUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'analytics' | 'leads' | 'appointments' | 'services' | 'blogs' | 'popups'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'leads' | 'appointments' | 'services' | 'blogs' | 'popups' | 'staff'>('analytics');
+  const [staffList, setStaffList] = useState<any[]>([
+    { id: 'st-1', name: 'Ayush Rawat', email: 'ayush.staff@hommed.com', phone: '8877665544', role: 'staff', status: 'Active' },
+    { id: 'st-2', name: 'Nisha Pathak', email: 'nisha.staff@hommed.com', phone: '9900887766', role: 'staff', status: 'Active' }
+  ]);
+  const [showStaffForm, setShowStaffForm] = useState(false);
+  const [staffForm, setStaffForm] = useState({ name: '', email: '', phone: '', password: '' });
 
   // Datasets
   const [leads, setLeads] = useState<LeadData[]>([]);
@@ -536,6 +542,16 @@ export default function AdminDashboard() {
               <Settings className="h-4.5 w-4.5" />
               <span>Marketing Popups</span>
             </button>
+
+            <button 
+              onClick={() => setActiveTab('staff')}
+              className={`w-full h-11 px-4 rounded-xl text-sm font-semibold flex items-center space-x-3 transition-all ${
+                activeTab === 'staff' ? 'bg-brand-blue text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Users className="h-4.5 w-4.5" />
+              <span>Staff Accounts</span>
+            </button>
           </nav>
         </div>
 
@@ -585,6 +601,7 @@ export default function AdminDashboard() {
               {activeTab === 'services' && 'Services CMS Console'}
               {activeTab === 'blogs' && 'Medical Blogs Publication CMS'}
               {activeTab === 'popups' && 'Lead Capture & Promo Popups'}
+              {activeTab === 'staff' && 'Clinic Staff Member Accounts'}
             </h1>
             <p className="text-slate-400 text-xs mt-1">
               Welcome back, Dr. Iqbal. Review patient registrations, lead automations, and page triggers.
@@ -1333,6 +1350,102 @@ export default function AdminDashboard() {
               ))}
             </div>
 
+          </div>
+        )}
+
+        {/* CLINIC STAFF MEMBER ACCOUNTS TAB */}
+        {activeTab === 'staff' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-base text-white">Active Clinical Staff List</h3>
+              <button 
+                onClick={() => setShowStaffForm(!showStaffForm)}
+                className="h-10 px-4 bg-brand-blue hover:brightness-110 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Staff Member</span>
+              </button>
+            </div>
+
+            {showStaffForm && (
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!staffForm.name || !staffForm.email) return;
+                  const newStaff = {
+                    id: `st-${Date.now()}`,
+                    name: staffForm.name,
+                    email: staffForm.email,
+                    phone: staffForm.phone,
+                    role: 'staff',
+                    status: 'Active'
+                  };
+                  setStaffList(prev => [...prev, newStaff]);
+                  setStaffForm({ name: '', email: '', phone: '', password: '' });
+                  setShowStaffForm(false);
+                  triggerFeedback('Staff credentials created successfully.', 'success');
+                }}
+                className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4"
+              >
+                <h4 className="font-bold text-sm text-white">Create New Clinic Staff Account</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <input 
+                    type="text" required placeholder="Staff Full Name"
+                    value={staffForm.name}
+                    onChange={e => setStaffForm({...staffForm, name: e.target.value})}
+                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
+                  />
+                  <input 
+                    type="email" required placeholder="staff.name@hommed.com"
+                    value={staffForm.email}
+                    onChange={e => setStaffForm({...staffForm, email: e.target.value})}
+                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
+                  />
+                  <input 
+                    type="text" placeholder="Mobile Number"
+                    value={staffForm.phone}
+                    onChange={e => setStaffForm({...staffForm, phone: e.target.value})}
+                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
+                  />
+                  <input 
+                    type="password" required placeholder="Access Password"
+                    value={staffForm.password}
+                    onChange={e => setStaffForm({...staffForm, password: e.target.value})}
+                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
+                  />
+                </div>
+                <button type="submit" className="h-9 px-4 bg-brand-blue text-white font-bold rounded-lg text-xs">Save Account</button>
+              </form>
+            )}
+
+            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold">
+                    <th className="pb-3">Name</th>
+                    <th className="pb-3">Email Address</th>
+                    <th className="pb-3">Phone</th>
+                    <th className="pb-3">System Role</th>
+                    <th className="pb-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
+                  {staffList.map(st => (
+                    <tr key={st.id}>
+                      <td className="py-4 font-bold text-white">{st.name}</td>
+                      <td className="py-4">{st.email}</td>
+                      <td className="py-4">{st.phone}</td>
+                      <td className="py-4"><span className="px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded font-semibold text-[10px]">CLINIC STAFF</span></td>
+                      <td className="py-4">
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <span className="w-2 h-2 bg-emerald-500 rounded-full"></span> Active
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 

@@ -46,6 +46,8 @@ export default function Login() {
       // Redirect based on role
       if (data.user.role === 'admin') {
         router.push('/admin');
+      } else if (data.user.role === 'staff') {
+        router.push('/staff');
       } else {
         router.push('/dashboard');
       }
@@ -179,11 +181,18 @@ export default function Login() {
         </button>
 
         {/* Footnote */}
-        <div className="text-center text-xs text-slate-500">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-brand-blue font-bold hover:text-brand-navy transition-colors">
-            Create Account
-          </Link>
+        <div className="text-center text-xs text-slate-500 space-y-2">
+          <div>
+            Don't have an account?{' '}
+            <Link href="/signup" className="text-brand-blue font-bold hover:text-brand-navy transition-colors">
+              Create Account
+            </Link>
+          </div>
+          <div className="pt-2 border-t border-slate-100">
+            <Link href="/login/staff" className="text-xs text-slate-400 hover:text-brand-blue transition-colors font-medium">
+              Are you clinic staff? Go to Staff Portal &rarr;
+            </Link>
+          </div>
         </div>
 
       </div>

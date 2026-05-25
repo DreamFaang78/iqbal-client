@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function DoctorProfile() {
   return (
-    <section id="doctor" className="py-24 bg-[#132918] relative overflow-hidden font-sans">
+    <section id="doctor" className="py-24 bg-[#0E1F12] relative overflow-hidden font-sans">
       {/* Decorative Blob */}
       <div className="absolute top-10 right-0 w-80 h-80 bg-[#4CAF6E]/8 rounded-full filter blur-[80px] pointer-events-none"></div>
       
