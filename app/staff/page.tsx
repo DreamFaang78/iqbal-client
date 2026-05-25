@@ -128,6 +128,9 @@ export default function StaffDashboard() {
   // Reschedule state
   const [reschedulingId, setReschedulingId] = useState<string | null>(null);
   const [rescheduleData, setRescheduleData] = useState({ date: '', time: '' });
+  
+  // UI Optimization - Compact Mode
+  const [showCompactHeader] = useState(true);
 
   // Check Session
   useEffect(() => {
@@ -629,61 +632,50 @@ export default function StaffDashboard() {
           </div>
         )}
 
-        {/* Page title */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-brand-cyan/10 pb-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              {activeTab === 'overview' && 'Today\'s Clinical Dashboard'}
-              {activeTab === 'patients' && 'Patient Master Records'}
-              {activeTab === 'appointments' && 'Clinical Bookings & Rescheduling'}
-              {activeTab === 'prescriptions' && 'Rx Prescription Desk'}
-              {activeTab === 'timeline' && 'Patient Consult History Timeline'}
-              {activeTab === 'notes' && 'Staff CRM Follow-Up Notes'}
-              {activeTab === 'medicines' && 'Homeopathic Remedies Materia Reference'}
+        {/* Page title - OPTIMIZED COMPACT */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-brand-cyan/10 pb-2.5 mb-3">
+          <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+            <h1 className="text-lg font-bold text-white tracking-tight">
+              {activeTab === 'overview' && 'Dashboard'}
+              {activeTab === 'patients' && 'Patients'}
+              {activeTab === 'appointments' && 'Schedules'}
+              {activeTab === 'prescriptions' && 'Rx Desk'}
+              {activeTab === 'timeline' && 'Timeline'}
+              {activeTab === 'notes' && 'CRM Notes'}
+              {activeTab === 'medicines' && 'Materia Reference'}
             </h1>
-            <p className="text-brand-muted text-xs mt-1">
-              Select or register patients to start writing prescriptions, logging history, and scheduling slots.
-            </p>
+            <button 
+              onClick={loadAllData}
+              className="h-8 px-2.5 bg-brand-navy border border-brand-cyan/20 text-white rounded-lg text-[10px] font-semibold flex items-center space-x-1 hover:bg-[#132918] transition-all cursor-pointer shrink-0"
+              title="Sync clinic data"
+            >
+              <RefreshCw className="h-3 w-3" />
+              <span className="hidden sm:inline">Sync</span>
+            </button>
           </div>
-
-          <button 
-            onClick={loadAllData}
-            className="h-10 px-4 bg-brand-navy border border-brand-cyan/20 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 hover:bg-[#132918] transition-all cursor-pointer"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            <span>Sync Clinic Records</span>
-          </button>
         </div>
 
-        {/* Active Patient Bar */}
-        <div className="bg-[#132918] border border-brand-cyan/15 rounded-2xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-brand-blue/15 text-brand-cyan-light rounded-lg border border-brand-cyan/20">
-              <Users className="w-5 h-5" />
+        {/* Active Patient Bar - COMPACT */}
+        <div className="bg-[#132918] border border-brand-cyan/15 rounded-xl p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 mb-4">
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <div className="p-1.5 bg-brand-blue/15 text-brand-cyan-light rounded border border-brand-cyan/20 shrink-0">
+              <Users className="w-4 h-4" />
             </div>
-            <div>
-              <p className="text-xs text-brand-muted font-bold uppercase tracking-wider">Active Patient Context</p>
-              <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
-                {getSelectedPatientName()}
-                <span className="text-[10px] bg-brand-navy border border-brand-cyan/20 px-2 py-0.5 rounded font-mono text-brand-cyan-light font-bold">
-                  {selectedPatientId}
-                </span>
-              </h3>
+            <div className="min-w-0">
+              <p className="text-[10px] text-brand-muted font-bold uppercase">Patient:</p>
+              <p className="text-sm font-bold text-white truncate">{getSelectedPatientName()}</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-brand-muted">Change Context:</span>
-            <select 
-              value={selectedPatientId} 
-              onChange={e => setSelectedPatientId(e.target.value)}
-              className="bg-brand-navy border border-brand-cyan/20 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-brand-cyan font-bold"
-            >
-              {patients.map(p => (
-                <option key={p.id} value={p.id}>{p.name} ({p.phone})</option>
-              ))}
-            </select>
-          </div>
+          <select 
+            value={selectedPatientId} 
+            onChange={e => setSelectedPatientId(e.target.value)}
+            className="h-8 bg-brand-navy border border-brand-cyan/20 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-brand-cyan font-bold w-full sm:w-64 shrink-0"
+          >
+            {patients.map(p => (
+              <option key={p.id} value={p.id}>{p.name} ({p.phone})</option>
+            ))}
+          </select>
         </div>
 
         {/* Tab contents */}
@@ -1107,12 +1099,11 @@ export default function StaffDashboard() {
 
         {/* TAB: CLINIC APPOINTMENTS */}
         {activeTab === 'appointments' && (
-          <div className="bg-brand-navy/60 border border-brand-cyan/10 rounded-3xl p-6 sm:p-8 space-y-6">
+          <div className="bg-brand-navy/60 border border-brand-cyan/10 rounded-2xl p-4 sm:p-5 space-y-4">
             
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-brand-cyan/10 pb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-brand-cyan/10 pb-2.5">
               <div>
-                <h3 className="font-bold text-lg text-white">Schedules Control Manager</h3>
-                <p className="text-xs text-brand-muted">Update status, confirm bookings or reschedule patient slots</p>
+                <h3 className="font-bold text-sm text-white">Appointment Manager</h3>
               </div>
 
               <div className="relative w-full sm:w-64">
@@ -1266,10 +1257,10 @@ export default function StaffDashboard() {
 
         {/* TAB: PRESCRIPTIONS Rx DESK */}
         {activeTab === 'prescriptions' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             
             {/* Left side: Write Prescription form */}
-            <form onSubmit={handleSavePrescription} className="bg-brand-navy/60 border border-brand-cyan/15 rounded-3xl p-6 space-y-4">
+            <form onSubmit={handleSavePrescription} className="bg-brand-navy/60 border border-brand-cyan/15 rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between border-b border-brand-cyan/10 pb-2">
                 <h3 className="font-heading font-extrabold text-base text-white flex items-center gap-1.5">
                   <FileText className="w-5 h-5 text-brand-cyan" /> New Prescribed Regimen
@@ -1409,7 +1400,7 @@ export default function StaffDashboard() {
             </form>
 
             {/* Right side: Prescriptions History list */}
-            <div className="bg-brand-navy/60 border border-brand-cyan/10 rounded-3xl p-6 space-y-4">
+            <div className="bg-brand-navy/60 border border-brand-cyan/10 rounded-2xl p-4 space-y-3">
               <h3 className="font-heading font-extrabold text-base text-white border-b border-brand-cyan/10 pb-2 flex items-center justify-between">
                 <span>Prescription History Directory</span>
                 <span className="text-xs text-brand-cyan-light font-normal">Active Patient Context</span>
