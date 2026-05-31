@@ -1,35 +1,113 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Award, Presentation, Play, Calendar, MapPin, BookOpen, Users, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Award, Presentation, Play, Calendar, MapPin, Users, Sparkles, X, Maximize2 } from 'lucide-react';
+
+interface AchievementItem {
+  id: string;
+  badge: string;
+  badgeIcon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  venue: string;
+  venueIcon: React.ReactNode;
+  org?: string;
+  orgIcon?: React.ReactNode;
+  topicLabel?: string;
+  topic?: string;
+  description: string;
+  imageSrc: string;
+  footerTag: string;
+  footerDate: string;
+  hasVideoPlaceholder?: boolean;
+}
 
 export default function Achievements() {
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
+  // Close lightbox on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setActiveImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Prevent scroll when lightbox is active
+  useEffect(() => {
+    if (activeImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeImage]);
+
+  const achievementsData: AchievementItem[] = [
+    {
+      id: 'award-2025',
+      badge: 'National Honor',
+      badgeIcon: <Award className="h-3.5 w-3.5" />,
+      title: 'Homoeopathic Icon Award 2025',
+      subtitle: 'Conferred State Honor & Recognition',
+      venue: 'Atal Bihari Vajpayee Scientific Convention Centre, KGMU, Lucknow',
+      venueIcon: <MapPin className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      org: 'Presented by Hahnemann Educational & Development Society in association with Indian Society of Homoeopathy',
+      orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      description: "Conferred in recognition of Dr. Iqbal's pioneering contributions to natural medicine and outstanding clinical outcomes in Uttar Pradesh. This prestigious award, presented at the state's leading scientific convention venue by India's peak homoeopathic authorities, validates over 15 years of dedicated patient care and safe, systemic healing.",
+      imageSrc: '/Iqbal-Achievement.jpeg',
+      footerTag: 'Scientific Excellence',
+      footerDate: 'January 2025'
+    },
+    {
+      id: 'lecture-homoeovision',
+      badge: 'Academic Leadership',
+      badgeIcon: <Presentation className="h-3.5 w-3.5" />,
+      title: 'Clinical Speaker at HomoeoVision 3.0',
+      subtitle: 'Educating & Guiding the Medical Community',
+      venue: 'National Conference for Homoeopathic Physicians',
+      venueIcon: <Calendar className="h-4 w-4 text-[#C8922A] shrink-0 mt-0.5" />,
+      topicLabel: 'LECTURE TOPIC',
+      topic: '“The Role of Homoeopathy in Chronic Kidney Failure”',
+      description: "Dr. Iqbal was invited to deliver a clinical lecture to practicing physicians at the national HomoeoVision 3.0 conference. Sharing advanced case files and constitutional therapeutic protocols for managing chronic renal failure, his lecture demonstrated how specialized homoeopathic care helps manage kidney pathologies and improves patient longevity.",
+      imageSrc: '/Iqbal-Achievement02.jpeg',
+      footerTag: 'Academic Leadership',
+      footerDate: 'National Conference',
+      hasVideoPlaceholder: true
+    }
+  ];
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.3
       }
     }
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 45 },
+    hidden: { opacity: 0, y: 50 },
     show: { 
       opacity: 1, 
       y: 0,
       transition: {
         type: 'spring' as const,
-        stiffness: 65,
-        damping: 16
+        stiffness: 55,
+        damping: 18
       }
     }
   };
 
   return (
-    <section id="achievements" className="py-24 bg-[#132918] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
+    <section id="achievements" className="reveal-on-scroll py-24 bg-[#132918] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
       {/* Background Decorative Blur Blobs */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#4CAF6E]/4 rounded-full filter blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-10 right-0 w-[500px] h-[500px] bg-[#C8922A]/3 rounded-full filter blur-[150px] pointer-events-none"></div>
@@ -40,7 +118,7 @@ export default function Achievements() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4CAF6E]/20 bg-[#4CAF6E]/8 text-[#4CAF6E] text-xs font-semibold tracking-[0.12em] uppercase">
             <Sparkles className="h-3 w-3 animate-pulse text-[#4CAF6E]" />
             Clinical Leadership & Recognition
@@ -49,150 +127,163 @@ export default function Achievements() {
             Milestones of <span className="text-[#C8922A]">Scientific Excellence</span>
           </h2>
           <p className="text-white/60 text-base sm:text-lg font-light leading-relaxed">
-            Recognized by peak medical institutions and trusted to educate the next generation of practitioners in advanced HOMOEOPATHY.
+            Recognized by peak medical institutions and trusted to educate the next generation of practitioners in advanced constitutional homoeopathy.
           </p>
         </div>
 
-        {/* 2-Column Grid of Achievements */}
+        {/* Stack of Achievement Editorial Cards */}
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
+          className="space-y-12"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-100px' }}
         >
-          
-          {/* Card 1: Homoeopathic Icon Award 2025 */}
-          <motion.div 
-            variants={cardVariants}
-            className="glass-card flex flex-col justify-between p-8 sm:p-10 rounded-[32px] bg-[#1C3A22]/40 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/30 relative group"
-          >
-            {/* Soft background light behind the icon */}
-            <div className="absolute top-10 right-10 w-32 h-32 bg-[#C8922A]/10 rounded-full filter blur-xl group-hover:bg-[#C8922A]/15 transition-all duration-300 pointer-events-none" />
+          {achievementsData.map((item, index) => (
+            <motion.div 
+              key={item.id}
+              variants={cardVariants}
+              className={`flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch glass-card p-6 sm:p-8 md:p-10 rounded-[32px] bg-[#1C3A22]/20 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/25 relative group overflow-hidden ${
+                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+              }`}
+            >
+              {/* Soft background light behind the card */}
+              <div className="absolute top-10 right-10 w-32 h-32 bg-[#4CAF6E]/5 rounded-full filter blur-xl group-hover:bg-[#4CAF6E]/8 transition-all duration-300 pointer-events-none" />
 
-            <div className="space-y-6">
-              
-              {/* Badge & Icon Header */}
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 border border-brand-gold/20 text-[#C8922A] text-xs font-bold uppercase tracking-wider">
-                  <Award className="h-3.5 w-3.5" />
-                  National Honor
-                </span>
-                <div className="p-3 bg-amber-500/10 text-brand-gold border border-brand-gold/20 rounded-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <Award className="h-8 w-8 text-[#C8922A]" />
-                </div>
-              </div>
-
-              {/* Title & Metadata */}
-              <div className="space-y-3">
-                <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-white leading-tight">
-                  Homoeopathic Icon Award 2025
-                </h3>
-                
-                <div className="space-y-2 text-sm text-slate-300">
-                  <div className="flex items-start gap-2.5">
-                    <MapPin className="h-4.5 w-4.5 text-[#4CAF6E] shrink-0 mt-0.5" />
-                    <span>Atal Bihari Vajpayee Scientific Convention Centre, KGMU, Lucknow</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <Users className="h-4.5 w-4.5 text-[#4CAF6E] shrink-0 mt-0.5" />
-                    <span>Presented by Hahnemann Educational & Development Society in association with Indian Society of Homoeopathy</span>
+              {/* Image Showcase Column */}
+              <div className="w-full lg:w-[45%] flex flex-col justify-center relative shrink-0">
+                <div 
+                  onClick={() => setActiveImage(item.imageSrc)}
+                  className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-[4/3] sm:aspect-video lg:aspect-[4/3] group/img cursor-pointer shadow-premium select-none"
+                >
+                  <img 
+                    src={item.imageSrc} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+                  />
+                  
+                  {/* Frosted zoom / click to view overlay */}
+                  <div className="absolute inset-0 bg-[#0E1F12]/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                    <div className="px-4 py-2 rounded-xl bg-[#0E1F12]/80 border border-[#4CAF6E]/30 text-white text-xs font-semibold flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform duration-300">
+                      <Maximize2 className="h-3.5 w-3.5 text-[#4CAF6E]" />
+                      <span>Expand Achievement Photo</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Copywriter-styled body text */}
-              <p className="text-white/70 text-sm sm:text-base font-light leading-relaxed">
-                Conferred in recognition of Dr. Iqbal's pioneering contributions to natural medicine and outstanding clinical outcomes in Uttar Pradesh. This prestigious award, presented at the state's leading scientific convention venue by India's peak homoeopathic authorities, validates over 15 years of dedicated patient care and safe, systemic healing.
-              </p>
-            </div>
-
-            {/* Bottom visual decoration */}
-            <div className="pt-8 mt-8 border-t border-white/8 flex items-center justify-between text-xs text-[#C8922A]/70 uppercase tracking-widest font-semibold">
-              <span>Scientific Excellence</span>
-              <span>January 2025</span>
-            </div>
-          </motion.div>
-
-          {/* Card 2: HomoeoVision 3.0 Speaker & Lecture */}
-          <motion.div 
-            variants={cardVariants}
-            className="glass-card flex flex-col justify-between p-8 sm:p-10 rounded-[32px] bg-[#1C3A22]/40 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/30 relative group"
-          >
-            {/* Soft background light behind the icon */}
-            <div className="absolute top-10 right-10 w-32 h-32 bg-[#4CAF6E]/10 rounded-full filter blur-xl group-hover:bg-[#4CAF6E]/15 transition-all duration-300 pointer-events-none" />
-
-            <div className="space-y-6">
-              
-              {/* Badge & Icon Header */}
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#4CAF6E]/10 border border-[#4CAF6E]/20 text-[#4CAF6E] text-xs font-bold uppercase tracking-wider">
-                  <Presentation className="h-3.5 w-3.5" />
-                  Academic Presentation
-                </span>
-                <div className="p-3 bg-[#4CAF6E]/10 text-[#4CAF6E] border border-[#4CAF6E]/20 rounded-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <Presentation className="h-8 w-8 text-[#4CAF6E]" />
-                </div>
-              </div>
-
-              {/* Title & Metadata */}
-              <div className="space-y-3">
-                <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-white leading-tight">
-                  Clinical Speaker at HomoeoVision 3.0
-                </h3>
-                
-                <div className="flex items-center gap-2.5 text-sm text-slate-300">
-                  <Calendar className="h-4.5 w-4.5 text-[#C8922A] shrink-0" />
-                  <span>National Conference for Homoeopathic Physicians</span>
-                </div>
-
-                {/* Topic Banner */}
-                <div className="p-4 rounded-2xl bg-[#0E1F12]/80 border border-[#4CAF6E]/15 space-y-1">
-                  <span className="text-[10px] text-[#C8922A] font-bold uppercase tracking-widest block">LECTURE TOPIC</span>
-                  <span className="text-white text-sm sm:text-base font-bold font-heading italic block">
-                    “The Role of Homoeopathy in Chronic Kidney Failure”
-                  </span>
-                </div>
-              </div>
-
-              {/* Copywriter-styled body text */}
-              <p className="text-white/70 text-sm sm:text-base font-light leading-relaxed">
-                Dr. Iqbal was invited to deliver a clinical lecture to practicing physicians at the national HomoeoVision 3.0 conference. Sharing advanced case files and constitutional therapeutic protocols for managing chronic renal failure, his lecture demonstrated how specialized homoeopathic care helps manage kidney pathologies and improves patient longevity.
-              </p>
-
-              {/* Interactive Video Player Placeholder */}
-              <div className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-video flex items-center justify-center group/video shadow-inner">
-                {/* Visual medical waveform background effect */}
-                <div className="absolute inset-0 opacity-15 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#4CAF6E] via-transparent to-transparent pointer-events-none" />
-                
-                {/* Mock player layout */}
-                <div className="relative z-10 flex flex-col items-center gap-3 p-4 text-center">
-                  <div className="relative flex h-14 w-14 items-center justify-center">
-                    {/* Ring ping animation */}
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8922A]/20 opacity-75" />
-                    <button className="relative w-12 h-12 rounded-full flex items-center justify-center bg-white/10 hover:bg-[#C8922A] hover:text-[#0E1F12] text-white border border-white/20 transition-all duration-300 shadow-lg cursor-pointer group-hover/video:scale-110">
-                      <Play className="h-5 w-5 fill-current ml-0.5" />
-                    </button>
+              {/* Content Column */}
+              <div className="w-full lg:w-[55%] flex flex-col justify-between space-y-6 lg:py-2">
+                <div className="space-y-5">
+                  {/* Badge & Icon Header */}
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#4CAF6E]/10 border border-[#4CAF6E]/20 text-[#4CAF6E] text-xs font-bold uppercase tracking-wider">
+                      {item.badgeIcon}
+                      {item.badge}
+                    </span>
                   </div>
-                  <div>
-                    <span className="text-xs font-bold text-white block">HomoeoVision 3.0 Presentation Video</span>
-                    <span className="text-[10px] text-white/50 block mt-0.5">Clinical Lecture Uploading Soon</span>
+
+                  {/* Title & Subtitle */}
+                  <div className="space-y-1">
+                    <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                      {item.title}
+                    </h3>
+                    <p className="text-[#C8922A] text-sm sm:text-base font-semibold font-heading">
+                      {item.subtitle}
+                    </p>
                   </div>
+
+                  {/* Metadata info */}
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-300">
+                    <div className="flex items-start gap-2.5">
+                      {item.venueIcon}
+                      <span>{item.venue}</span>
+                    </div>
+                    {item.org && (
+                      <div className="flex items-start gap-2.5">
+                        {item.orgIcon}
+                        <span>{item.org}</span>
+                      </div>
+                    )}
+
+                    {/* Lecture Topic banner */}
+                    {item.topic && (
+                      <div className="mt-3 p-4 rounded-xl bg-[#0E1F12]/90 border border-[#4CAF6E]/15 space-y-1 max-w-xl">
+                        <span className="text-[10px] text-[#C8922A] font-bold uppercase tracking-widest block">{item.topicLabel}</span>
+                        <span className="text-white text-sm sm:text-base font-bold font-heading italic block">
+                          {item.topic}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Body description */}
+                  <p className="text-white/70 text-sm sm:text-base font-light leading-relaxed max-w-2xl">
+                    {item.description}
+                  </p>
+
+                  {/* Lecture video indicator */}
+                  {item.hasVideoPlaceholder && (
+                    <div className="pt-2 flex items-center gap-3 text-xs text-white/50 bg-[#0E1F12]/40 rounded-xl p-3 border border-[#4CAF6E]/10 max-w-md">
+                      <div className="h-8 w-8 rounded-full bg-[#C8922A]/10 border border-[#C8922A]/20 flex items-center justify-center shrink-0">
+                        <Play className="h-3.5 w-3.5 text-[#C8922A] fill-current ml-0.5 animate-pulse" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-white block">Lecture Presentation Video</span>
+                        <span className="text-[10px] block mt-0.5">Clinical video upload in progress. Preview will be accessible here.</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer Section */}
+                <div className="pt-6 border-t border-white/8 flex items-center justify-between text-xs text-[#4CAF6E]/70 uppercase tracking-widest font-semibold">
+                  <span>{item.footerTag}</span>
+                  <span className="text-slate-400">{item.footerDate}</span>
                 </div>
               </div>
-
-            </div>
-
-            {/* Bottom visual decoration */}
-            <div className="pt-8 mt-8 border-t border-white/8 flex items-center justify-between text-xs text-[#4CAF6E]/70 uppercase tracking-widest font-semibold">
-              <span>Academic Leadership</span>
-              <span>National Conference</span>
-            </div>
-          </motion.div>
-
+            </motion.div>
+          ))}
         </motion.div>
-
       </div>
+
+      {/* Interactive Fullscreen Lightbox Modal */}
+      <AnimatePresence>
+        {activeImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActiveImage(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out select-none"
+          >
+            {/* Close Button */}
+            <button 
+              onClick={() => setActiveImage(null)}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 hover:text-[#4CAF6E] transition-all border border-white/10 z-50 cursor-pointer"
+              aria-label="Close image preview"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* Modal Image container */}
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl max-h-[85vh] sm:max-h-[80vh] w-full rounded-2xl overflow-hidden border border-white/10 bg-[#0E1F12] shadow-premium flex items-center justify-center cursor-default"
+            >
+              <img 
+                src={activeImage} 
+                alt="Enlarged achievement view" 
+                className="max-w-full max-h-[85vh] sm:max-h-[80vh] object-contain w-auto h-auto"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

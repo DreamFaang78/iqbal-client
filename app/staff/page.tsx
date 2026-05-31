@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  Users, Calendar, Clock, Heart, FileText, 
-  Settings, LogOut, Plus, Edit2, Check, X, RefreshCw,
-  Search, ShieldAlert, CheckCircle2, ChevronRight,
-  Phone, Mail, MessageSquare, BookOpen, AlertCircle,
-  FileSpreadsheet, ClipboardList, Activity, Sparkles, Filter, Menu
+  Users, Calendar, FileText, 
+  LogOut, Plus, Check, X, RefreshCw,
+  Search, CheckCircle2,
+  MessageSquare, BookOpen,
+  ClipboardList, Activity, Sparkles, Menu
 } from 'lucide-react';
 
 interface PatientData {
@@ -178,10 +178,8 @@ export default function StaffDashboard() {
         }
       }
 
-      // Load Appointments
-      const apptsRes = await fetchWithAuth('/api/appointments', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('hommed_token') || ''}` }
-      });
+      // Load Appointments — auth header is applied by fetchWithAuth
+      const apptsRes = await fetchWithAuth('/api/appointments');
       if (apptsRes.ok) {
         setAppointments(await apptsRes.json());
       } else {
@@ -216,7 +214,16 @@ export default function StaffDashboard() {
     }
   };
 
-  const fetchWithAuth = async (url: string, options: RequestInit = {}) => { const token = localStorage.getItem('hommed_token') || ''; return fetch(url, { ...options, headers: { ...options.headers, 'Authorization': `Bearer ` } }); };
+  const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+    const token = localStorage.getItem('hommed_token') || '';
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('hommed_token');
@@ -395,12 +402,10 @@ export default function StaffDashboard() {
   // Appointment Confirm/Reschedule Actions
   const handleUpdateApptStatus = async (id: string, newStatus: string) => {
     try {
-      const token = localStorage.getItem('hommed_token');
       const res = await fetchWithAuth('/api/appointments', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ id, status: newStatus })
       });
@@ -422,12 +427,10 @@ export default function StaffDashboard() {
     if (!rescheduleData.date || !rescheduleData.time) return;
 
     try {
-      const token = localStorage.getItem('hommed_token');
       const res = await fetchWithAuth('/api/appointments', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
           id: apptId, 
@@ -715,7 +718,7 @@ export default function StaffDashboard() {
                   <span className="p-2 bg-brand-cyan/10 text-brand-cyan-light rounded-lg"><FileText className="h-5 w-5" /></span>
                 </div>
                 <div>
-                  <p className="text-3xl font-extrabold text-white">{prescriptions.length + 4}</p>
+                  <p className="text-3xl font-extrabold text-white">{prescriptions.length}</p>
                   <p className="text-[10px] text-slate-400 mt-1">Written digital Rx logs</p>
                 </div>
               </div>

@@ -45,7 +45,7 @@ export default function WhyChoose() {
   ];
  
   return (
-    <section id="why-us" className="py-24 bg-[#0E1F12] bg-grid relative overflow-hidden font-sans">
+    <section id="why-us" className="reveal-on-scroll py-24 bg-[#0E1F12] bg-grid relative overflow-hidden font-sans">
       <div className="absolute top-10 left-10 w-72 h-72 bg-[#4CAF6E]/5 rounded-full filter blur-[100px] pointer-events-none"></div>
  
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

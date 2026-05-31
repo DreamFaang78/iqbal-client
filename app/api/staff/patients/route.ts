@@ -14,13 +14,16 @@ export async function GET(request: Request) {
       .order('name', { ascending: true });
 
     if (error) {
-      // Return simulated sample list if table does not exist yet (self-healing demo)
-      return NextResponse.json(getSimulatedPatients(), { status: 200 });
+      return NextResponse.json({ message: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(patients, { status: 200 });
+    // No records → honest empty array, never sample data.
+    return NextResponse.json(patients ?? [], { status: 200 });
   } catch (err: any) {
-    return NextResponse.json(getSimulatedPatients(), { status: 200 });
+    return NextResponse.json(
+      { message: err?.message || 'Failed to load patient records' },
+      { status: 500 }
+    );
   }
 }
 
@@ -30,8 +33,16 @@ export async function POST(request: Request) {
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const payload = await request.json();
+
+    if (!payload?.name || !payload?.phone) {
+      return NextResponse.json(
+        { message: 'Patient name and phone are required' },
+        { status: 400 }
+      );
+    }
+
     const db = supabaseAdmin || supabase;
-    
+
     const { data, error } = await db
       .from('patients')
       .insert({
@@ -51,26 +62,33 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      console.warn("Table insert failed, fallback to mocked simulation success: ", error);
-      return NextResponse.json({
-        ...payload,
-        id: `mock-uuid-${Date.now()}`,
-        created_at: new Date().toISOString()
-      }, { status: 201 });
+      return NextResponse.json({ message: error.message }, { status: 500 });
     }
 
     return NextResponse.json(data, { status: 201 });
   } catch (err: any) {
-    return NextResponse.json({
-      message: 'Failed to create patient record'
-    }, { status: 500 });
+    return NextResponse.json(
+      { message: err?.message || 'Failed to create patient record' },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(request: Request) {
   try {
+    const auth = await verifyStaffToken(request);
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const payload = await request.json();
     const { id, ...updateData } = payload;
+
+    if (!id) {
+      return NextResponse.json(
+        { message: 'Patient id is required' },
+        { status: 400 }
+      );
+    }
+
     const db = supabaseAdmin || supabase;
 
     const { data, error } = await db
@@ -81,58 +99,14 @@ export async function PUT(request: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ ...payload }, { status: 200 });
+      return NextResponse.json({ message: error.message }, { status: 500 });
     }
 
     return NextResponse.json(data, { status: 200 });
   } catch (err: any) {
-    return NextResponse.json({ message: 'Update failed' }, { status: 500 });
+    return NextResponse.json(
+      { message: err?.message || 'Update failed' },
+      { status: 500 }
+    );
   }
-}
-
-function getSimulatedPatients() {
-  return [
-    {
-      id: 'p-1',
-      name: 'Aditya Sharma',
-      phone: '9876543210',
-      email: 'aditya@gmail.com',
-      age: 29,
-      gender: 'Male',
-      blood_group: 'O+',
-      known_allergies: 'Dust, Gluten',
-      chronic_conditions: 'Allergic Rhinitis',
-      emergency_contact: 'Sunita Sharma (Mother) - 9876543211',
-      notes: 'Symptoms worsen in morning. Advised low allergen regimen.',
-      created_at: '2026-05-10T12:00:00Z'
-    },
-    {
-      id: 'p-2',
-      name: 'Priyanka Verma',
-      phone: '8765432109',
-      email: 'priyanka@outlook.com',
-      age: 34,
-      gender: 'Female',
-      blood_group: 'B+',
-      known_allergies: 'None',
-      chronic_conditions: 'Chronic Migraine, Anxiety',
-      emergency_contact: 'Ravi Verma (Husband) - 8765432108',
-      notes: 'Stress triggered headaches. Prefers mild potencies.',
-      created_at: '2026-05-12T14:30:00Z'
-    },
-    {
-      id: 'p-3',
-      name: 'Rohan Gupta',
-      phone: '7654321098',
-      email: 'rohan.g@yahoo.com',
-      age: 42,
-      gender: 'Male',
-      blood_group: 'A-',
-      known_allergies: 'Penicillin',
-      chronic_conditions: 'Acidity, Irritable Bowel Syndrome',
-      emergency_contact: 'Amit Gupta (Brother) - 7654321097',
-      notes: 'History of dyspepsia. Responds excellent to Nux Vomica.',
-      created_at: '2026-05-18T09:15:00Z'
-    }
-  ];
 }

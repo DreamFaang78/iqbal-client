@@ -84,7 +84,7 @@ export default function ClinicGallery() {
   ];
 
   return (
-    <section id="gallery" className="py-24 bg-[#132918] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
+    <section id="gallery" className="reveal-on-scroll py-24 bg-[#132918] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
       {/* Decorative Blur Blobs */}
       <div className="absolute top-1/3 right-0 w-96 h-96 bg-[#4CAF6E]/6 rounded-full filter blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#C8922A]/4 rounded-full filter blur-[80px] pointer-events-none"></div>

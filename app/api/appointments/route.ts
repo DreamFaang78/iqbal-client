@@ -127,15 +127,23 @@ export async function POST(request: Request) {
       throw insertError;
     }
 
-    // Also auto-log a Lead in the CRM for tracking
-    await db
-      .from('leads')
-      .insert({
-        name: patientName,
-        phone: patientPhone,
-        inquiry: `Auto-generated Lead from appointment booking request for: ${service} on ${scheduleDate} @ ${scheduleTime}`,
-        status: 'New Lead'
-      });
+    // Also auto-log a Lead in the CRM for tracking (best-effort, must never
+    // turn an otherwise-successful booking into a 500)
+    try {
+      const { error: leadError } = await db
+        .from('leads')
+        .insert({
+          name: patientName,
+          phone: patientPhone,
+          inquiry: `Auto-generated Lead from appointment booking request for: ${service} on ${scheduleDate} @ ${scheduleTime}`,
+          status: 'New Lead'
+        });
+      if (leadError) {
+        console.warn("Auto-lead creation from booking failed: ", leadError.message);
+      }
+    } catch (e) {
+      console.warn("Auto-lead creation from booking threw: ", e);
+    }
 
     // Trigger Telegram Notification
     try {

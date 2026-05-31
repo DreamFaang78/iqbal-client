@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Activity, ShieldAlert, LogIn, Mail, Lock } from 'lucide-react';
+import { ShieldAlert, LogIn, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -59,21 +59,6 @@ export default function Login() {
     }
   };
 
-  // Simulated Google Sign In for demo ease
-  const handleGoogleMock = () => {
-    const mockUser = {
-      id: 'mock-google-id',
-      name: 'Google Patient',
-      email: 'patient@google.com',
-      phone: '8756124708',
-      role: 'user'
-    };
-    localStorage.setItem('hommed_token', 'mock-google-jwt-token');
-    localStorage.setItem('hommed_user', JSON.stringify(mockUser));
-    window.dispatchEvent(new Event('auth-change'));
-    router.push('/dashboard');
-  };
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-brand-blue/5 rounded-full filter blur-[80px] pointer-events-none"></div>
@@ -123,9 +108,14 @@ export default function Login() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label htmlFor="password" className="text-xs font-semibold text-slate-700">Password</label>
-              <span className="text-[10px] text-slate-400 hover:text-brand-blue transition-colors cursor-pointer">
+              <a
+                href="https://wa.me/918707868504?text=Hello%20HOMMED%2C%20I%20need%20help%20resetting%20my%20account%20password"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-slate-400 hover:text-brand-blue transition-colors cursor-pointer"
+              >
                 Forgot password?
-              </span>
+              </a>
             </div>
             <div className="relative">
               <input
@@ -157,28 +147,6 @@ export default function Login() {
             )}
           </button>
         </form>
-
-        {/* Separator */}
-        <div className="relative flex py-2 items-center">
-          <div className="flex-grow border-t border-slate-200"></div>
-          <span className="flex-shrink mx-4 text-slate-400 text-xs font-medium uppercase font-accent">or</span>
-          <div className="flex-grow border-t border-slate-200"></div>
-        </div>
-
-        {/* Google OAuth Simulation button */}
-        <button
-          onClick={handleGoogleMock}
-          className="w-full h-12 border border-slate-200 hover:bg-slate-50 rounded-xl font-semibold text-slate-700 text-sm flex items-center justify-center space-x-2.5 transition-all"
-        >
-          {/* Custom SVG logo for google */}
-          <svg className="h-5 w-5" viewBox="0 0 24 24">
-            <path
-              fill="#EA4335"
-              d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.478 0-6.3-2.823-6.3-6.3 0-3.478 2.822-6.3 6.3-6.3 1.506 0 2.879.537 3.957 1.425l3.056-3.056C18.847 2.215 15.753 1 12.24 1 6.032 1 1 6.032 1 12.24s5.032 11.24 11.24 11.24c5.895 0 10.82-4.148 10.82-11.24 0-.668-.078-1.378-.22-1.955H12.24Z"
-            />
-          </svg>
-          <span>Continue with Google</span>
-        </button>
 
         {/* Footnote */}
         <div className="text-center text-xs text-slate-500 space-y-2">

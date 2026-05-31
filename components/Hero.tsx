@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, Bot, ShieldCheck, TrendingUp, Leaf, Star, Award, Users } from 'lucide-react';
+import HeroParticles from './HeroParticles';
 
 /* ─── animation presets ─────────────────────────────────────── */
 const container = {
@@ -36,6 +37,9 @@ const slideIn = {
 export default function Hero() {
   return (
     <section className="relative flex items-center overflow-hidden bg-[#0E1F12] pb-24 md:pb-0 md:min-h-[92vh]">
+
+      {/* ── THREE.JS FLOATING LEAF PARTICLES (behind all content, z-0) ── */}
+      <HeroParticles />
 
       {/* ── BACKGROUND GLOWS ─────────────────────────── */}
       <div className="absolute top-0 right-0 w-[700px] h-[500px] blob-cyan opacity-50 pointer-events-none" />

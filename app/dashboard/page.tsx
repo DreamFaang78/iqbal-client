@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  User, Calendar, Clock, FileText, Activity, 
+  Calendar, Clock, FileText, Activity, 
   LogOut, Plus, ShieldCheck, Heart, AlertCircle, 
   RefreshCw, CheckCircle2, ChevronRight, UserCheck
 } from 'lucide-react';
@@ -91,37 +91,6 @@ export default function PatientDashboard() {
 
   if (!user) return null;
 
-  // Mock Medical History Logs
-  const mockMedicalLogs = [
-    {
-      date: '2026-05-18',
-      condition: 'Hair Fall & Scalp Health',
-      remedy: 'Thuja Occidentalis 200C & Arnica Hair Vitalizer Oil',
-      dosage: '4 pills twice daily (morning & night), apply vitalizer oil thrice a week at bedtime.',
-      doctor: 'Dr. Iqbal',
-      status: 'Ongoing Treatment',
-      notes: 'Root follicles show initial recovery. Advised to reduce dairy intake.'
-    },
-    {
-      date: '2026-04-10',
-      condition: 'Allergic Rhinitis & Frequent Sneezing',
-      remedy: 'Allium Cepa 30C & Arsenicum Album 200C',
-      dosage: '4 pills three times a day for 14 days.',
-      doctor: 'Dr. Iqbal',
-      status: 'Completed / Improved',
-      notes: 'Hypersensitivity reduced significantly. Sneezing frequency down by 80%.'
-    },
-    {
-      date: '2026-02-15',
-      condition: 'Acute Indigestion & Acidity',
-      remedy: 'Nux Vomica 30C',
-      dosage: '4 pills before sleeping for 7 nights.',
-      doctor: 'Dr. Iqbal',
-      status: 'Resolved',
-      notes: 'Acid reflux and bloating resolved. Recommended dietary changes followed.'
-    }
-  ];
-
   // Helper stats
   const upcomingAppointments = appointments.filter(a => ['Pending', 'Confirmed', 'Rescheduled'].includes(a.status));
   const completedAppointments = appointments.filter(a => a.status === 'Completed');
@@ -176,7 +145,7 @@ export default function PatientDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           
           <div className="bg-[#0D1F3A]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-premium flex items-center justify-between hover:border-brand-cyan/20 transition-all hover:-translate-y-1 duration-300">
             <div className="space-y-1">
@@ -191,20 +160,10 @@ export default function PatientDashboard() {
           <div className="bg-[#0D1F3A]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-premium flex items-center justify-between hover:border-brand-cyan/20 transition-all hover:-translate-y-1 duration-300">
             <div className="space-y-1">
               <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Consultations</span>
-              <p className="text-3xl font-extrabold text-white">{completedAppointments.length + 3}</p> {/* Base completed consultations */}
+              <p className="text-3xl font-extrabold text-white">{completedAppointments.length}</p>
             </div>
             <div className="p-3 bg-brand-cyan/10 text-brand-cyan-light rounded-xl border border-brand-cyan/20">
               <FileText className="h-6 w-6" />
-            </div>
-          </div>
-
-          <div className="bg-[#0D1F3A]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-premium flex items-center justify-between hover:border-brand-cyan/20 transition-all hover:-translate-y-1 duration-300">
-            <div className="space-y-1">
-              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Immune Wellness</span>
-              <p className="text-3xl font-extrabold text-brand-green">88%</p>
-            </div>
-            <div className="p-3 bg-brand-green/10 text-brand-green rounded-xl border border-brand-green/20">
-              <Heart className="h-6 w-6" />
             </div>
           </div>
 
@@ -360,27 +319,13 @@ export default function PatientDashboard() {
                     </span>
                   </div>
 
-                  <div className="p-5 bg-gradient-to-r from-brand-blue to-brand-cyan text-white rounded-2xl space-y-4 relative overflow-hidden shadow-lg border border-white/10">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full filter blur-xl"></div>
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-1">
-                        <span className="text-blue-100 text-[10px] font-bold uppercase tracking-wider">Current Specialty</span>
-                        <h4 className="font-bold text-lg">{mockMedicalLogs[0].condition}</h4>
-                      </div>
-                      <span className="px-2.5 py-0.5 bg-white/20 rounded-full text-[10px] font-bold border border-white/10">
-                        {mockMedicalLogs[0].status}
-                      </span>
-                    </div>
-
-                    <div className="space-y-2 border-t border-white/10 pt-3">
-                      <div className="text-xs space-y-0.5">
-                        <span className="text-blue-100/70 font-semibold">Prescription:</span>
-                        <p className="font-bold text-sm">{mockMedicalLogs[0].remedy}</p>
-                      </div>
-                      <div className="text-xs space-y-0.5">
-                        <span className="text-blue-100/70 font-semibold">Instructions:</span>
-                        <p className="text-white/90 text-[11px] font-light leading-relaxed">{mockMedicalLogs[0].dosage}</p>
-                      </div>
+                  <div className="p-8 border border-dashed border-white/10 rounded-2xl text-center space-y-3 bg-white/2">
+                    <FileText className="h-10 w-10 text-slate-500 mx-auto" />
+                    <div className="space-y-1">
+                      <p className="font-semibold text-slate-300">No prescriptions on record yet</p>
+                      <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                        Your remedy plans and prescriptions from Dr. Iqbal will appear here once your first consultation is recorded.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -547,61 +492,14 @@ export default function PatientDashboard() {
                 <p className="text-xs text-slate-400">Track current and past constitutional remedies, dosages, and clinician remarks</p>
               </div>
 
-              <div className="relative border-l border-white/10 ml-4 pl-6 sm:pl-8 space-y-8">
-                {mockMedicalLogs.map((log, idx) => (
-                  <div key={idx} className="relative">
-                    {/* Circle Node */}
-                    <span className="absolute -left-10 sm:-left-12 top-1 bg-[#0A1628] border-2 border-brand-cyan-light w-4.5 h-4.5 rounded-full flex items-center justify-center">
-                      <span className="w-1.5 h-1.5 bg-brand-cyan rounded-full animate-pulse"></span>
-                    </span>
-
-                    <div className="p-5 bg-white/5 border border-white/5 rounded-2xl space-y-4 hover:border-brand-cyan/20 transition-all duration-300">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-white/5 pb-2">
-                        <div className="space-y-0.5">
-                          <span className="text-[10px] text-slate-400 font-bold">{log.date}</span>
-                          <h4 className="font-bold text-white text-base">{log.condition}</h4>
-                        </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          log.status === 'Ongoing Treatment' 
-                            ? 'bg-brand-blue/15 text-brand-cyan-light border border-brand-blue/20' 
-                            : log.status === 'Resolved'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                            : 'bg-white/5 text-slate-400 border border-white/15'
-                        }`}>
-                          {log.status}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                        <div className="space-y-1 bg-white/2 p-3 border border-white/5 rounded-xl">
-                          <p className="text-slate-400 font-semibold uppercase tracking-wider">Prescribed Homeopathic Remedy</p>
-                          <p className="font-bold text-white text-sm">{log.remedy}</p>
-                        </div>
-                        <div className="space-y-1 bg-white/2 p-3 border border-white/5 rounded-xl">
-                          <p className="text-slate-400 font-semibold uppercase tracking-wider">Dosage Instructions</p>
-                          <p className="font-medium text-slate-300">{log.dosage}</p>
-                        </div>
-                      </div>
-
-                      <div className="text-xs bg-brand-blue/10 border border-brand-blue/10 p-3 rounded-xl space-y-1 text-slate-300">
-                        <p className="font-semibold text-brand-cyan-light">Dr. Iqbal's Clinical Remarks:</p>
-                        <p className="font-light leading-relaxed">{log.notes}</p>
-                      </div>
-
-                      <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                        <span>Consulting Practitioner: <strong className="text-slate-300">{log.doctor}</strong></span>
-                        <a 
-                          href="https://wa.me/918707868504" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="font-bold text-brand-cyan-light hover:text-brand-cyan hover:underline transition-colors"
-                        >
-                          Request Refill / Ask Query
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="p-10 border border-dashed border-white/10 rounded-2xl text-center space-y-3 bg-white/2">
+                <FileText className="h-12 w-12 text-slate-500 mx-auto" />
+                <div className="space-y-1">
+                  <p className="font-semibold text-slate-300">No prescriptions on record yet</p>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto">
+                    Once Dr. Iqbal records a consultation, your homeopathic remedies, dosages, and clinical remarks will be listed here.
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -612,6 +510,13 @@ export default function PatientDashboard() {
               <div>
                 <h3 className="font-bold text-lg text-white">Constitutional Health & Recovery Tracker</h3>
                 <p className="text-xs text-slate-400">Track your healing timeline and immune indicators</p>
+              </div>
+
+              <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-200 rounded-xl flex items-start space-x-2">
+                <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" />
+                <p className="text-[11px] leading-relaxed text-amber-200/90 font-light">
+                  Illustrative sample only. These indicators are example visuals, not measurements derived from your records. Personalised tracking will be available once recovery data is captured during your consultations.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

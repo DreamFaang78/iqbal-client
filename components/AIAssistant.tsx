@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Bot, User, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -26,7 +26,7 @@ export default function AIAssistant() {
       {
         id: 'greet',
         sender: 'ai',
-        text: "Hello! I'm Dr. Iqbal's AI Healthcare Assistant. 🩺 How can I help you today? You can describe symptoms you're experiencing (e.g., hair fall, skin rashes, migraine) or ask about clinic timings.",
+        text: "Hello! I'm the HOMMED Wellness Assistant. 🌿 I'm a guided info assistant — not a medical diagnosis tool — here to point you to the right treatment area and help you book a consultation with our doctors. Describe what you're experiencing (e.g., hair fall, skin rashes, migraine) or ask about clinic timings.",
         timestamp: new Date()
       }
     ]);
@@ -69,7 +69,7 @@ export default function AIAssistant() {
       
       // Submit Lead to API
       try {
-        await fetch('/api/leads', {
+        const res = await fetch('/api/leads', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -78,7 +78,11 @@ export default function AIAssistant() {
             inquiry: `Captured via AI Assistant: ${finalData.symptoms}`
           })
         });
-        
+
+        if (!res.ok) {
+          throw new Error(`Lead request failed with status ${res.status}`);
+        }
+
         setMessages(prev => [...prev, {
           id: Math.random().toString(),
           sender: 'ai',
@@ -89,7 +93,7 @@ export default function AIAssistant() {
         setMessages(prev => [...prev, {
           id: Math.random().toString(),
           sender: 'ai',
-          text: `I've noted down your contact. Please feel free to also reach us at +91 87561 24708 for quick support!`,
+          text: `I wasn't able to submit your request just now. Please call or WhatsApp us directly at +91 87561 24708 and our clinic assistant will help you book right away.`,
           timestamp: new Date()
         }]);
       }
@@ -167,7 +171,7 @@ export default function AIAssistant() {
         >
           <MessageSquare className="h-6 w-6" />
           <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 font-semibold text-sm whitespace-nowrap">
-            Ask Dr. Iqbal's AI
+            Chat with HOMMED
           </span>
           <span className="absolute -top-1 -right-1 flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
@@ -187,7 +191,7 @@ export default function AIAssistant() {
                 <Bot className="h-5 w-5 text-brand-cyan" />
               </div>
               <div>
-                <h4 className="font-heading font-bold text-sm">HOMMED AI Assistant</h4>
+                <h4 className="font-heading font-bold text-sm">HOMMED Wellness Assistant</h4>
                 <p className="text-[10px] text-brand-green flex items-center font-semibold">
                   <span className="w-1.5 h-1.5 bg-brand-green rounded-full mr-1.5 animate-pulse"></span>
                   Active Wellness Guide

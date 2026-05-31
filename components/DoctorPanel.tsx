@@ -78,7 +78,7 @@ export default function DoctorPanel() {
   };
 
   return (
-    <section id="doctor-panel" className="py-24 bg-[#0E1F12] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
+    <section id="doctor-panel" className="reveal-on-scroll py-24 bg-[#0E1F12] relative overflow-hidden font-sans border-t border-[#4CAF6E]/10">
       {/* Decorative glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#4CAF6E]/4 rounded-full filter blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#C8922A]/3 rounded-full filter blur-[100px] pointer-events-none"></div>

@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Users, Calendar, Clock, Layers, FileText, 
-  Settings, LogOut, Plus, Edit2, Trash2, 
+  Settings, LogOut, Plus, Trash2, 
   ToggleLeft, ToggleRight, Check, X, RefreshCw,
-  Search, ShieldAlert, Award, ArrowUpRight, BarChart3,
-  ListFilter, LayoutGrid, CheckCircle2, ChevronRight,
+  Search, ShieldAlert, ArrowUpRight, BarChart3,
+  CheckCircle2,
   Phone, Mail, MessageSquare
 } from 'lucide-react';
 
@@ -72,12 +72,9 @@ export default function AdminDashboard() {
   const [adminUser, setAdminUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'analytics' | 'leads' | 'appointments' | 'services' | 'blogs' | 'popups' | 'staff'>('analytics');
-  const [staffList, setStaffList] = useState<any[]>([
-    { id: 'st-1', name: 'Ayush Rawat', email: 'ayush.staff@hommed.com', phone: '8877665544', role: 'staff', status: 'Active' },
-    { id: 'st-2', name: 'Nisha Pathak', email: 'nisha.staff@hommed.com', phone: '9900887766', role: 'staff', status: 'Active' }
-  ]);
-  const [showStaffForm, setShowStaffForm] = useState(false);
-  const [staffForm, setStaffForm] = useState({ name: '', email: '', phone: '', password: '' });
+  const [staffList, setStaffList] = useState<any[]>([]);
+  const [staffLoading, setStaffLoading] = useState(false);
+  const [staffError, setStaffError] = useState<string | null>(null);
 
   // Datasets
   const [leads, setLeads] = useState<LeadData[]>([]);
@@ -153,10 +150,34 @@ export default function AdminDashboard() {
       const popupsRes = await fetch('/api/popups');
       if (popupsRes.ok) setPopups(await popupsRes.json());
 
+      // Load staff accounts (admin-only, real source)
+      await loadStaff(token);
+
     } catch (err) {
       triggerFeedback('Error communicating with database API, loaded local fallback parameters.', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Load clinic staff accounts from the real admin endpoint (profiles where role = 'staff')
+  const loadStaff = async (token: string) => {
+    setStaffLoading(true);
+    setStaffError(null);
+    try {
+      const res = await fetch('/api/admin/staff', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `Request failed (${res.status})`);
+      }
+      setStaffList(await res.json());
+    } catch (err: any) {
+      setStaffList([]);
+      setStaffError(err.message || 'Unable to load staff accounts.');
+    } finally {
+      setStaffLoading(false);
     }
   };
 
@@ -1358,93 +1379,74 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-base text-white">Active Clinical Staff List</h3>
-              <button 
-                onClick={() => setShowStaffForm(!showStaffForm)}
-                className="h-10 px-4 bg-brand-blue hover:brightness-110 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
+              <button
+                onClick={() => loadStaff(localStorage.getItem('hommed_token') || '')}
+                className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
               >
-                <Plus className="w-4 h-4" />
-                <span>Add Staff Member</span>
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Refresh List</span>
               </button>
             </div>
 
-            {showStaffForm && (
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!staffForm.name || !staffForm.email) return;
-                  const newStaff = {
-                    id: `st-${Date.now()}`,
-                    name: staffForm.name,
-                    email: staffForm.email,
-                    phone: staffForm.phone,
-                    role: 'staff',
-                    status: 'Active'
-                  };
-                  setStaffList(prev => [...prev, newStaff]);
-                  setStaffForm({ name: '', email: '', phone: '', password: '' });
-                  setShowStaffForm(false);
-                  triggerFeedback('Staff credentials created successfully.', 'success');
-                }}
-                className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4"
-              >
-                <h4 className="font-bold text-sm text-white">Create New Clinic Staff Account</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <input 
-                    type="text" required placeholder="Staff Full Name"
-                    value={staffForm.name}
-                    onChange={e => setStaffForm({...staffForm, name: e.target.value})}
-                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
-                  />
-                  <input 
-                    type="email" required placeholder="staff.name@hommed.com"
-                    value={staffForm.email}
-                    onChange={e => setStaffForm({...staffForm, email: e.target.value})}
-                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
-                  />
-                  <input 
-                    type="text" placeholder="Mobile Number"
-                    value={staffForm.phone}
-                    onChange={e => setStaffForm({...staffForm, phone: e.target.value})}
-                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
-                  />
-                  <input 
-                    type="password" required placeholder="Access Password"
-                    value={staffForm.password}
-                    onChange={e => setStaffForm({...staffForm, password: e.target.value})}
-                    className="h-10 px-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white"
-                  />
-                </div>
-                <button type="submit" className="h-9 px-4 bg-brand-blue text-white font-bold rounded-lg text-xs">Save Account</button>
-              </form>
-            )}
+            <p className="text-[11px] text-slate-500">
+              Staff accounts are read live from the <code className="text-brand-cyan">profiles</code> table (role
+              <span className="text-slate-300 font-semibold"> staff</span>). To add a staff member, create their
+              account via signup and assign the staff role.
+            </p>
 
             <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold">
-                    <th className="pb-3">Name</th>
-                    <th className="pb-3">Email Address</th>
-                    <th className="pb-3">Phone</th>
-                    <th className="pb-3">System Role</th>
-                    <th className="pb-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
-                  {staffList.map(st => (
-                    <tr key={st.id}>
-                      <td className="py-4 font-bold text-white">{st.name}</td>
-                      <td className="py-4">{st.email}</td>
-                      <td className="py-4">{st.phone}</td>
-                      <td className="py-4"><span className="px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded font-semibold text-[10px]">CLINIC STAFF</span></td>
-                      <td className="py-4">
-                        <span className="text-emerald-400 font-bold flex items-center gap-1">
-                          <span className="w-2 h-2 bg-emerald-500 rounded-full"></span> Active
-                        </span>
-                      </td>
+              {staffLoading ? (
+                <div className="p-12 text-center text-slate-500">
+                  <div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                  <p className="text-xs">Loading staff accounts...</p>
+                </div>
+              ) : staffError ? (
+                <div className="p-12 text-center text-rose-400">
+                  <ShieldAlert className="h-10 w-10 mx-auto mb-2" />
+                  <p className="font-bold text-sm">Could not load staff accounts</p>
+                  <p className="text-xs text-rose-300/80 mt-1">{staffError}</p>
+                  <button
+                    onClick={() => loadStaff(localStorage.getItem('hommed_token') || '')}
+                    className="mt-4 h-9 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    <span>Try again</span>
+                  </button>
+                </div>
+              ) : staffList.length === 0 ? (
+                <div className="p-12 text-center text-slate-500">
+                  <Users className="h-10 w-10 text-slate-600 mx-auto mb-2" />
+                  <p className="font-bold text-sm text-slate-300">No staff accounts yet</p>
+                  <p className="text-xs mt-1">No profiles with the staff role were found.</p>
+                </div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold">
+                      <th className="pb-3">Name</th>
+                      <th className="pb-3">Email Address</th>
+                      <th className="pb-3">Phone</th>
+                      <th className="pb-3">System Role</th>
+                      <th className="pb-3">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
+                    {staffList.map(st => (
+                      <tr key={st.id}>
+                        <td className="py-4 font-bold text-white">{st.name || '—'}</td>
+                        <td className="py-4">{st.email || '—'}</td>
+                        <td className="py-4">{st.phone || '—'}</td>
+                        <td className="py-4"><span className="px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded font-semibold text-[10px]">CLINIC STAFF</span></td>
+                        <td className="py-4">
+                          <span className="text-emerald-400 font-bold flex items-center gap-1">
+                            <span className="w-2 h-2 bg-emerald-500 rounded-full"></span> Active
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}

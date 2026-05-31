@@ -58,21 +58,6 @@ export default function StaffLogin() {
     }
   };
 
-  // Mock staff login for ease of demo setup
-  const handleStaffMock = () => {
-    const mockUser = {
-      id: 'mock-staff-id',
-      name: 'Iqbal Staff Clinic',
-      email: 'staff@hommed.com',
-      phone: '9988776655',
-      role: 'staff'
-    };
-    localStorage.setItem('hommed_token', 'mock-staff-jwt-token');
-    localStorage.setItem('hommed_user', JSON.stringify(mockUser));
-    window.dispatchEvent(new Event('auth-change'));
-    router.push('/staff');
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0E1F12] py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 blob-cyan rounded-full filter blur-[120px] pointer-events-none opacity-50"></div>
@@ -157,20 +142,6 @@ export default function StaffLogin() {
             )}
           </button>
         </form>
-
-        {/* Mock Access Gateway for Local testing/offline mode */}
-        <div className="relative flex py-2 items-center">
-          <div className="flex-grow border-t border-brand-cyan/10"></div>
-          <span className="flex-shrink mx-4 text-brand-muted text-[10px] font-bold uppercase tracking-widest">Demo Testing</span>
-          <div className="flex-grow border-t border-brand-cyan/10"></div>
-        </div>
-
-        <button
-          onClick={handleStaffMock}
-          className="w-full h-12 border border-brand-cyan/20 bg-brand-navy/60 hover:bg-brand-navy text-brand-cyan-light rounded-xl font-semibold text-xs flex items-center justify-center space-x-2 transition-all"
-        >
-          <span>Use Simulated Staff Account (Offline Demo Mode)</span>
-        </button>
 
         <div className="text-center text-xs">
           <Link href="/login" className="text-brand-muted font-medium hover:text-brand-cyan-light transition-colors">
