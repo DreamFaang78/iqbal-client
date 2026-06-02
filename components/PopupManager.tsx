@@ -16,6 +16,7 @@ export default function PopupManager() {
   const [popup, setPopup] = useState<PopupData | null>(null);
   const [show, setShow] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({ name: '', phone: '' });
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export default function PopupManager() {
     if (!formData.name || !formData.phone) return;
 
     try {
-      await fetch('/api/leads', {
+      const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -82,10 +83,15 @@ export default function PopupManager() {
           inquiry: `Captured via Popup [${popup?.type || 'marketing'}]: ${popup?.title}`
         })
       });
+      if (!res.ok) {
+        throw new Error(`Lead submission failed with status ${res.status}`);
+      }
       setSubmitted(true);
+      setError('');
     } catch (err) {
       console.error(err);
-      setSubmitted(true); // Fallback mock success state
+      // Honest failure — do NOT claim the request was registered if it was not saved.
+      setError('Sorry, we could not submit your request. Please call or WhatsApp us at +91 87078 68504 and we will assist you right away.');
     }
   };
 
@@ -146,6 +152,13 @@ export default function PopupManager() {
               </div>
 
               <p className="text-slate-600 text-sm leading-relaxed font-light">{popup.content}</p>
+
+              {error && (
+                <div className="flex items-start gap-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs leading-relaxed">
+                  <X className="h-4 w-4 shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
 
               {popup.type === 'whatsapp' ? (
                 <div className="flex flex-col gap-3">

@@ -87,6 +87,9 @@ export default function AdminDashboard() {
   const [leadSearch, setLeadSearch] = useState('');
   const [apptSearch, setApptSearch] = useState('');
 
+  // Honest data-load error state (so an auth/API failure is not masked as "no leads")
+  const [leadsError, setLeadsError] = useState<string | null>(null);
+
   // Form states
   const [showServiceForm, setShowServiceForm] = useState(false);
   const [serviceForm, setServiceForm] = useState({
@@ -115,8 +118,20 @@ export default function AdminDashboard() {
       return;
     }
 
-    const parsedUser = JSON.parse(storedUser);
-    if (parsedUser.role !== 'admin') {
+    let parsedUser: any;
+    try {
+      parsedUser = JSON.parse(storedUser);
+    } catch {
+      localStorage.removeItem('hommed_user');
+      router.push('/login');
+      return;
+    }
+
+    // Render the panel and let the server (verifyAdminToken) be the source of truth
+    // for authorization. We only hard-redirect non-admin patient sessions; any stale
+    // cached role is reconciled by the API responses (a 403 surfaces an honest error
+    // instead of silently showing empty tabs).
+    if (parsedUser.role === 'patient') {
       router.push('/dashboard');
       return;
     }
@@ -128,11 +143,21 @@ export default function AdminDashboard() {
   const loadAllData = async (token: string) => {
     try {
       setLoading(true);
+      setLeadsError(null);
       const headers = { 'Authorization': `Bearer ${token}` };
 
-      // Load leads
+      // Load leads (surface real failures instead of silently leaving the tab empty)
       const leadsRes = await fetch('/api/leads', { headers });
-      if (leadsRes.ok) setLeads(await leadsRes.json());
+      if (leadsRes.ok) {
+        setLeads(await leadsRes.json());
+      } else {
+        const body = await leadsRes.json().catch(() => ({}));
+        if (leadsRes.status === 401 || leadsRes.status === 403) {
+          setLeadsError('Your admin session has expired or is not authorized. Please sign out and log in again.');
+        } else {
+          setLeadsError(body.message || `Could not load leads (error ${leadsRes.status}).`);
+        }
+      }
 
       // Load appointments
       const apptsRes = await fetch('/api/appointments', { headers });
@@ -780,7 +805,25 @@ export default function AdminDashboard() {
         {/* LEADS KANBAN BOARD TAB */}
         {activeTab === 'leads' && (
           <div className="space-y-6">
-            
+
+            {/* Honest error banner — shown when the leads fetch failed (e.g. expired admin session) */}
+            {leadsError && (
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200">
+                <ShieldAlert className="h-5 w-5 shrink-0 mt-0.5 text-rose-400" />
+                <div className="flex-1 text-sm">
+                  <p className="font-bold text-rose-100">Could not load leads</p>
+                  <p className="text-rose-300/90 mt-0.5">{leadsError}</p>
+                </div>
+                <button
+                  onClick={() => loadAllData(localStorage.getItem('hommed_token') || '')}
+                  className="h-9 px-3 bg-rose-900/60 hover:bg-rose-900 text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 shrink-0"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  Retry
+                </button>
+              </div>
+            )}
+
             {/* Search filter bar */}
             <div className="relative max-w-md">
               <input
