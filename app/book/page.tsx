@@ -40,20 +40,18 @@ function BookForm() {
   }, []);
 
   useEffect(() => {
-    // Check if user is logged in
+    // Track the logged-in user for auth/redirect purposes, but DO NOT pre-fill
+    // the patient name/phone — these fields default to blank so each booking
+    // captures the details entered fresh in the form.
     const storedUser = localStorage.getItem('hommed_user');
     if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-      setFormData(prev => ({
-        ...prev,
-        patientName: parsed.name,
-        patientPhone: parsed.phone,
-        service: initialService
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, service: initialService }));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem('hommed_user');
+      }
     }
+    setFormData(prev => ({ ...prev, service: initialService }));
   }, [initialService]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

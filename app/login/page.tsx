@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ShieldAlert, LogIn, Mail, Lock } from 'lucide-react';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -147,6 +148,16 @@ export default function Login() {
             )}
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-[11px] text-slate-400 font-medium">or</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        {/* Google OAuth (patient sign-in) */}
+        <GoogleSignInButton />
 
         {/* Footnote */}
         <div className="text-center text-xs text-slate-500 space-y-2">
