@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Calendar as CalendarIcon, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { DEFAULT_SERVICES } from '@/lib/data';
+import { generateDailySlots, groupSlotsByHour, isSunday } from '@/lib/slots';
 
 function BookForm() {
   const router = useRouter();
@@ -23,11 +24,12 @@ function BookForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Time Slots definition
-  const timeSlots = [
-    '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
-    '05:00 PM', '06:00 PM', '07:00 PM', '07:30 PM'
-  ];
+  // 15-minute slots for the clinic day (Mon–Sat, 10:00 AM – 9:00 PM)
+  const slotGroups = useMemo(() => groupSlotsByHour(generateDailySlots()), []);
+
+  // Slots already taken for the chosen date (so patients can't double-book)
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
 
   // Min date selector: today
   const [minDate, setMinDate] = useState('');
@@ -38,6 +40,37 @@ function BookForm() {
     const dd = String(today.getDate()).padStart(2, '0');
     setMinDate(`${yyyy}-${mm}-${dd}`);
   }, []);
+
+  // When the chosen date changes, load which slots are already taken that day.
+  useEffect(() => {
+    const date = formData.scheduleDate;
+    if (!date || isSunday(date)) {
+      setBookedSlots([]);
+      return;
+    }
+    let cancelled = false;
+    setSlotsLoading(true);
+    fetch(`/api/appointments/availability?date=${encodeURIComponent(date)}`)
+      .then((res) => (res.ok ? res.json() : { bookedSlots: [] }))
+      .then((data) => {
+        if (cancelled) return;
+        const taken: string[] = Array.isArray(data.bookedSlots) ? data.bookedSlots : [];
+        setBookedSlots(taken);
+        // If the currently-selected slot just became unavailable, clear it.
+        setFormData((prev) =>
+          taken.includes(prev.scheduleTime) ? { ...prev, scheduleTime: '' } : prev
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setBookedSlots([]);
+      })
+      .finally(() => {
+        if (!cancelled) setSlotsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.scheduleDate]);
 
   useEffect(() => {
     // Track the logged-in user for auth/redirect purposes, but DO NOT pre-fill
@@ -66,6 +99,10 @@ function BookForm() {
     e.preventDefault();
     if (!formData.patientName || !formData.patientPhone || !formData.service || !formData.scheduleDate || !formData.scheduleTime) {
       setError('Please fill in all scheduling fields.');
+      return;
+    }
+    if (isSunday(formData.scheduleDate)) {
+      setError('The clinic is closed on Sundays. Please choose another day.');
       return;
     }
     setError('');
@@ -258,32 +295,66 @@ function BookForm() {
                 </div>
               </div>
 
-              {/* Time Slots selector */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-semibold text-slate-300 flex items-center space-x-1.5">
-                  <Clock className="h-4 w-4 text-brand-cyan/70" />
-                  <span>Choose Time Slot *</span>
+              {/* Time Slots selector — 15-minute slots, grouped by hour */}
+              <div className="space-y-3">
+                <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+                  <span className="flex items-center space-x-1.5">
+                    <Clock className="h-4 w-4 text-brand-cyan/70" />
+                    <span>Choose a 15-minute Time Slot *</span>
+                  </span>
+                  {formData.scheduleTime && (
+                    <span className="text-brand-cyan-light font-bold normal-case">
+                      Selected: {formData.scheduleTime}
+                    </span>
+                  )}
                 </label>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {timeSlots.map((slot) => {
-                    const isSelected = formData.scheduleTime === slot;
-                    return (
-                      <button
-                        type="button"
-                        key={slot}
-                        onClick={() => selectTimeSlot(slot)}
-                        className={`h-11 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-brand-gold text-brand-navy shadow-md shadow-brand-gold/10 border-brand-gold font-bold'
-                            : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10'
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    );
-                  })}
-                </div>
+
+                {!formData.scheduleDate ? (
+                  <div className="p-6 text-center text-sm text-white/50 bg-[#162847]/30 border border-dashed border-white/10 rounded-2xl">
+                    Please choose a preferred date above to see available slots.
+                  </div>
+                ) : isSunday(formData.scheduleDate) ? (
+                  <div className="p-6 text-center text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+                    The clinic is closed on Sundays. Please pick another day (Mon–Sat, 10:00 AM – 9:00 PM).
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
+                    {slotsLoading && (
+                      <p className="text-xs text-white/50">Checking slot availability…</p>
+                    )}
+                    {slotGroups.map((group) => (
+                      <div key={group.hourLabel} className="space-y-2">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+                          {group.hourLabel}
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                          {group.slots.map((slot) => {
+                            const isSelected = formData.scheduleTime === slot.value;
+                            const isBooked = bookedSlots.includes(slot.value);
+                            return (
+                              <button
+                                type="button"
+                                key={slot.value}
+                                disabled={isBooked}
+                                onClick={() => selectTimeSlot(slot.value)}
+                                title={isBooked ? 'This slot is already booked' : slot.value}
+                                className={`h-11 rounded-xl text-[11px] font-semibold transition-all ${
+                                  isBooked
+                                    ? 'bg-[#162847]/20 text-white/25 border border-white/5 line-through cursor-not-allowed'
+                                    : isSelected
+                                    ? 'bg-brand-gold text-brand-navy shadow-md shadow-brand-gold/10 border border-brand-gold font-bold cursor-pointer'
+                                    : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
+                                }`}
+                              >
+                                {slot.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Action Button */}
