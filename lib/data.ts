@@ -51,13 +51,13 @@ export const DEFAULT_SERVICES: ServiceData[] = [
     treatments: ['Follicular stimulation therapy', 'Hormonal balancing formulas', 'Scalp health nourishment regimens', 'Stress-reduction homeopathy remedies']
   },
   {
-    title: 'Allergy & Asthma',
-    slug: 'allergy-treatment',
-    icon: 'Wind',
-    shortDescription: 'De-sensitize your immune system to overcome chronic Allergies, Rhinitis, and Sinus.',
-    detailedDescription: 'Allergy occurs when the immune system overreacts to harmless substances like dust, pollen, or certain foods. Our homeopathic treatment aims to reduce this hypersensitivity. By strengthening the immune system, we help patients overcome chronic sneezing, watery eyes, allergic asthma, and sinus inflammation, offering long-term freedom from daily antihistamines.',
-    symptoms: ['Frequent sneezing and runny nose', 'Wheezing and shortness of breath', 'Watery, itchy, or swollen eyes', 'Chronic sinus blockages and headaches', 'Skin rashes and hives (Urticaria)'],
-    treatments: ['Immunomodulator homeopathic prescriptions', 'Acute allergy relief tinctures', 'Desensitization mapping', 'Respiratory lung strengthening therapy']
+    title: 'Thyroid',
+    slug: 'thyroid',
+    icon: 'Activity',
+    shortDescription: 'Natural correction of Hypothyroidism, Hyperthyroidism, and thyroid nodules — without lifelong dependency.',
+    detailedDescription: 'Thyroid disorders are increasingly common and can silently affect energy, weight, mood, digestion, and reproductive health. Homeopathy stimulates the thyroid gland to self-regulate its hormone production — reducing TSH imbalances naturally. Many patients see a gradual reduction in their conventional thyroid medication dosage as homeopathic treatment progresses, under medical supervision.',
+    symptoms: ['Unexplained weight gain or loss', 'Chronic fatigue and weakness', 'Hair thinning and dry skin', 'Irregular heartbeat or palpitations', 'Sensitivity to cold or heat', 'Mood changes and depression'],
+    treatments: ['Thyroid gland stimulation remedies', 'Hormonal self-regulation therapy', 'Constitutional metabolic balancers', 'Anti-nodule absorption formulas']
   },
   {
     title: 'Migraine & Chronic Headache',
@@ -69,13 +69,13 @@ export const DEFAULT_SERVICES: ServiceData[] = [
     treatments: ['Vascular congestion relief prescriptions', 'Neural regulator remedies', 'Gastric-headache link remedies', 'Relaxation constitutional care']
   },
   {
-    title: 'PCOS & Women’s Health',
-    slug: 'pcos',
-    icon: 'Activity',
-    shortDescription: 'Hormonal regulation therapies for PCOS, irregular cycles, and thyroid concerns.',
-    detailedDescription: 'Hormonal imbalances like Polycystic Ovary Syndrome (PCOS), irregular periods, and thyroid issues respond beautifully to homeopathy. Instead of using artificial hormones or birth control pills, we prescribe natural remedies that stimulate the endocrine glands to function correctly. This restores menstrual regularity, controls weight gain, and treats cysts naturally.',
-    symptoms: ['Irregular or missed menstrual cycles', 'Ovarian cysts on ultrasound', 'Excessive facial hair and acne', 'Unexplained weight gain', 'Mood swings and fatigue'],
-    treatments: ['Endocrine regulatory therapy', 'Ovarian cyst absorption formulas', 'Constitutional metabolic regulators', 'Stress-PMS matching cures']
+    title: 'Sexual Problem',
+    slug: 'sexual-problem',
+    icon: 'HeartPulse',
+    shortDescription: 'Confidential, effective homeopathic treatment for male and female sexual health disorders.',
+    detailedDescription: 'Sexual health problems — including Erectile Dysfunction, Premature Ejaculation, Low Libido, and related concerns — are often rooted in hormonal imbalance, stress, or chronic illness. Homeopathy offers a completely safe, confidential, and non-invasive solution. Our constitutional remedies restore vitality, improve hormonal balance, and address underlying anxiety without side-effects or dependency.',
+    symptoms: ['Erectile dysfunction or weakness', 'Premature or delayed ejaculation', 'Low libido or loss of desire', 'Performance anxiety and stress', 'Hormonal deficiencies (low testosterone)', 'Female sexual dysfunction'],
+    treatments: ['Constitutional vitality boosters', 'Hormonal balance remedies', 'Anxiety and stress management drops', 'Endocrine regulation therapy']
   },
   {
     title: 'Child Care & Immunity',

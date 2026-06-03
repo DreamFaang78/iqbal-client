@@ -62,15 +62,8 @@ export async function GET(request: Request) {
       return NextResponse.json(mapService(service), { status: 200 });
     }
 
-    const { data: services, error } = await db
-      .from('services')
-      .select('*')
-      .order('title', { ascending: true });
-
-    if (error || !services || services.length === 0) {
-      return NextResponse.json(DEFAULT_SERVICES, { status: 200 });
-    }
-    return NextResponse.json(services.map(mapService), { status: 200 });
+    // Always return DEFAULT_SERVICES for the full listing — source of truth is lib/data.ts
+    return NextResponse.json(DEFAULT_SERVICES, { status: 200 });
 
   } catch (err: any) {
     // Graceful fallback to default data
