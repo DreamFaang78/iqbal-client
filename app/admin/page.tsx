@@ -9,7 +9,7 @@ import {
   ToggleLeft, ToggleRight, Check, X, RefreshCw,
   Search, ShieldAlert, ArrowUpRight, BarChart3,
   CheckCircle2, Phone, Mail, MessageSquare,
-  Download, Filter, AlertCircle
+  Download, Filter, AlertCircle, ChevronDown
 } from 'lucide-react';
 
 interface LeadData {
@@ -113,6 +113,78 @@ function getLeadLocation(lead: LeadData): 'Online' | 'Civil Lines' | 'Jajmau' {
   return 'Online';
 }
 
+function parseInquiryDateTime(inquiry?: string): { displayDate: string; displayTime: string } | null {
+  if (!inquiry) return null;
+  const onIndex = inquiry.indexOf(' on ');
+  const atIndex = inquiry.indexOf(' @ ');
+  if (onIndex !== -1 && atIndex !== -1) {
+    const dateStr = inquiry.substring(onIndex + 4, atIndex).trim();
+    let timeStr = inquiry.substring(atIndex + 3).trim();
+    if (timeStr.includes('-')) {
+      timeStr = timeStr.split('-')[0].trim();
+    }
+    
+    let displayDate = dateStr;
+    try {
+      const d = new Date(dateStr);
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+      
+      if (d.toDateString() === today.toDateString()) {
+        displayDate = 'Today';
+      } else if (d.toDateString() === tomorrow.toDateString()) {
+        displayDate = 'Tomorrow';
+      } else {
+        displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+    } catch (e) {}
+    
+    return { displayDate, displayTime: timeStr };
+  }
+  return null;
+}
+
+function parseSpecialization(inquiry?: string): string {
+  if (!inquiry) return 'General Consultation';
+  const problemIndex = inquiry.indexOf('Problem:');
+  if (problemIndex !== -1) {
+    return inquiry.substring(problemIndex + 8).split('.')[0].split('Requested:')[0].trim();
+  }
+  const forIndex = inquiry.indexOf('for:');
+  if (forIndex !== -1) {
+    return inquiry.substring(forIndex + 4).split('on')[0].trim();
+  }
+  
+  const text = inquiry.toLowerCase();
+  if (text.includes('skin') || text.includes('eczema') || text.includes('dermatitis')) return 'Skin Disorders';
+  if (text.includes('hair') || text.includes('alopecia') || text.includes('fall')) return 'Hair Fall & Alopecia';
+  if (text.includes('allergy') || text.includes('asthma') || text.includes('breath')) return 'Allergy & Asthma';
+  if (text.includes('digestive') || text.includes('stomach') || text.includes('gas') || text.includes('acidity')) return 'Digestive Issues';
+  if (text.includes('thyroid')) return 'Thyroid';
+  if (text.includes('sexual') || text.includes('sex') || text.includes('erectile')) return 'Sexual Problem';
+  return 'Homeopathic Inquiry';
+}
+
+function getLeadTimeInfo(lead: LeadData) {
+  const parsed = parseInquiryDateTime(lead.inquiry);
+  if (parsed) {
+    return {
+      timeLabel: `${parsed.displayDate}, ${parsed.displayTime}`,
+      bookedLabel: `Date Booked: ${lead.createdAt ? new Date(lead.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}`
+    };
+  }
+  
+  const createdDate = lead.createdAt ? new Date(lead.createdAt) : new Date();
+  const displayDate = createdDate.toDateString() === new Date().toDateString() ? 'Today' : createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const displayTime = createdDate.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
+  
+  return {
+    timeLabel: `${displayDate}, ${displayTime}`,
+    bookedLabel: `Date Booked: ${displayDate}`
+  };
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [adminUser, setAdminUser] = useState<any>(null);
@@ -136,6 +208,7 @@ export default function AdminDashboard() {
   // Search & Filters
   const [leadSearch, setLeadSearch] = useState('');
   const [leadStatusFilter, setLeadStatusFilter] = useState('All');
+  const [leadLocationFilter, setLeadLocationFilter] = useState('All');
   
   // Appointment filters
   const [apptSearch, setApptSearch] = useState('');
@@ -164,6 +237,21 @@ export default function AdminDashboard() {
   // Reschedule state
   const [reschedulingId, setReschedulingId] = useState<string | null>(null);
   const [rescheduleData, setRescheduleData] = useState({ date: '', time: '' });
+
+  // Add Lead Modal state
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [addLeadForm, setAddLeadForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    age: '',
+    gender: '',
+    city: '',
+    problem: 'Skin Disorders',
+    location: 'Online',
+    status: 'New',
+    notes: ''
+  });
 
   // Notifications / Feedback
   const [feedback, setFeedback] = useState({ message: '', type: 'success' });
@@ -393,6 +481,66 @@ export default function AdminDashboard() {
       }
     } catch (e) {
       triggerFeedback('Failed to update lead location.', 'error');
+    }
+  };
+
+  const handleAddLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!addLeadForm.name || !addLeadForm.phone) {
+      triggerFeedback('Name and phone are required.', 'error');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('hommed_token');
+      const inquiryText = `Problem: ${addLeadForm.problem}.`;
+      const leadSource = `contact:${addLeadForm.location}`;
+
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: addLeadForm.name,
+          phone: addLeadForm.phone,
+          email: addLeadForm.email || null,
+          inquiry: inquiryText,
+          leadSource: leadSource,
+          age: addLeadForm.age ? parseInt(addLeadForm.age) : null,
+          gender: addLeadForm.gender || null,
+          city: addLeadForm.city || null,
+          notes: addLeadForm.notes || null,
+          status: addLeadForm.status
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.lead) {
+          setLeads(prev => [data.lead, ...prev]);
+        }
+        triggerFeedback('New lead created successfully!', 'success');
+        setShowAddLeadModal(false);
+        setAddLeadForm({
+          name: '',
+          phone: '',
+          email: '',
+          age: '',
+          gender: '',
+          city: '',
+          problem: 'Skin Disorders',
+          location: 'Online',
+          status: 'New',
+          notes: ''
+        });
+      } else {
+        const errData = await res.json();
+        triggerFeedback(errData.message || 'Could not create lead.', 'error');
+      }
+    } catch (err) {
+      triggerFeedback('Request failed to create lead.', 'error');
     }
   };
 
@@ -648,6 +796,10 @@ export default function AdminDashboard() {
     if (leadsSubTab === 'popup' && !isPopupLead) return false;
     if (leadsSubTab === 'general' && isPopupLead) return false;
 
+    // Location filtering
+    const loc = getLeadLocation(l);
+    if (leadLocationFilter !== 'All' && loc !== leadLocationFilter) return false;
+
     // Search query filtering
     const searchMatch = 
       l.name.toLowerCase().includes(leadSearch.toLowerCase()) || 
@@ -690,9 +842,12 @@ export default function AdminDashboard() {
 
   // Kanban columns configuration
   const kanbanColumns = [
-    { id: 'Online', label: 'Online Consultations', color: 'bg-sky-500' },
-    { id: 'Civil Lines', label: 'Civil Lines Clinic', color: 'bg-amber-500' },
-    { id: 'Jajmau', label: 'Jajmau Clinic', color: 'bg-emerald-500' }
+    { id: 'New', label: 'New', color: 'bg-blue-500', icon: '📄' },
+    { id: 'Called', label: 'Called', color: 'bg-cyan-500', icon: '✅' },
+    { id: 'Appointment Fixed', label: 'Appointment Fixed', color: 'bg-indigo-500', icon: '' },
+    { id: 'Follow Up', label: 'Follow Up', color: 'bg-amber-500', icon: '' },
+    { id: 'Patient Confirmed', label: 'Patient Confirmed', color: 'bg-emerald-500', icon: '✅' },
+    { id: 'Closed', label: 'Closed', color: 'bg-slate-400', icon: '' }
   ];
 
   // Statistics calculation
@@ -705,16 +860,55 @@ export default function AdminDashboard() {
   const apptsToday = appointments.filter(a => a.scheduleDate === todayStr);
   const leadsToday = leads.filter(l => l.createdAt && l.createdAt.startsWith(todayStr));
 
+  // Today's appointments count and next appointment info for top banner
+  const getTodayAppointmentsInfo = () => {
+    const todayAppts = appointments.filter(a => a.scheduleDate === todayStr && a.status !== 'Cancelled');
+    if (todayAppts.length === 0) {
+      return { count: 0, text: 'No appointments left today' };
+    }
+    
+    // Sort todayAppts by time
+    const sorted = [...todayAppts].sort((a, b) => a.scheduleTime.localeCompare(b.scheduleTime));
+    
+    // Simple heuristic: find the first confirmed/pending one or just the first one of the day
+    const nextAppt = sorted.find(a => a.status === 'Confirmed' || a.status === 'Pending') || sorted[0];
+    
+    return {
+      count: todayAppts.length,
+      text: nextAppt ? `Next: ${nextAppt.patientName} @ ${nextAppt.scheduleTime}` : 'No more appointments today'
+    };
+  };
+
+  const todayInfo = getTodayAppointmentsInfo();
+
   // Clinic Distribution metrics
   const jajmauCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Jajmau Clinic').length;
   const civilLinesCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Civil Lines Clinic').length;
   const onlineCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Online Consultation').length;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
       
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+      {/* Top Banner (mockup look) */}
+      <div className="w-full bg-[#0d9488] text-white py-2.5 px-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold select-none border-b border-teal-700/30">
+        <div className="flex items-center space-x-3">
+          <span className="bg-[#0a6057] px-4 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider uppercase shadow-sm">
+            Today's Appointments
+          </span>
+          <span className="text-teal-100 font-bold">
+            Appointments Today: <strong className="text-white font-mono text-sm">{todayInfo.count}</strong>
+          </span>
+        </div>
+        <div className="h-4 w-px bg-teal-600 hidden md:block"></div>
+        <div className="text-teal-50 font-medium">
+          {todayInfo.text}
+        </div>
+      </div>
+
+      <div className="flex-grow flex flex-col md:flex-row overflow-hidden">
+        
+        {/* Sidebar Navigation */}
+        <aside className="w-full md:w-64 bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
         <div className="space-y-8">
           
           {/* Logo brand */}
@@ -851,28 +1045,46 @@ export default function AdminDashboard() {
 
         {/* Top Header Metrics bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              {activeTab === 'analytics' && 'Operational Analytics & Metrics'}
-              {activeTab === 'leads' && 'CRM Kanban Leads Board'}
-              {activeTab === 'appointments' && 'Clinic Bookings Manager'}
-              {activeTab === 'services' && 'Services CMS Console'}
-              {activeTab === 'blogs' && 'Medical Blogs Publication CMS'}
-              {activeTab === 'popups' && 'Lead Capture & Promo Popups'}
-              {activeTab === 'staff' && 'Clinic Staff Member Accounts'}
-            </h1>
-            <p className="text-slate-400 text-xs mt-1">
-              Welcome back, Dr. Iqbal. Review patient registrations, lead automations, and page triggers.
-            </p>
+          <div className="flex items-center space-x-3.5">
+            {activeTab === 'leads' && (
+              <div className="bg-white p-2 rounded-2xl shadow-md border border-slate-200 shrink-0 select-none">
+                <img src="/logo.png" alt="HomMed Logo" className="h-10 w-auto object-contain" />
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                {activeTab === 'analytics' && 'Operational Analytics & Metrics'}
+                {activeTab === 'leads' && "Dr. Iqbal's Homoeopathic Centre"}
+                {activeTab === 'appointments' && 'Clinic Bookings Manager'}
+                {activeTab === 'services' && 'Services CMS Console'}
+                {activeTab === 'blogs' && 'Medical Blogs Publication CMS'}
+                {activeTab === 'popups' && 'Lead Capture & Promo Popups'}
+                {activeTab === 'staff' && 'Clinic Staff Member Accounts'}
+              </h1>
+              <p className="text-slate-400 text-xs mt-1">
+                {activeTab === 'leads' ? 'Review patient registrations, lead automations, and page triggers.' : 'Welcome back, Dr. Iqbal. Review patient registrations, lead automations, and page triggers.'}
+              </p>
+            </div>
           </div>
 
-          <button 
-            onClick={() => loadAllData(localStorage.getItem('hommed_token') || '')}
-            className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            <span>Sync Database</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            {activeTab === 'leads' && (
+              <button 
+                onClick={() => setShowAddLeadModal(true)}
+                className="h-10 px-4 bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md shadow-teal-905/20"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add New Lead</span>
+              </button>
+            )}
+            <button 
+              onClick={() => loadAllData(localStorage.getItem('hommed_token') || '')}
+              className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              <span>Sync Database</span>
+            </button>
+          </div>
         </div>
 
         {/* ANALYTICS TAB CONTENT */}
@@ -1064,14 +1276,14 @@ export default function AdminDashboard() {
             )}
 
             {/* Search, filters, tabs and CSV Export row */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               
               {/* Sub-tab selection */}
-              <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+              <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800 shrink-0">
                 <button
                   onClick={() => setLeadsSubTab('general')}
                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                    leadsSubTab === 'general' ? 'bg-brand-blue text-white shadow' : 'text-slate-400 hover:text-white'
+                    leadsSubTab === 'general' ? 'bg-[#0d9488] text-white shadow' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   General CRM Leads
@@ -1079,7 +1291,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => setLeadsSubTab('popup')}
                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                    leadsSubTab === 'popup' ? 'bg-brand-blue text-white shadow' : 'text-slate-400 hover:text-white'
+                    leadsSubTab === 'popup' ? 'bg-[#0d9488] text-white shadow' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   Popup Leads ({leads.filter(l => l.leadSource && l.leadSource.startsWith('popup')).length})
@@ -1087,35 +1299,32 @@ export default function AdminDashboard() {
               </div>
 
               {/* Action and filters */}
-              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                <div className="relative flex-grow md:flex-grow-0 md:w-64">
+              <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                <div className="relative flex-grow lg:w-96">
                   <input
                     type="text"
                     value={leadSearch}
                     onChange={e => setLeadSearch(e.target.value)}
-                    placeholder="Search leads by name, phone or city..."
-                    className="w-full h-10 pl-9 pr-4 bg-slate-950 border border-slate-800 rounded-xl text-xs focus:border-brand-blue focus:outline-none"
+                    placeholder="Search leads by patient name, phone or inquiry..."
+                    className="w-full h-10 pl-10 pr-4 bg-[#131b2e] border border-slate-800 rounded-xl text-xs text-white focus:border-teal-500 focus:outline-none placeholder:text-slate-500 transition-all shadow-lg"
                   />
-                  <Search className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="h-4 w-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 </div>
 
                 <select
-                  value={leadStatusFilter}
-                  onChange={e => setLeadStatusFilter(e.target.value)}
-                  className="h-10 px-3 bg-slate-950 text-xs border border-slate-800 rounded-xl text-slate-300 focus:outline-none"
+                  value={leadLocationFilter}
+                  onChange={e => setLeadLocationFilter(e.target.value)}
+                  className="h-10 px-3 bg-[#131b2e] text-xs border border-slate-800 rounded-xl text-slate-350 focus:outline-none focus:border-teal-500 cursor-pointer shadow-lg font-semibold text-slate-300"
                 >
-                  <option value="All">All Statuses</option>
-                  <option value="New">New</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Visited">Visited</option>
-                  <option value="Follow-Up">Follow-Up</option>
-                  <option value="Closed">Closed</option>
+                  <option value="All">All Locations</option>
+                  <option value="Online">Online Consultations</option>
+                  <option value="Civil Lines">Civil Lines Clinic</option>
+                  <option value="Jajmau">Jajmau Clinic</option>
                 </select>
 
                 <button
                   onClick={() => exportLeadsCSV(filteredLeads)}
-                  className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow"
+                  className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-lg border border-slate-700/80"
                   title="Export current filtered list to CSV file"
                 >
                   <Download className="h-4 w-4" />
@@ -1128,15 +1337,15 @@ export default function AdminDashboard() {
             <div className="flex gap-5 overflow-x-auto pb-6 scrollbar-thin scroll-smooth select-none">
               
               {kanbanColumns.map(col => {
-                const columnLeads = filteredLeads.filter(l => getLeadLocation(l) === col.id);
+                const columnLeads = filteredLeads.filter(l => normalizeLeadStatus(l.status) === col.id);
                 return (
-                  <div key={col.id} className="bg-slate-950/85 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-4 w-72 shrink-0 shadow-xl backdrop-blur-md">
+                  <div key={col.id} className="bg-[#121c2c]/90 border border-slate-800/80 rounded-[20px] p-4 flex flex-col space-y-4 w-72 shrink-0 shadow-2xl backdrop-blur-md">
                     
                     {/* Header */}
-                    <div className="flex justify-between items-center border-b border-slate-800/80 pb-2.5">
+                    <div className="flex justify-between items-center border-b border-slate-800/60 pb-3">
                       <div className="flex items-center space-x-2">
-                        <span className={`w-2.5 h-2.5 rounded-full ${col.color}`}></span>
                         <span className="font-bold text-xs text-white uppercase tracking-wider">{col.label}</span>
+                        {col.icon && <span className="text-sm bg-slate-800/40 p-0.5 rounded leading-none">{col.icon}</span>}
                       </div>
                       <span className="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono font-bold">
                         {columnLeads.length}
@@ -1144,9 +1353,9 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Cards Container */}
-                    <div className="space-y-3 flex-grow overflow-y-auto max-h-[55vh] min-h-[150px] pr-1.5 scrollbar-thin">
+                    <div className="space-y-3.5 flex-grow overflow-y-auto max-h-[55vh] min-h-[150px] pr-1.5 scrollbar-thin">
                       {columnLeads.length === 0 ? (
-                        <div className="text-center py-10 text-slate-600 text-xs italic border border-dashed border-slate-900 rounded-xl">
+                        <div className="text-center py-10 text-slate-600 text-xs italic border border-dashed border-slate-900/60 rounded-xl">
                           No leads here
                         </div>
                       ) : (
@@ -1157,84 +1366,85 @@ export default function AdminDashboard() {
                           )}`;
                           
                           const notesVal = editingNotes[lead._id] !== undefined ? editingNotes[lead._id] : (lead.notes || '');
+                          const timeInfo = getLeadTimeInfo(lead);
+                          const specialization = parseSpecialization(lead.inquiry);
+                          const locationVal = getLeadLocation(lead);
 
                           return (
                             <div 
                               key={lead._id} 
-                              className={`p-4 bg-slate-900/60 border rounded-xl space-y-3 hover:shadow-lg hover:shadow-brand-blue/5 transition-all duration-300 group ${
-                                lead.isDuplicate ? 'border-amber-800/80 shadow shadow-amber-950/20' : 'border-slate-800/80 hover:border-brand-blue/40'
+                              className={`p-4 bg-white border border-slate-100 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 space-y-4 relative ${
+                                lead.isDuplicate ? 'ring-2 ring-amber-500/30' : ''
                               }`}
                             >
                               
                               {/* Duplicate Warning */}
                               {lead.isDuplicate && (
-                                <div className="px-2 py-1 bg-amber-950/60 border border-amber-900 text-amber-300 rounded text-[9px] font-bold flex items-center space-x-1.5 animate-pulse">
-                                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                                <div className="px-2 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[9px] font-bold flex items-center space-x-1.5 animate-pulse">
+                                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-500" />
                                   <span>Duplicate lead detected</span>
                                 </div>
                               )}
 
-                              {/* Header User info */}
-                              <div className="space-y-1">
-                                <div className="flex justify-between items-start gap-1.5">
-                                  <p className="font-extrabold text-xs text-white group-hover:text-brand-cyan transition-colors truncate">{lead.name}</p>
-                                  <div className="flex items-center space-x-1.5 shrink-0">
-                                    <span className={`text-[8px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-wider ${
-                                      lead.status.toLowerCase().includes('new') ? 'bg-blue-950/60 text-blue-400 border-blue-900' :
-                                      lead.status.toLowerCase().includes('contact') ? 'bg-cyan-950/60 text-cyan-400 border-cyan-900' :
-                                      lead.status.toLowerCase().includes('confirm') ? 'bg-purple-950/60 text-purple-400 border-purple-900' :
-                                      lead.status.toLowerCase().includes('visit') ? 'bg-amber-950/60 text-amber-400 border-amber-900' :
-                                      lead.status.toLowerCase().includes('follow') ? 'bg-yellow-950/60 text-yellow-400 border-yellow-900' :
-                                      'bg-slate-900/60 text-slate-400 border-slate-800'
-                                    }`}>
-                                      {normalizeLeadStatus(lead.status)}
-                                    </span>
-                                    <button
-                                      onClick={() => handleDeleteLead(lead._id)}
-                                      className="opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-opacity p-0.5 text-slate-500 rounded"
-                                      title="Delete Lead permanently"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
+                              {/* Header: Name and Specialization Pill */}
+                              <div className="flex justify-between items-start gap-2">
+                                <div className="space-y-0.5 min-w-0">
+                                  <p className="font-extrabold text-xs text-slate-900 tracking-tight leading-tight truncate">{lead.name}</p>
+                                  {lead.phone && <p className="text-[10px] text-slate-500 font-semibold select-all tracking-normal">{lead.phone}</p>}
                                 </div>
-                                
-                                <div className="flex flex-col space-y-0.5 text-[9px] text-slate-400">
-                                  <span className="font-medium text-slate-300">Phone: {lead.phone}</span>
-                                  {lead.email && <span className="truncate" title={lead.email}>Email: {lead.email}</span>}
-                                  {lead.city && <span>City: {lead.city}</span>}
-                                  {(lead.age || lead.gender) && (
-                                    <span>
-                                      {lead.age ? `${lead.age} years` : ''} {lead.gender ? `| ${lead.gender}` : ''}
-                                    </span>
-                                  )}
-                                  <span className="text-slate-500 pt-0.5 font-light text-[8px]">
-                                    Recd: {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}) : '—'}
-                                  </span>
+                                <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-[9px] font-bold shrink-0">
+                                  {specialization}
+                                </span>
+                              </div>
+
+                              {/* Date and Time info with Red dot */}
+                              <div className="flex flex-col space-y-0.5 text-[10px] text-slate-500">
+                                <div className="flex items-center space-x-1">
+                                  <Clock className="h-3.5 w-3.5 text-slate-400 mr-0.5 shrink-0" />
+                                  <span className="font-bold text-slate-700">{timeInfo.timeLabel}</span>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block ml-1 animate-pulse shrink-0"></span>
+                                </div>
+                                <div className="text-[9px] font-medium text-slate-400 pl-5">
+                                  {timeInfo.bookedLabel}
                                 </div>
                               </div>
 
-                              {/* Inquiry content */}
-                              {lead.inquiry && (
-                                <p className="text-[10px] text-slate-300 font-light leading-relaxed line-clamp-3 bg-slate-950/40 p-2 rounded-lg border border-slate-850/40">
+                              {/* City & Location Tags */}
+                              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[9px]">
+                                {lead.city && (
+                                  <span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded-lg font-medium border border-slate-200/50">
+                                    {lead.city}
+                                  </span>
+                                )}
+                                <span className={`px-2 py-0.5 rounded-lg font-bold uppercase tracking-wider border ${
+                                  locationVal === 'Online' ? 'bg-sky-50 text-sky-700 border-sky-200/40' :
+                                  locationVal === 'Civil Lines' ? 'bg-amber-50 text-amber-700 border-amber-200/40' :
+                                  'bg-emerald-50 text-emerald-700 border-emerald-200/40'
+                                }`}>
+                                  {locationVal}
+                                </span>
+                              </div>
+
+                              {/* Inquiry text (Collapsible or truncated) */}
+                              {lead.inquiry && !lead.inquiry.startsWith('Auto-generated') && (
+                                <p className="text-[10px] text-slate-650 font-light leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-100/80">
                                   {lead.inquiry}
                                 </p>
                               )}
 
-                              {/* CRM Staff Notes text area */}
-                              <div className="space-y-1.5 pt-1.5 border-t border-slate-850/60">
-                                <div className="flex justify-between items-center">
-                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">CRM Staff Notes</span>
+                              {/* Notes area */}
+                              <div className="space-y-1.5 pt-2.5 border-t border-slate-100">
+                                <div className="flex justify-between items-center text-[9px]">
+                                  <span className="text-slate-400 uppercase tracking-wider font-extrabold text-[8px]">CRM Staff Notes</span>
                                   {editingNotes[lead._id] !== undefined && (
                                     <button 
                                       onClick={() => {
                                         handleSaveNotes(lead._id, notesVal, true);
-                                        // clear editing state override
                                         const next = { ...editingNotes };
                                         delete next[lead._id];
                                         setEditingNotes(next);
                                       }}
-                                      className="text-[8px] bg-brand-blue hover:bg-brand-blue/90 text-white px-2 py-0.5 rounded font-bold transition-all"
+                                      className="bg-brand-blue hover:bg-brand-blue/90 text-white px-2 py-0.5 rounded-md font-bold transition-all text-[8px]"
                                     >
                                       Save
                                     </button>
@@ -1243,64 +1453,62 @@ export default function AdminDashboard() {
                                 <textarea
                                   value={notesVal}
                                   onChange={e => setEditingNotes({ ...editingNotes, [lead._id]: e.target.value })}
-                                  placeholder="Type notes (history, client constraints)..."
-                                  className="w-full bg-slate-950 text-[9px] border border-slate-850 p-1.5 rounded-lg font-light text-slate-300 focus:outline-none focus:border-slate-700 min-h-[40px] resize-y"
+                                  placeholder="Type notes..."
+                                  className="w-full bg-slate-50 text-[9px] border border-slate-100 focus:border-slate-200 p-2 rounded-xl font-light text-slate-705 focus:outline-none min-h-[35px] max-h-[100px] resize-y"
                                 />
                               </div>
 
-                              {/* Quick Contact Action Buttons */}
-                              <div className="flex items-center gap-1.5 pt-1">
-                                <a 
-                                  href={`tel:${lead.phone}`}
-                                  className="flex-1 h-7 bg-slate-950 hover:bg-slate-850 border border-slate-850 hover:border-slate-700 text-slate-300 rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all"
-                                  title={`Call ${lead.name}`}
-                                >
-                                  <Phone className="h-3 w-3 text-brand-cyan" />
-                                  <span>Call</span>
-                                </a>
-                                
+                              {/* Stacked Actions (WhatsApp & Call) */}
+                              <div className="flex flex-col space-y-2 pt-1 border-t border-slate-100">
                                 <a 
                                   href={whatsappUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-1 h-7 bg-[#075e54]/20 hover:bg-[#075e54]/40 border border-[#075e54]/40 hover:border-[#075e54] text-[#25d366] rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all"
-                                  title="WhatsApp patient"
+                                  className="h-10 bg-[#22c55e] hover:bg-[#16a34a] text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition-all shadow-sm"
                                 >
-                                  <MessageSquare className="h-3 w-3" />
+                                  <svg className="h-4 w-4 fill-current shrink-0" viewBox="0 0 24 24">
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.498 1.452 5.43 1.453 5.478 0 9.932-4.437 9.935-9.885.002-2.638-1.02-5.12-2.877-6.98-1.856-1.859-4.325-2.883-6.963-2.883-5.485 0-9.94 4.437-9.943 9.886-.002 1.958.513 3.868 1.492 5.578l-.979 3.578 3.666-.962zm9.749-3.816c-.265-.133-1.57-.775-1.813-.863-.243-.088-.419-.133-.596.133-.176.265-.685.863-.839 1.04-.155.176-.309.199-.575.066-.265-.133-1.12-.413-2.133-1.317-.788-.703-1.32-1.57-1.475-1.835-.155-.265-.017-.409.116-.541.12-.119.265-.309.398-.464.133-.155.177-.265.265-.442.088-.177.044-.331-.022-.464-.066-.133-.596-1.436-.816-1.966-.215-.518-.432-.447-.597-.456-.155-.008-.331-.01-.507-.01-.176 0-.464.066-.707.309-.243.243-.927.905-.927 2.206 0 1.302.946 2.562 1.077 2.739.133.177 1.86 2.84 4.505 3.987.63.272 1.122.434 1.507.557.633.201 1.21.172 1.666.105.507-.074 1.57-.641 1.79-1.259.222-.619.222-1.149.155-1.259-.066-.109-.243-.176-.507-.309z"/>
+                                  </svg>
                                   <span>WhatsApp</span>
                                 </a>
+                                <a 
+                                  href={`tel:${lead.phone}`}
+                                  className="h-10 bg-[#1e293b] hover:bg-[#0f172a] text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition-all"
+                                >
+                                  <Phone className="h-3.5 w-3.5 shrink-0" />
+                                  <span>Call</span>
+                                </a>
                               </div>
-                              
-                              {/* Selectors to change status and location */}
-                              <div className="pt-2 border-t border-slate-800/85 grid grid-cols-2 gap-2">
-                                <div className="flex flex-col space-y-1">
-                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Status</span>
+
+                              {/* Stacked Dropdown Update Stage & Delete Row */}
+                              <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                <div className="relative flex-grow">
                                   <select
                                     value={normalizeLeadStatus(lead.status)}
                                     onChange={e => handleUpdateLeadStatus(lead._id, e.target.value)}
-                                    className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
+                                    className="w-full bg-[#f8fafc] border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs h-9 pl-3 pr-8 rounded-xl appearance-none cursor-pointer focus:outline-none transition-colors text-center"
                                   >
+                                    <option value="New">Update Stage</option>
                                     <option value="New">New</option>
-                                    <option value="Contacted">Contacted</option>
-                                    <option value="Confirmed">Confirmed</option>
-                                    <option value="Visited">Visited</option>
-                                    <option value="Follow-Up">Follow-Up</option>
+                                    <option value="Called">Called</option>
+                                    <option value="Appointment Fixed">Appointment Fixed</option>
+                                    <option value="Follow Up">Follow Up</option>
+                                    <option value="Patient Confirmed">Patient Confirmed</option>
                                     <option value="Closed">Closed</option>
                                   </select>
+                                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                                    <ChevronDown className="h-3.5 w-3.5" />
+                                  </div>
                                 </div>
-                                <div className="flex flex-col space-y-1">
-                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Location</span>
-                                  <select
-                                    value={getLeadLocation(lead)}
-                                    onChange={e => handleUpdateLeadLocation(lead._id, e.target.value)}
-                                    className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
-                                  >
-                                    <option value="Online">Online</option>
-                                    <option value="Civil Lines">Civil Lines</option>
-                                    <option value="Jajmau">Jajmau</option>
-                                  </select>
-                                </div>
+                                <button
+                                  onClick={() => handleDeleteLead(lead._id)}
+                                  className="hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-slate-400 hover:text-rose-500 transition-colors p-2.5 rounded-xl shrink-0"
+                                  title="Delete Lead"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
                               </div>
+
                             </div>
                           );
                         })
@@ -2063,7 +2271,179 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ADD LEAD MODAL */}
+        {showAddLeadModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 select-none">
+            <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl relative text-left">
+              <button 
+                onClick={() => setShowAddLeadModal(false)}
+                className="absolute top-4 right-4 hover:bg-slate-800 p-1.5 rounded-lg text-slate-400 hover:text-white transition-all animate-none"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <div className="space-y-1.5">
+                <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-[#0d9488]" />
+                  <span>Add New Lead Manually</span>
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Create a new patient lead in the CRM. It will automatically direct to the chosen stage.
+                </p>
+              </div>
+
+              <form onSubmit={handleAddLeadSubmit} className="space-y-4 text-xs">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Full Name *</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. Rahul Sharma"
+                      value={addLeadForm.name}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, name: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Phone Number *</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. 9999988888"
+                      value={addLeadForm.phone}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, phone: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Email Address (Optional)</label>
+                    <input 
+                      type="email" 
+                      placeholder="e.g. name@example.com"
+                      value={addLeadForm.email}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, email: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">City (Optional)</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Kanpur"
+                      value={addLeadForm.city}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, city: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Age (Optional)</label>
+                    <input 
+                      type="number" 
+                      placeholder="e.g. 32"
+                      value={addLeadForm.age}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, age: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Gender (Optional)</label>
+                    <select
+                      value={addLeadForm.gender}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, gender: e.target.value })}
+                      className="w-full h-10 px-3 bg-slate-950 border border-slate-800 rounded-xl text-white outline-none"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Specialization / Concern</label>
+                    <select 
+                      value={addLeadForm.problem}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, problem: e.target.value })}
+                      className="w-full h-10 px-2 bg-slate-950 border border-slate-800 rounded-xl text-white outline-none cursor-pointer"
+                    >
+                      <option value="Skin Disorders">Skin Disorders</option>
+                      <option value="Hair Fall & Alopecia">Hair Fall & Alopecia</option>
+                      <option value="Allergy & Asthma">Allergy & Asthma</option>
+                      <option value="Digestive Issues">Digestive Issues</option>
+                      <option value="Thyroid">Thyroid</option>
+                      <option value="Sexual Problem">Sexual Problem</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Lead Location</label>
+                    <select 
+                      value={addLeadForm.location}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, location: e.target.value })}
+                      className="w-full h-10 px-2 bg-slate-950 border border-slate-800 rounded-xl text-white outline-none cursor-pointer"
+                    >
+                      <option value="Online">Online</option>
+                      <option value="Civil Lines">Civil Lines</option>
+                      <option value="Jajmau">Jajmau</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-300">Board Status Stage</label>
+                    <select 
+                      value={addLeadForm.status}
+                      onChange={e => setAddLeadForm({ ...addLeadForm, status: e.target.value })}
+                      className="w-full h-10 px-2 bg-slate-950 border border-slate-800 rounded-xl text-white outline-none cursor-pointer"
+                    >
+                      <option value="New">New</option>
+                      <option value="Called">Called</option>
+                      <option value="Appointment Fixed">Appointment Fixed</option>
+                      <option value="Follow Up">Follow Up</option>
+                      <option value="Patient Confirmed">Patient Confirmed</option>
+                      <option value="Closed">Closed</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-300">Staff Notes / Comments (Optional)</label>
+                  <textarea 
+                    placeholder="Enter any initial notes here..."
+                    value={addLeadForm.notes}
+                    onChange={e => setAddLeadForm({ ...addLeadForm, notes: e.target.value })}
+                    className="w-full min-h-[60px] p-3 bg-slate-950 border border-slate-800 focus:border-brand-blue rounded-xl text-white outline-none resize-none"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowAddLeadModal(false)}
+                    className="flex-1 h-11 border border-slate-800 hover:bg-slate-800 text-white rounded-xl font-bold transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="flex-1 h-11 bg-[#0d9488] hover:bg-[#0f766e] text-white rounded-xl font-bold transition-all"
+                  >
+                    Create Lead Card
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
       </main>
+      </div>
     </div>
   );
 }
