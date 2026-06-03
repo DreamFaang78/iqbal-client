@@ -67,13 +67,13 @@ export default function DoctorProfile() {
                 Dr. Iqbal Quasim — Kanpur Ka Bharoseband Homeopathic Specialist
               </h3>
               <p className="text-[#4CAF6E] font-semibold text-base font-accent">
-                15 Saal Ki Dedicated Clinical Experience in Classic HOMOEOPATHY
+                10 Saal Ki Dedicated Clinical Experience in Classic HOMOEOPATHY
               </p>
             </div>
 
             <div className="text-slate-300 text-base leading-relaxed space-y-4 font-light">
               <p>
-                15 saal mein 10,000 se zyada patients theek karne wale Dr. Iqbal ka ek hi maqsad hai — aapko permanent relief dena, lifelong dependence nahi.
+                10 saal mein 10,000 se zyada patients theek karne wale Dr. Iqbal ka ek hi maqsad hai — aapko permanent relief dena, lifelong dependence nahi.
               </p>
               <p>
                 BHMS degree ke baad, unhone constitutional Homeopathy mein specialise kiya — matlab sirf symptom nahi, poore shareer aur mann ko samajh ke ilaaj karte hain. Kanpur ke patients unhe isliye trust karte hain kyunki yahan dawai badal badal ke nahi dete — jadd se theek karte hain.

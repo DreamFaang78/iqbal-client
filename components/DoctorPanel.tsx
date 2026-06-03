@@ -22,10 +22,10 @@ const doctorPanelList: Doctor[] = [
     id: 1,
     name: "Dr. Iqbal Quasim",
     role: "Chief Homoeopathic Consultant & Founder",
-    experience: "15+ Years Experience",
+    experience: "10+ Years Experience",
     credentials: "BHMS (Physician)",
     image: "/doctor-iqbal.jpg",
-    bio: "Guided by a passion for gentle and lasting healing, Dr. Iqbal has spent over 15 years pioneering constitutional HOMOEOPATHY in Kanpur. He specializes in treating deep-seated chronic illnesses, skin disorders, and autoimmune conditions by aligning the body's natural defenses.",
+    bio: "Guided by a passion for gentle and lasting healing, Dr. Iqbal has spent over 10 years pioneering constitutional HOMOEOPATHY in Kanpur. He specializes in treating deep-seated chronic illnesses, skin disorders, and autoimmune conditions by aligning the body's natural defenses.",
     specialties: ["Constitutional Therapy", "Skin & Hair Care", "Allergy & Asthma", "Chronic Diseases"],
     color: "#4CAF6E"
   },

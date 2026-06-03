@@ -85,7 +85,7 @@ const STATS = [
   {
     id: 1,
     Icon: LeafIcon,
-    target: 15,
+    target: 10,
     suffix: '+',
     label: 'Years of Experience',
     desc: 'Dedicated constitutional HOMOEOPATHY care',
@@ -292,7 +292,7 @@ export default function Trust() {
             <span className="text-[#C8922A]">Speak For Themselves</span>
           </h2>
           <p className="text-white/50 text-sm sm:text-base font-light mt-3 max-w-xl mx-auto leading-relaxed">
-            Numbers that reflect 15+ years of dedicated, compassionate care rooted in the healing wisdom of natural medicine.
+            Numbers that reflect 10+ years of dedicated, compassionate care rooted in the healing wisdom of natural medicine.
           </p>
         </motion.div>
 

@@ -177,7 +177,7 @@ export default function Hero() {
             >
               {[
                 { 
-                  value: '15+', 
+                  value: '10+', 
                   label: 'Saal Ka Bharosa', 
                   icon: <Award className="h-4 w-4 text-[#C8922A]" />,
                   bg: 'bg-[#1C3A22]/20 border-[#4CAF6E]/15 hover:border-[#4CAF6E]/30'
