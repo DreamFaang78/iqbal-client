@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Calendar as CalendarIcon, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, CheckCircle2, AlertCircle, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { DEFAULT_SERVICES } from '@/lib/data';
 import { generateDailySlots, groupSlotsByHour, isSunday } from '@/lib/slots';
@@ -24,9 +24,94 @@ function BookForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [minDate, setMinDate] = useState('');
+
+  const [activeHourBlock, setActiveHourBlock] = useState<string | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+  };
 
   // 15-minute slots for the clinic day (Mon–Sat, 10:00 AM – 9:00 PM)
   const slotGroups = useMemo(() => groupSlotsByHour(generateDailySlots()), []);
+
+  const calendarCells = useMemo(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const startingOffset = firstDay === 0 ? 6 : firstDay - 1;
+    
+    const cells: { dateStr: string; dayNum: number; isCurrentMonth: boolean; isDisabled: boolean; isSunday: boolean }[] = [];
+    
+    const prevYear = month === 0 ? year - 1 : year;
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
+    for (let i = startingOffset - 1; i >= 0; i--) {
+      const dayNum = daysInPrevMonth - i;
+      const dateStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      cells.push({
+        dateStr,
+        dayNum,
+        isCurrentMonth: false,
+        isDisabled: true,
+        isSunday: new Date(prevYear, prevMonth, dayNum).getDay() === 0
+      });
+    }
+    
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const dayOfWeek = new Date(year, month, d).getDay();
+      const isSun = dayOfWeek === 0;
+      const isPast = dateStr < minDate;
+      cells.push({
+        dateStr,
+        dayNum: d,
+        isCurrentMonth: true,
+        isDisabled: isPast || isSun,
+        isSunday: isSun
+      });
+    }
+    
+    const remaining = 42 - cells.length;
+    const nextYear = month === 11 ? year + 1 : year;
+    const nextMonth = month === 11 ? 0 : month + 1;
+    for (let d = 1; d <= remaining; d++) {
+      const dateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      cells.push({
+        dateStr,
+        dayNum: d,
+        isCurrentMonth: false,
+        isDisabled: true,
+        isSunday: new Date(nextYear, nextMonth, d).getDay() === 0
+      });
+    }
+    
+    return cells;
+  }, [currentMonth, minDate]);
   const filteredSlotGroups = useMemo(() => {
   if (!formData.appointmentPlace) return [];
   const place = formData.appointmentPlace;
@@ -53,7 +138,6 @@ function BookForm() {
   const [slotsLoading, setSlotsLoading] = useState(false);
 
   // Min date selector: today
-  const [minDate, setMinDate] = useState('');
   useEffect(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -109,7 +193,12 @@ function BookForm() {
   }, [initialService]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'appointmentPlace') {
+      setFormData(prev => ({ ...prev, appointmentPlace: e.target.value, scheduleTime: '' }));
+      setActiveHourBlock(null);
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const selectTimeSlot = (slot: string) => {
@@ -185,7 +274,7 @@ function BookForm() {
                 <span className="font-bold text-white">{formData.patientName}</span>
               </div>
               <div className="flex justify-between border-b border-white/10 pb-2">
-                <span className="text-slate-400">Specialization:</span>
+                <span className="text-slate-400">Your Problem:</span>
                 <span className="font-bold text-white">{formData.service}</span>
               </div>
               <div className="flex justify-between border-b border-white/10 pb-2">
@@ -320,22 +409,89 @@ function BookForm() {
                 <label htmlFor="scheduleDate" className="text-xs font-semibold text-slate-300">Preferred Date *</label>
                 <div className="relative">
                   <input
-                    type="date"
-                    name="scheduleDate"
+                    type="text"
+                    readOnly
                     id="scheduleDate"
+                    name="scheduleDate"
                     required
-                    min={minDate}
-                    value={formData.scheduleDate}
-                    onChange={handleChange}
-                    className="w-full h-11 pl-10 pr-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20"
-                    style={{ colorScheme: 'dark' }}
+                    value={formData.scheduleDate ? formatDateDisplay(formData.scheduleDate) : ''}
+                    onClick={() => setCalendarOpen(true)}
+                    placeholder="Select preferred date"
+                    className="w-full h-11 pl-10 pr-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 cursor-pointer"
                   />
                   <CalendarIcon className="h-4.5 w-4.5 text-brand-cyan/70 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+
+                  {calendarOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setCalendarOpen(false)} />
+                      <div className="absolute left-0 right-0 top-12 z-50 bg-[#0D1F3A]/95 border border-white/10 rounded-2xl p-4 shadow-2xl space-y-4 glass-dark">
+                        <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                          <button
+                            type="button"
+                            onClick={handlePrevMonth}
+                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </button>
+                          <span className="text-sm font-bold text-white tracking-wide">
+                            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleNextMonth}
+                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-1">
+                          <span>Mon</span>
+                          <span>Tue</span>
+                          <span>Wed</span>
+                          <span>Thu</span>
+                          <span>Fri</span>
+                          <span>Sat</span>
+                          <span className="text-rose-400">Sun</span>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 text-center">
+                          {calendarCells.map((cell, idx) => {
+                            const isSelected = formData.scheduleDate === cell.dateStr;
+                            return (
+                              <button
+                                type="button"
+                                key={`${cell.dateStr}-${idx}`}
+                                disabled={cell.isDisabled}
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, scheduleDate: cell.dateStr, scheduleTime: '' }));
+                                  setCalendarOpen(false);
+                                }}
+                                className={`h-8 w-full text-xs font-medium rounded-lg transition-all flex items-center justify-center ${
+                                  cell.isDisabled
+                                    ? cell.isSunday
+                                      ? 'text-rose-500/30 bg-rose-500/5 cursor-not-allowed'
+                                      : 'text-slate-600/30 cursor-not-allowed'
+                                    : isSelected
+                                    ? 'bg-brand-gold text-brand-navy font-bold shadow-md shadow-brand-gold/25'
+                                    : cell.isCurrentMonth
+                                    ? 'text-slate-200 hover:bg-[#162847] cursor-pointer'
+                                    : 'text-slate-500/40 hover:bg-[#162847]/30 cursor-pointer'
+                                }`}
+                              >
+                                {cell.dayNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
               {/* Time Slots selector — 15-minute slots, grouped by hour */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
                   <span className="flex items-center space-x-1.5">
                     <Clock className="h-4 w-4 text-brand-cyan/70" />
@@ -361,41 +517,74 @@ function BookForm() {
                     The clinic is closed on Sundays. Please pick another day (Mon–Sat, 10:00 AM – 9:00 PM).
                   </div>
                 ) : (
-                  <div className="space-y-4 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
+                  <div className="space-y-4">
                     {slotsLoading && (
                       <p className="text-xs text-white/50">Checking slot availability…</p>
                     )}
-                    {filteredSlotGroups.map((group) => (
-                      <div key={group.hourLabel} className="space-y-2">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
-                          {group.hourLabel}
-                        </p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                          {group.slots.map((slot) => {
-                            const isSelected = formData.scheduleTime === slot.value;
-                            const isBooked = bookedSlots.includes(slot.value);
-                            return (
-                              <button
-                                type="button"
-                                key={slot.value}
-                                disabled={isBooked}
-                                onClick={() => selectTimeSlot(slot.value)}
-                                title={isBooked ? 'This slot is already booked' : slot.value}
-                                className={`h-11 rounded-xl text-[11px] font-semibold transition-all ${
-                                  isBooked
-                                    ? 'bg-[#162847]/20 text-white/25 border border-white/5 line-through cursor-not-allowed'
-                                    : isSelected
-                                    ? 'bg-brand-gold text-brand-navy shadow-md shadow-brand-gold/10 border border-brand-gold font-bold cursor-pointer'
-                                    : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
-                                }`}
-                              >
-                                {slot.label}
-                              </button>
-                            );
-                          })}
-                        </div>
+                    
+                    {/* Hourly Blocks */}
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">Select Hour Block</p>
+                      <div className="flex flex-wrap gap-2">
+                        {filteredSlotGroups.map((group) => {
+                          const isHourActive = activeHourBlock === group.hourLabel;
+                          const hourDisplay = group.hourLabel.replace(':00', '');
+                          return (
+                            <button
+                              type="button"
+                              key={group.hourLabel}
+                              onClick={() => {
+                                setActiveHourBlock(group.hourLabel);
+                              }}
+                              className={`h-10 px-4 rounded-xl text-xs font-semibold transition-all ${
+                                isHourActive
+                                  ? 'bg-brand-blue text-white border border-brand-blue font-bold shadow-md shadow-brand-blue/20 cursor-pointer'
+                                  : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
+                              }`}
+                            >
+                              {hourDisplay}
+                            </button>
+                          );
+                        })}
                       </div>
-                    ))}
+                    </div>
+
+                    {/* 15-Minute Slots under selected Hour Block */}
+                    {activeHourBlock && (() => {
+                      const activeGroup = filteredSlotGroups.find((g) => g.hourLabel === activeHourBlock);
+                      if (!activeGroup) return null;
+                      return (
+                        <div className="space-y-2 pt-2 animate-fadeIn">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+                            Available slots for {activeHourBlock.replace(':00', '')}
+                          </p>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            {activeGroup.slots.map((slot) => {
+                              const isSelected = formData.scheduleTime === slot.value;
+                              const isBooked = bookedSlots.includes(slot.value);
+                              return (
+                                <button
+                                  type="button"
+                                  key={slot.value}
+                                  disabled={isBooked}
+                                  onClick={() => selectTimeSlot(slot.value)}
+                                  title={isBooked ? 'This slot is already booked' : slot.value}
+                                  className={`h-11 rounded-xl text-[11px] font-semibold transition-all ${
+                                    isBooked
+                                      ? 'bg-[#162847]/20 text-white/25 border border-white/5 line-through cursor-not-allowed'
+                                      : isSelected
+                                      ? 'bg-brand-gold text-brand-navy shadow-md shadow-brand-gold/10 border border-brand-gold font-bold cursor-pointer'
+                                      : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
+                                  }`}
+                                >
+                                  {slot.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
               </div>

@@ -95,6 +95,7 @@ export async function POST(request: Request) {
       scheduleDate, 
       scheduleTime,
       appointmentType,
+      appointmentPlace,
       patientEmail,
       patientAge,
       patientGender,
@@ -128,7 +129,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const type = appointmentType || 'Clinic 1';
+    const type = appointmentType || appointmentPlace || 'Jajmau Clinic';
 
     // Create the Appointment record
     const { data: appointment, error: insertError } = await db
@@ -253,6 +254,7 @@ export async function PUT(request: Request) {
       scheduleDate, 
       scheduleTime,
       appointmentType,
+      appointmentPlace,
       patientEmail,
       patientAge,
       patientGender,
@@ -273,6 +275,7 @@ export async function PUT(request: Request) {
     if (scheduleDate !== undefined) updateData.schedule_date = scheduleDate;
     if (scheduleTime !== undefined) updateData.schedule_time = scheduleTime;
     if (appointmentType !== undefined) updateData.appointment_type = appointmentType;
+    else if (appointmentPlace !== undefined) updateData.appointment_type = appointmentPlace;
     if (patientEmail !== undefined) updateData.patient_email = patientEmail;
     if (patientAge !== undefined) updateData.patient_age = patientAge ? parseInt(patientAge.toString()) : null;
     if (patientGender !== undefined) updateData.patient_gender = patientGender;

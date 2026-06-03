@@ -85,6 +85,14 @@ interface PopupData {
   delaySeconds: number;
 }
 
+function normalizeLocation(type?: string): string {
+  if (!type) return 'Jajmau Clinic';
+  if (type === 'Clinic 1') return 'Jajmau Clinic';
+  if (type === 'Clinic 2') return 'Civil Lines Clinic';
+  if (type === 'Online') return 'Online Consultation';
+  return type;
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [adminUser, setAdminUser] = useState<any>(null);
@@ -547,7 +555,7 @@ export default function AdminDashboard() {
       a.patientName,
       a.patientPhone,
       a.patientEmail || '',
-      a.appointmentType || 'Clinic 1',
+      normalizeLocation(a.appointmentType),
       a.service,
       a.scheduleDate,
       a.scheduleTime,
@@ -616,7 +624,7 @@ export default function AdminDashboard() {
       (a.disease && a.disease.toLowerCase().includes(apptSearch.toLowerCase()));
 
     // Clinic Type filter
-    const apptType = a.appointmentType || 'Clinic 1';
+    const apptType = normalizeLocation(a.appointmentType);
     const typeMatch = apptTypeFilter === 'All' || apptType === apptTypeFilter;
 
     // Status filter
@@ -651,9 +659,9 @@ export default function AdminDashboard() {
   const leadsToday = leads.filter(l => l.createdAt && l.createdAt.startsWith(todayStr));
 
   // Clinic Distribution metrics
-  const clinic1Count = appointments.filter(a => (a.appointmentType || 'Clinic 1') === 'Clinic 1').length;
-  const clinic2Count = appointments.filter(a => a.appointmentType === 'Clinic 2').length;
-  const onlineCount = appointments.filter(a => a.appointmentType === 'Online').length;
+  const jajmauCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Jajmau Clinic').length;
+  const civilLinesCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Civil Lines Clinic').length;
+  const onlineCount = appointments.filter(a => normalizeLocation(a.appointmentType) === 'Online Consultation').length;
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row font-sans">
@@ -779,7 +787,8 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-grow p-6 sm:p-8 space-y-8 overflow-y-auto max-h-screen">
+      <main className="flex-grow p-6 sm:p-8 space-y-8 overflow-y-auto max-h-screen relative">
+        <div className="absolute inset-0 bg-center bg-no-repeat opacity-[0.025] pointer-events-none" style={{ backgroundImage: "url('/logo.png')", backgroundSize: '400px auto' }}></div>
         
         {/* Floating alerts */}
         {feedback.message && (
@@ -902,7 +911,7 @@ export default function AdminDashboard() {
                           <div className="flex items-center space-x-2">
                             <p className="font-bold text-sm text-white">{appt.patientName}</p>
                             <span className="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded font-semibold">{appt.service}</span>
-                            <span className="text-[9px] bg-purple-900/40 text-purple-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">{appt.appointmentType || 'Clinic 1'}</span>
+                            <span className="text-[9px] bg-purple-900/40 text-purple-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">{normalizeLocation(appt.appointmentType)}</span>
                           </div>
                           <div className="flex items-center space-x-3 text-xs text-slate-400">
                             <span>Phone: <strong>{appt.patientPhone}</strong></span>
@@ -941,15 +950,15 @@ export default function AdminDashboard() {
                   <h3 className="font-bold text-lg text-white">Clinic Distribution</h3>
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Clinic 1 (Kanpur Branch):</span>
-                      <strong className="text-white font-mono text-sm">{clinic1Count} bookings</strong>
+                      <span className="text-slate-400">Jajmau Clinic:</span>
+                      <strong className="text-white font-mono text-sm">{jajmauCount} bookings</strong>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Clinic 2 (Alt Branch):</span>
-                      <strong className="text-white font-mono text-sm">{clinic2Count} bookings</strong>
+                      <span className="text-slate-400">Civil Lines Clinic:</span>
+                      <strong className="text-white font-mono text-sm">{civilLinesCount} bookings</strong>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Online Consults:</span>
+                      <span className="text-slate-400">Online Consultations:</span>
                       <strong className="text-white font-mono text-sm">{onlineCount} bookings</strong>
                     </div>
                   </div>
@@ -1271,10 +1280,10 @@ export default function AdminDashboard() {
                     onChange={e => setApptTypeFilter(e.target.value)}
                     className="w-full h-10 bg-slate-900 border border-slate-850 rounded-xl text-xs text-slate-300 focus:outline-none px-2"
                   >
-                    <option value="All">All Locations</option>
-                    <option value="Clinic 1">Clinic 1 (Kanpur)</option>
-                    <option value="Clinic 2">Clinic 2 (Alt Branch)</option>
-                    <option value="Online">Online Consult</option>
+                    <option value="All">All Appointments</option>
+                    <option value="Online Consultation">Online Consultation</option>
+                    <option value="Jajmau Clinic">Jajmau Clinic</option>
+                    <option value="Civil Lines Clinic">Civil Lines Clinic</option>
                   </select>
                 </div>
 
@@ -1402,7 +1411,7 @@ export default function AdminDashboard() {
                           <td className="py-4 font-semibold text-white">
                             <div className="space-y-1">
                               <span className="inline-block text-[9px] bg-purple-950 text-purple-300 border border-purple-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                                {appt.appointmentType || 'Clinic 1'}
+                                {normalizeLocation(appt.appointmentType)}
                               </span>
                               <p className="text-slate-300 font-semibold">{appt.service}</p>
                             </div>

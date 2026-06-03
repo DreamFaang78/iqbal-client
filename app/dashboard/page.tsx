@@ -96,7 +96,7 @@ export default function PatientDashboard() {
   const completedAppointments = appointments.filter(a => a.status === 'Completed');
 
   return ( <>
-<div className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-10 pointer-events-none" style={{ backgroundImage: "url('/logo.png')" }}></div>
+<div className="absolute inset-0 bg-center bg-no-repeat opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('/logo.png')", backgroundSize: '400px auto' }}></div>
       {/* Decorative Blur Blobs */}
       <div className="absolute top-12 left-1/4 w-96 h-96 blob-cyan rounded-full filter blur-3xl -z-10 animate-pulse-slow"></div>
       <div className="absolute top-1/3 right-1/4 w-96 h-96 blob-gold rounded-full filter blur-3xl -z-10 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
@@ -577,13 +577,9 @@ export default function PatientDashboard() {
                   Your recovery is proceeding very well. The symptoms of hair fall are reduced and scalp health shows excellent repair indicators. Continue the remedies for another 2 weeks. Make sure to consume iron-rich foods, and get at least 7-8 hours of sleep.
                 </p>
               </div>
-
-
+            </div>
           )}
-
         </div>
-
-
-
+      </div>
   </> );
 }
