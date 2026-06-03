@@ -53,10 +53,10 @@ export default function Contact() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="text-brand-cyan font-accent text-sm font-semibold uppercase tracking-wider">Get in Touch</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Book Your HOMOEOPATHY Consultation
+            Pehla Kadam Aap Uthao — Baaki Hum Sambhal Lete Hain
           </h3>
           <p className="text-slate-300 text-base sm:text-lg font-light">
-            Fill out the form below for HOMOEOPATHY consultation queries or reach out directly via WhatsApp. Serving Kanpur & surrounding areas.
+            FREE consultation mein Dr. Iqbal se milein. Kanpur mein clinic visit karein ya phone pe baat karein — jo aapke liye easy ho.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export default function Contact() {
                 <div className="p-2.5 bg-[#3DAA58]/10 text-[#3DAA58] border border-[#3DAA58]/20 rounded-xl w-fit">
                   <MessageSquare className="h-5 w-5" />
                 </div>
-                <h4 className="font-heading font-bold text-base text-white">WhatsApp Support</h4>
+                <h4 className="font-heading font-bold text-base text-white">Seedha WhatsApp Karein — Abhi, Bina Kisi Wait Ke</h4>
                 <a 
                   href="https://wa.me/918707868504" 
                   target="_blank" 
@@ -92,7 +92,7 @@ export default function Contact() {
                 >
                   Start WhatsApp Chat
                 </a>
-                <p className="text-slate-400 text-xs">Quick HOMOEOPATHY consultation support</p>
+                <p className="text-slate-400 text-xs">Dr. Iqbal ke clinic tak aane se pehle — apna sawaal yahan bhejein.</p>
               </div>
             </div>
 
@@ -146,8 +146,8 @@ export default function Contact() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-1">
-                    <h3 className="font-heading text-2xl font-extrabold text-white">Quick Consultation Request</h3>
-                    <p className="text-slate-400 text-xs font-light">Enter details below to submit a priority lead to the clinic dashboard.</p>
+                    <h3 className="font-heading text-2xl font-extrabold text-white">Apni Bimari Batao — FREE Salah Lo</h3>
+                    <p className="text-slate-400 text-xs font-light">Seedha clinic dashboard tak pahunche aapki priority request.</p>
                   </div>
 
                   {error && (
@@ -223,7 +223,7 @@ export default function Contact() {
                     ) : (
                       <>
                         <Send className="h-4 w-4" />
-                        <span>Submit Consultation Query</span>
+                        <span>Apni Bimari Batao — FREE Salah Lo</span>
                       </>
                     )}
                   </button>

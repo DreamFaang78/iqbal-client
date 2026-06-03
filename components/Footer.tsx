@@ -37,7 +37,7 @@ export default function Footer() {
               <img src="/logo.png" alt="HomMed Logo" className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm leading-relaxed">
-              Dr. IQBAL'S Homoeopathy Centre (HOMMED) — An Advanced Homoeopathic Clinic offering premium, personalized HOMOEOPATHY treatments for the people of Kanpur, Uttar Pradesh.
+              Kanpur ke logon ka bharoseband homeopathic ilaaj — jahan permanent healing aur aapki sehat hamesha pehle aati hai.
             </p>
             <div className="text-sm">
               <span className="text-white font-semibold block">Consultation Hours:</span>

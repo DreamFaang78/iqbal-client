@@ -62,21 +62,24 @@ export default function DoctorProfile() {
           {/* Right Column: Bio & Qualifications */}
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-3">
-              <span className="text-[#4CAF6E] font-accent text-sm font-semibold tracking-wider uppercase">Meet the Specialist</span>
+              <span className="text-[#4CAF6E] font-accent text-sm font-semibold tracking-wider uppercase">Aapke Doctor Kaun Hain?</span>
               <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                Dr. Iqbal, BHMS
+                Dr. Iqbal Quasim — Kanpur Ka Bharoseband Homeopathic Specialist
               </h3>
               <p className="text-[#4CAF6E] font-semibold text-base font-accent">
-                15+ Years of Dedicated Clinical Experience in Classic HOMOEOPATHY
+                15 Saal Ki Dedicated Clinical Experience in Classic HOMOEOPATHY
               </p>
             </div>
 
             <div className="text-slate-300 text-base leading-relaxed space-y-4 font-light">
               <p>
-                Dr. Iqbal is a leading homoeopathic practitioner based in Kanpur, Uttar Pradesh. Having completed his Bachelor of Homoeopathic Medicine and Surgery (BHMS), he has spent over a decade and a half helping patients recover from chronic illnesses without introducing toxic loads or side effects.
+                15 saal mein 10,000 se zyada patients theek karne wale Dr. Iqbal ka ek hi maqsad hai — aapko permanent relief dena, lifelong dependence nahi.
               </p>
               <p>
-                His treatment philosophy is rooted in <strong>constitutional homoeopathy</strong>, which analyzes each patient's physical, psychological, and hereditary traits. This ensures that therapy cures the underlying cause of disease rather than providing short-term, superficial symptom suppression.
+                BHMS degree ke baad, unhone constitutional Homeopathy mein specialise kiya — matlab sirf symptom nahi, poore shareer aur mann ko samajh ke ilaaj karte hain. Kanpur ke patients unhe isliye trust karte hain kyunki yahan dawai badal badal ke nahi dete — jadd se theek karte hain.
+              </p>
+              <p>
+                January 2025 mein unhe &lsquo;Homoeopathic Icon Award&rsquo; KGMU Lucknow mein mila — UP ke top doctors mein shamil hain.
               </p>
             </div>
 

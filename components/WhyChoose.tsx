@@ -9,38 +9,38 @@ export default function WhyChoose() {
     {
       id: 1,
       icon: <HeartHandshake className="h-6 w-6 text-brand-blue" />,
-      title: 'Personalized Care',
-      desc: 'We do not believe in "one size fits all". Every treatment is individually customized based on your full constitutional health profile.'
+      title: 'Sirf Aapke Liye Banaya Hua Ilaaj',
+      desc: 'Koi ek jaisi dawai nahi. Aapki body, aapka itihas, aapka ilaaj.'
     },
     {
       id: 2,
       icon: <Sparkles className="h-6 w-6 text-brand-purple" />,
-      title: 'Advanced Homeopathy',
-      desc: 'We utilize modern clinical diagnostics alongside classic homeopathic philosophies to achieve permanent and speedy recovery.'
+      title: 'Purani Homeopathy + Aaj Ki Diagnosis',
+      desc: 'Modern tests ke saath classic constitutional therapy.'
     },
     {
       id: 3,
       icon: <ShieldCheck className="h-6 w-6 text-brand-green" />,
-      title: '100% Safe Medicines',
-      desc: 'Our natural remedies are prepared under strict quality guidelines. They are completely non-toxic, chemical-free, and safe for all ages.'
+      title: 'Koi Chemical Nahi, Koi Toxin Nahi',
+      desc: 'Har umra ke liye safe — bachche se lekar buzurg tak.'
     },
     {
       id: 4,
       icon: <Sparkle className="h-6 w-6 text-brand-cyan" />,
-      title: 'Natural Treatments',
-      desc: 'We stimulate your body’s internal healing ability. The recovery is completely natural and does not cause drug dependency.'
+      title: 'Body Ko Dawai Ki Aadat Nahi Lagti',
+      desc: 'Khud theek hone ki takat andar se jagaate hain.'
     },
     {
       id: 5,
       icon: <ShieldCheck className="h-6 w-6 text-indigo-500" />,
-      title: 'Trusted Consultations',
-      desc: 'With 15+ years of verified history, we offer clinic visits in Kanpur and online digital follow-ups for ultimate convenience.'
+      title: 'Kanpur Mein Clinic, Online Bhi Available',
+      desc: 'Ghar baithke bhi follow-up ho sakta hai.'
     },
     {
       id: 6,
       icon: <Activity className="h-6 w-6 text-brand-gold" />,
-      title: 'Root-Cause Resolution',
-      desc: 'We analyze your full health picture to resolve the underlying root cause of chronic illness rather than merely suppressing surface symptoms.'
+      title: 'Sirf Symptoms Nahi — Bimari Ki Jadd Khatam',
+      desc: 'Isliye relief permanent hoti hai.'
     }
   ];
  
@@ -54,10 +54,10 @@ export default function WhyChoose() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="text-[#4CAF6E] font-accent text-sm font-semibold uppercase tracking-wider">The HOMMED Advantage</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Why Choose Our HOMOEOPATHY Centre?
+            Aur Clinics Se Alag Kyun Hai HOMMED?
           </h3>
           <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
-            We provide a modern, patient-first healing environment centered on safety, efficacy, and permanent root-cause healing.
+            Kyunki hum sirf dawai nahi dete — hum aapki poori body, mind aur history ko samajh ke ilaaj karte hain.
           </p>
         </div>
  

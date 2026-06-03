@@ -44,10 +44,10 @@ export default function Services() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="font-accent text-[#4CAF6E] font-bold text-sm uppercase tracking-wider">Our Specializations</h2>
           <h3 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Kaunsi Bimari Mein Hum Kar Sakte Hain <span className="text-[#C8922A]">HOMOEOPATHY Se Ilaaj?</span>
+            Aapki Takleef Kaisi Bhi Ho — <span className="text-[#C8922A]">Homeopathy Se Jadd Se Theek Hogi</span>
           </h3>
           <p className="text-white/55 text-base sm:text-lg font-light leading-relaxed">
-            Targeted natural recovery programs designed to stimulate constitutional healing for chronic, acute, and lifestyle ailments.
+            Skin ho, hair ho, thyroid ho ya chronic pain — hum sirf symptoms band nahi karte, bimari ki jadd khatam karte hain.
           </p>
         </div>
 

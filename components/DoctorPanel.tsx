@@ -36,7 +36,7 @@ const doctorPanelList: Doctor[] = [
     experience: "12+ Years Experience",
     credentials: "BHMS, MD (Hom)",
     image: "/doctor-akhilesh.png",
-    bio: "Dr. Akhilesh combines classical homoeopathic wisdom with a modern clinical approach. With over a decade of experience, he is dedicated to helping patients manage complex lifestyle conditions, digestive complaints, and joint disorders through customized, natural care plans.",
+    bio: "Khana khaate hi pet phool jaata hai? Jodon mein dard? Dr. Akhilesh digestive aur joint problems ko andar se theek karte hain — rozmarra ki zindagi wapas laane ke liye.",
     specialties: ["Digestive & Gut Health", "Joint & Arthritis Care", "Lifestyle Diseases", "Migraine Relief"],
     color: "#C8922A"
   },
@@ -47,7 +47,7 @@ const doctorPanelList: Doctor[] = [
     experience: "8+ Years Experience",
     credentials: "BHMS (Women & Child Specialist)",
     image: "/doctor-roshni.png",
-    bio: "Dr. Roshni is committed to providing compassionate, comprehensive care for women and children. Her holistic protocols focus on restoring hormonal harmony, managing PCOS/PCOD, and strengthening children's natural immunity in a gentle, side-effect-free manner.",
+    bio: "PCOS, thyroid ya irregular periods se pareshaan hain? Dr. Roshni mahilaon ki andar ki takleef ko samajhti hain — aur bachon ki immunity ko naturally mazboot banati hain. Bina side effects ke.",
     specialties: ["PCOS & Thyroid Care", "Pediatric Immunity", "Hormonal Balance", "Mother & Child Wellness"],
     color: "#4CAF6E"
   }
@@ -91,10 +91,10 @@ export default function DoctorPanel() {
             Our Panel of Experts
           </span>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Meet Our Specialist <span className="text-[#C8922A]">HOMOEOPATHY Doctors</span>
+            Aapki Har Takleef Ke Liye — <span className="text-[#C8922A]">Ek Dedicated Expert</span>
           </h2>
           <p className="text-white/60 text-base sm:text-lg font-light leading-relaxed">
-            A team of highly qualified, compassionate practitioners dedicated to identifying and treating the root causes of disease, helping you restore full, natural vitality.
+            Ek hi clinic mein — skin specialist, women&apos;s health expert, aur chronic disease specialist. Milke aapka complete ilaaj plan banate hain.
           </p>
         </div>
 

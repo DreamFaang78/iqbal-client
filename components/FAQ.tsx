@@ -22,7 +22,7 @@ export default function FAQ() {
         <div className="text-center mb-16 space-y-4">
           <span className="text-[#00B4D8] font-accent text-sm font-semibold uppercase tracking-wider">Common Questions</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Frequently Asked Questions
+            Jo Sawaal Aap Poochte Poochte Ruk Jaate Hain — Woh Yahan Hain
           </h3>
           <p className="text-white/55 text-sm sm:text-base font-light">
             Clear, honest answers about homeopathy, consultation procedures, and treatment guidelines.

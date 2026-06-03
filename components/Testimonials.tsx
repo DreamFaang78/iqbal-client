@@ -8,7 +8,7 @@ import { DEFAULT_TESTIMONIALS } from '@/lib/data';
 const CASE_STUDIES = [
   {
     id: 'case-eczema',
-    title: 'Severe Facial Eczema',
+    title: 'Chehra Chhil Raha Tha — 4 Hafte Mein Saaf Hua',
     patient: 'Ananya S. (19/F)',
     duration: '4 Weeks Recovery',
     tag: 'Eczema & Dermatitis',
@@ -20,7 +20,7 @@ const CASE_STUDIES = [
   },
   {
     id: 'case-herpes',
-    title: 'Recurring Oral Herpes',
+    title: 'Har Mahine Honth Pe Ghaw — 2 Hafte Mein Hamesha Ke Liye Band',
     patient: 'Yasmin K. (28/F)',
     duration: '2 Weeks Recovery',
     tag: 'Skin Infection',
@@ -32,7 +32,7 @@ const CASE_STUDIES = [
   },
   {
     id: 'case-melasma',
-    title: 'Chronic Melasma (Chhaiya)',
+    title: 'Muh Pe Kaali Chhaiyaan — 3 Mahine Mein Jad Se Khatam',
     patient: 'Mrs. Farida (34/F)',
     duration: '3 Months Recovery',
     tag: 'Pigmentation & Melasma',
@@ -66,10 +66,10 @@ export default function Testimonials() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="text-brand-cyan font-accent text-sm font-semibold uppercase tracking-wider">Patient Stories</span>
           <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Loved by Thousands of Recovered Patients
+            Yeh Log Bhi Kahin Na Kahin Aap Jaise Hi The...
           </h3>
           <p className="text-slate-300 text-base sm:text-lg font-light">
-            Real feedback from individuals who overcame chronic conditions through our advanced homeopathic treatment plans.
+            Unhone bhi baar baar dawaiyaan badle, baar baar doctor badle — phir HOMMED aaye aur zindagi badal gayi.
           </p>
         </div>
 
@@ -171,10 +171,10 @@ export default function Testimonials() {
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="text-brand-gold font-accent text-sm font-semibold uppercase tracking-wider">Clinical Results</span>
             <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Verified Before & After Transformations
+              Aankhon Se Dekho — Yeh Koi Claim Nahi, Real Results Hain
             </h3>
             <p className="text-slate-300 text-sm sm:text-base font-light">
-              Actual clinical results showing permanent healing of chronic skin disorders through targeted homeopathy.
+              Yeh wahi patients hain jo pehle kisi aur clinic mein jaate the. Ab inki skin, inki life — dono theek hain.
             </p>
           </div>
 

@@ -60,7 +60,7 @@ export default function Achievements() {
       venueIcon: <MapPin className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
       org: 'Presented by Hahnemann Educational & Development Society in association with Indian Society of Homoeopathy',
       orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
-      description: "Conferred in recognition of Dr. Iqbal's pioneering contributions to natural medicine and outstanding clinical outcomes in Uttar Pradesh. This prestigious award, presented at the state's leading scientific convention venue by India's peak homoeopathic authorities, validates over 15 years of dedicated patient care and safe, systemic healing.",
+      description: "UP ke sabse bade scientific platform — KGMU Lucknow — par Dr. Iqbal ko 'Homoeopathic Icon Award 2025' diya gaya. Yeh award unke 15 saal ke kaam ka, 10,000 patients ke bharose ka — public recognition hai.",
       imageSrc: '/Iqbal-Achievement.jpeg',
       footerTag: 'Scientific Excellence',
       footerDate: 'January 2025'
@@ -75,7 +75,7 @@ export default function Achievements() {
       venueIcon: <Calendar className="h-4 w-4 text-[#C8922A] shrink-0 mt-0.5" />,
       topicLabel: 'LECTURE TOPIC',
       topic: '“The Role of Homoeopathy in Chronic Kidney Failure”',
-      description: "Dr. Iqbal was invited to deliver a clinical lecture to practicing physicians at the national HomoeoVision 3.0 conference. Sharing advanced case files and constitutional therapeutic protocols for managing chronic renal failure, his lecture demonstrated how specialized homoeopathic care helps manage kidney pathologies and improves patient longevity.",
+      description: "Poore desh ke doctors ne Dr. Iqbal se seekha — National Conference HomoeoVision 3.0 mein unhone Chronic Kidney Failure mein Homeopathy ke role par lecture diya. Jab doctors doctors ko seekhate hain — toh aap sahi haath mein hain.",
       imageSrc: '/Iqbal-Achievement02.jpeg',
       footerTag: 'Academic Leadership',
       footerDate: 'National Conference',
@@ -124,7 +124,7 @@ export default function Achievements() {
             Clinical Leadership & Recognition
           </span>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Milestones of <span className="text-[#C8922A]">Scientific Excellence</span>
+            Sirf Hum Nahi Kehte — <span className="text-[#C8922A]">Poora Desh Maanta Hai</span>
           </h2>
           <p className="text-white/60 text-base sm:text-lg font-light leading-relaxed">
             Recognized by peak medical institutions and trusted to educate the next generation of practitioners in advanced constitutional homoeopathy.
