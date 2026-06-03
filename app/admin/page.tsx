@@ -364,9 +364,22 @@ export default function AdminDashboard() {
   // Status Normalizer for Leads Kanban
   const normalizeLeadStatus = (status: string): string => {
     if (status === 'New Lead') return 'New';
-    if (status === 'Follow-Up Required') return 'Follow-Up';
-    if (status === 'Consultation Scheduled' || status === 'Converted') return 'Confirmed';
-    return status; // New, Contacted, Confirmed, Visited, Follow-Up, Closed
+    if (status === 'Contacted') return 'Called';
+    if (status === 'Consultation Scheduled') return 'Appointment Fixed';
+    if (status === 'Follow-Up Required' || status === 'Follow-Up') return 'Follow Up';
+    if (status === 'Converted') return 'Patient Confirmed';
+    if (status === 'Closed') return 'Closed';
+    return status;
+  };
+
+  const mapVisualToDbStatus = (status: string): string => {
+    if (status === 'New') return 'New Lead';
+    if (status === 'Called') return 'Contacted';
+    if (status === 'Appointment Fixed') return 'Consultation Scheduled';
+    if (status === 'Follow Up') return 'Follow-Up Required';
+    if (status === 'Patient Confirmed') return 'Converted';
+    if (status === 'Closed') return 'Closed';
+    return status;
   };
 
   // Appointment Status Updates
@@ -431,8 +444,9 @@ export default function AdminDashboard() {
   };
 
   // Lead Status Updates
-  const handleUpdateLeadStatus = async (id: string, newStatus: string) => {
+  const handleUpdateLeadStatus = async (id: string, newVisualStatus: string) => {
     try {
+      const dbStatus = mapVisualToDbStatus(newVisualStatus);
       const token = localStorage.getItem('hommed_token');
       const res = await fetch('/api/leads', {
         method: 'PUT',
@@ -440,12 +454,12 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ id, status: newStatus })
+        body: JSON.stringify({ id, status: dbStatus })
       });
 
       if (res.ok) {
-        setLeads(prev => prev.map(l => l._id === id ? { ...l, status: newStatus } : l));
-        triggerFeedback(`Lead moved to ${newStatus}.`, 'success');
+        setLeads(prev => prev.map(l => l._id === id ? { ...l, status: dbStatus } : l));
+        triggerFeedback(`Lead moved to ${newVisualStatus}.`, 'success');
       } else {
         triggerFeedback(`Could not update lead status.`, 'error');
       }
@@ -1488,7 +1502,7 @@ export default function AdminDashboard() {
                                     onChange={e => handleUpdateLeadStatus(lead._id, e.target.value)}
                                     className="w-full bg-[#f8fafc] border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs h-9 pl-3 pr-8 rounded-xl appearance-none cursor-pointer focus:outline-none transition-colors text-center"
                                   >
-                                    <option value="New">Update Stage</option>
+                                    <option value="" disabled hidden>Update Stage</option>
                                     <option value="New">New</option>
                                     <option value="Called">Called</option>
                                     <option value="Appointment Fixed">Appointment Fixed</option>

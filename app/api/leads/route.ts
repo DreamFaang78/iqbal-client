@@ -210,7 +210,8 @@ export async function PUT(request: Request) {
       .single();
 
     if (error || !updatedLead) {
-      return NextResponse.json({ message: 'Lead not found or update failed' }, { status: 404 });
+      console.error("PUT /api/leads database update error:", error, "updatedLead:", updatedLead);
+      return NextResponse.json({ message: 'Lead not found or update failed', error: error?.message }, { status: 404 });
     }
 
     const mappedLead = {
