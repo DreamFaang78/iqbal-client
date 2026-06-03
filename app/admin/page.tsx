@@ -93,6 +93,26 @@ function normalizeLocation(type?: string): string {
   return type;
 }
 
+function getLeadLocation(lead: LeadData): 'Online' | 'Civil Lines' | 'Jajmau' {
+  const source = (lead.leadSource || '').toLowerCase();
+  if (source.includes('civil') || source.includes('lines')) return 'Civil Lines';
+  if (source.includes('jajmau')) return 'Jajmau';
+  if (source.includes('online')) return 'Online';
+
+  // Parse from inquiry text
+  const inquiry = (lead.inquiry || '').toLowerCase();
+  if (inquiry.includes('civil lines') || inquiry.includes('civil_lines')) return 'Civil Lines';
+  if (inquiry.includes('jajmau')) return 'Jajmau';
+  if (inquiry.includes('online')) return 'Online';
+
+  // Parse from city
+  const city = (lead.city || '').toLowerCase();
+  if (city.includes('civil lines') || city.includes('civil_lines')) return 'Civil Lines';
+  if (city.includes('jajmau')) return 'Jajmau';
+
+  return 'Online';
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [adminUser, setAdminUser] = useState<any>(null);
@@ -346,6 +366,36 @@ export default function AdminDashboard() {
     }
   };
 
+  // Lead Location Updates
+  const handleUpdateLeadLocation = async (id: string, newLocation: string) => {
+    try {
+      const token = localStorage.getItem('hommed_token');
+      const lead = leads.find(l => l._id === id);
+      if (!lead) return;
+
+      const sourcePrefix = (lead.leadSource || 'contact').split(':')[0];
+      const updatedSource = `${sourcePrefix}:${newLocation}`;
+
+      const res = await fetch('/api/leads', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id, leadSource: updatedSource })
+      });
+
+      if (res.ok) {
+        setLeads(prev => prev.map(l => l._id === id ? { ...l, leadSource: updatedSource } : l));
+        triggerFeedback(`Lead location updated to ${newLocation}.`, 'success');
+      } else {
+        triggerFeedback(`Could not update lead location.`, 'error');
+      }
+    } catch (e) {
+      triggerFeedback('Failed to update lead location.', 'error');
+    }
+  };
+
   // Save notes handler
   const handleSaveNotes = async (id: string, notes: string, isLead: boolean) => {
     try {
@@ -594,7 +644,7 @@ export default function AdminDashboard() {
   // Filter Leads
   const filteredLeads = leads.filter(l => {
     // Tab filtering
-    const isPopupLead = l.leadSource === 'popup';
+    const isPopupLead = l.leadSource && l.leadSource.startsWith('popup');
     if (leadsSubTab === 'popup' && !isPopupLead) return false;
     if (leadsSubTab === 'general' && isPopupLead) return false;
 
@@ -640,17 +690,14 @@ export default function AdminDashboard() {
 
   // Kanban columns configuration
   const kanbanColumns = [
-    { id: 'New', label: 'New Leads', color: 'bg-blue-500' },
-    { id: 'Contacted', label: 'Contacted', color: 'bg-cyan-500' },
-    { id: 'Confirmed', label: 'Confirmed', color: 'bg-purple-500' },
-    { id: 'Visited', label: 'Visited', color: 'bg-[#ff7a00]' },
-    { id: 'Follow-Up', label: 'Follow-Up', color: 'bg-amber-500' },
-    { id: 'Closed', label: 'Closed/Archive', color: 'bg-slate-400' }
+    { id: 'Online', label: 'Online Consultations', color: 'bg-sky-500' },
+    { id: 'Civil Lines', label: 'Civil Lines Clinic', color: 'bg-amber-500' },
+    { id: 'Jajmau', label: 'Jajmau Clinic', color: 'bg-emerald-500' }
   ];
 
   // Statistics calculation
   const totalLeadsCount = leads.length;
-  const popupLeadsCount = leads.filter(l => l.leadSource === 'popup').length;
+  const popupLeadsCount = leads.filter(l => l.leadSource && l.leadSource.startsWith('popup')).length;
   const totalApptsCount = appointments.length;
 
   // Today activity metrics
@@ -966,11 +1013,11 @@ export default function AdminDashboard() {
 
                 {/* CRM Leads Funnel */}
                 <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4">
-                  <h3 className="font-bold text-lg text-white">Leads Funnel Status</h3>
+                  <h3 className="font-bold text-lg text-white">Leads Location Distribution</h3>
                   
                   <div className="space-y-3.5">
                     {kanbanColumns.map(col => {
-                      const count = leads.filter(l => normalizeLeadStatus(l.status) === col.id).length;
+                      const count = leads.filter(l => getLeadLocation(l) === col.id).length;
                       const pct = leads.length > 0 ? (count / leads.length) * 100 : 0;
                       return (
                         <div key={col.id} className="space-y-1">
@@ -1035,7 +1082,7 @@ export default function AdminDashboard() {
                     leadsSubTab === 'popup' ? 'bg-brand-blue text-white shadow' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Popup Leads ({leads.filter(l => l.leadSource === 'popup').length})
+                  Popup Leads ({leads.filter(l => l.leadSource && l.leadSource.startsWith('popup')).length})
                 </button>
               </div>
 
@@ -1081,7 +1128,7 @@ export default function AdminDashboard() {
             <div className="flex gap-5 overflow-x-auto pb-6 scrollbar-thin scroll-smooth select-none">
               
               {kanbanColumns.map(col => {
-                const columnLeads = filteredLeads.filter(l => normalizeLeadStatus(l.status) === col.id);
+                const columnLeads = filteredLeads.filter(l => getLeadLocation(l) === col.id);
                 return (
                   <div key={col.id} className="bg-slate-950/85 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-4 w-72 shrink-0 shadow-xl backdrop-blur-md">
                     
@@ -1129,15 +1176,27 @@ export default function AdminDashboard() {
 
                               {/* Header User info */}
                               <div className="space-y-1">
-                                <div className="flex justify-between items-start">
-                                  <p className="font-extrabold text-xs text-white group-hover:text-brand-cyan transition-colors">{lead.name}</p>
-                                  <button
-                                    onClick={() => handleDeleteLead(lead._id)}
-                                    className="opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-opacity p-0.5 text-slate-500 rounded"
-                                    title="Delete Lead permanently"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
+                                <div className="flex justify-between items-start gap-1.5">
+                                  <p className="font-extrabold text-xs text-white group-hover:text-brand-cyan transition-colors truncate">{lead.name}</p>
+                                  <div className="flex items-center space-x-1.5 shrink-0">
+                                    <span className={`text-[8px] px-1.5 py-0.5 rounded-md border font-bold uppercase tracking-wider ${
+                                      lead.status.toLowerCase().includes('new') ? 'bg-blue-950/60 text-blue-400 border-blue-900' :
+                                      lead.status.toLowerCase().includes('contact') ? 'bg-cyan-950/60 text-cyan-400 border-cyan-900' :
+                                      lead.status.toLowerCase().includes('confirm') ? 'bg-purple-950/60 text-purple-400 border-purple-900' :
+                                      lead.status.toLowerCase().includes('visit') ? 'bg-amber-950/60 text-amber-400 border-amber-900' :
+                                      lead.status.toLowerCase().includes('follow') ? 'bg-yellow-950/60 text-yellow-400 border-yellow-900' :
+                                      'bg-slate-900/60 text-slate-400 border-slate-800'
+                                    }`}>
+                                      {normalizeLeadStatus(lead.status)}
+                                    </span>
+                                    <button
+                                      onClick={() => handleDeleteLead(lead._id)}
+                                      className="opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-opacity p-0.5 text-slate-500 rounded"
+                                      title="Delete Lead permanently"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
                                 
                                 <div className="flex flex-col space-y-0.5 text-[9px] text-slate-400">
@@ -1212,21 +1271,35 @@ export default function AdminDashboard() {
                                 </a>
                               </div>
                               
-                              {/* Selector to change column status */}
-                              <div className="pt-2 border-t border-slate-800/85 flex flex-col space-y-1">
-                                <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Status</span>
-                                <select
-                                  value={normalizeLeadStatus(lead.status)}
-                                  onChange={e => handleUpdateLeadStatus(lead._id, e.target.value)}
-                                  className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1.5 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
-                                >
-                                  <option value="New">New</option>
-                                  <option value="Contacted">Contacted</option>
-                                  <option value="Confirmed">Confirmed</option>
-                                  <option value="Visited">Visited</option>
-                                  <option value="Follow-Up">Follow-Up</option>
-                                  <option value="Closed">Closed</option>
-                                </select>
+                              {/* Selectors to change status and location */}
+                              <div className="pt-2 border-t border-slate-800/85 grid grid-cols-2 gap-2">
+                                <div className="flex flex-col space-y-1">
+                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Status</span>
+                                  <select
+                                    value={normalizeLeadStatus(lead.status)}
+                                    onChange={e => handleUpdateLeadStatus(lead._id, e.target.value)}
+                                    className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
+                                  >
+                                    <option value="New">New</option>
+                                    <option value="Contacted">Contacted</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Visited">Visited</option>
+                                    <option value="Follow-Up">Follow-Up</option>
+                                    <option value="Closed">Closed</option>
+                                  </select>
+                                </div>
+                                <div className="flex flex-col space-y-1">
+                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Location</span>
+                                  <select
+                                    value={getLeadLocation(lead)}
+                                    onChange={e => handleUpdateLeadLocation(lead._id, e.target.value)}
+                                    className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
+                                  >
+                                    <option value="Online">Online</option>
+                                    <option value="Civil Lines">Civil Lines</option>
+                                    <option value="Jajmau">Jajmau</option>
+                                  </select>
+                                </div>
                               </div>
                             </div>
                           );

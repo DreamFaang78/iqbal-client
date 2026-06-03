@@ -169,7 +169,7 @@ export async function POST(request: Request) {
           email: patientEmail || null,
           inquiry: `Auto-generated Lead from appointment booking request. Problem: ${disease || service}. Requested: ${type} on ${scheduleDate} @ ${scheduleTime}`,
           status: 'New Lead',
-          lead_source: 'booking',
+          lead_source: 'booking:' + type,
           age: patientAge ? parseInt(patientAge.toString()) : null,
           gender: patientGender || null,
           city: patientCity || null
