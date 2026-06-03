@@ -4,9 +4,35 @@ import Navbar from "@/components/Navbar";
 import ConditionalFooter from "@/components/ConditionalFooter";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://hommed.org'),
   title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
   description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders. Serving Kanpur, Uttar Pradesh.",
   keywords: "homoeopathy kanpur, dr iqbal homoeopathy, homoeopathic doctor kanpur, advanced homoeopathic clinic, natural healing, hommed clinic, best homoeopathy clinic kanpur, skin treatment kanpur, hair fall homoeopathy, HOMOEOPATHY kanpur",
+  verification: {
+    google: "g9FB4jAnR6UT9SVxdAI7RYpdswg7K_Mkd0wH-U", // Add verification fallback from user GSC setup
+  },
+  openGraph: {
+    title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
+    description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders.",
+    url: 'https://hommed.org',
+    siteName: 'HOMMED Homoeopathy',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'HOMMED — Dr. Iqbal\'s Homoeopathic Centre Logo',
+      },
+    ],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
+    description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders.",
+    images: ['/logo.png'],
+  },
 };
 
 export default function RootLayout({
