@@ -77,13 +77,13 @@ export default function Hero() {
               className="font-heading font-extrabold leading-[1.08] tracking-tight"
             >
               <span className="block text-white text-[34px] sm:text-5xl lg:text-[56px]">
-                Thak Gaye Baar Baar
+                Baar Baar
               </span>
               <span className="block text-[#C8922A] text-[34px] sm:text-5xl lg:text-[56px]">
-                Dawaiyaan Badle Se —
+                Doctor Badla —
               </span>
               <span className="block text-white text-[34px] sm:text-5xl lg:text-[56px]">
-                Aur Phir Bhi Theek Nahi Hue?
+                Phir Bhi Wahi Takleef?
               </span>
             </motion.h1>
 
