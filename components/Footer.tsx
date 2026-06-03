@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Activity, Phone, Mail, MapPin, MessageSquare, ArrowRight } from 'lucide-react';
+import { DEFAULT_LOCATIONS } from '@/lib/data';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -109,6 +110,20 @@ export default function Footer() {
                 <a href="mailto:info@hommed.in" className="hover:text-white transition-colors">info@hommed.in</a>
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Locations We Serve Bar */}
+      <div className="border-t border-[#1C3A22]/30 bg-[#060B07] py-8 text-center text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
+          <span className="text-white/60 font-semibold uppercase tracking-wider block text-[9px] tracking-widest">Locations We Serve in Kanpur & UP</span>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-slate-400">
+            {DEFAULT_LOCATIONS.map((loc) => (
+              <Link key={loc.slug} href={`/locations/${loc.slug}`} className="hover:text-white transition-colors">
+                Homeopathy in {loc.name}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

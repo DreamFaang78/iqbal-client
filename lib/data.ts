@@ -19,6 +19,16 @@ export interface BlogData {
   image?: string;
 }
 
+export interface LocationData {
+  name: string;
+  slug: string;
+  nearestBranch: string;
+  address: string;
+  landmark: string;
+  distanceInfo: string;
+  phone: string;
+}
+
 export interface TestimonialData {
   name: string;
   location: string;
@@ -220,5 +230,98 @@ export const DEFAULT_TESTIMONIALS: TestimonialData[] = [
     location: 'Civil Lines, Kanpur',
     rating: 5,
     content: 'Migraine was my daily nightmare. I couldn’t step into the sun. The homeopathic drops from HOMMED have reduced my headache frequency by 90%. I highly recommend Dr. Iqbal.'
+  }
+];
+
+export const DEFAULT_LOCATIONS: LocationData[] = [
+  {
+    name: "Civil Lines",
+    slug: "civil-lines",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Located right in the heart of Civil Lines, easily accessible from all central areas.",
+    phone: "9454756421"
+  },
+  {
+    name: "Jajmau",
+    slug: "jajmau",
+    nearestBranch: "Jajmau Clinic",
+    address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
+    landmark: "Near Ganga Bridge",
+    distanceInfo: "Located in the main Jajmau market area, convenient for local and transit patients.",
+    phone: "9454756421"
+  },
+  {
+    name: "Kalyanpur",
+    slug: "kalyanpur",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Kalyanpur is approx. 12 km from our Civil Lines Clinic. Shared autos or cabs take 20-30 mins via GT Road.",
+    phone: "9454756421"
+  },
+  {
+    name: "Swaroop Nagar",
+    slug: "swaroop-nagar",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Swaroop Nagar is just 3 km from our Civil Lines Clinic, a quick 8-10 min drive via VIP Road.",
+    phone: "9454756421"
+  },
+  {
+    name: "Kidwai Nagar",
+    slug: "kidwai-nagar",
+    nearestBranch: "Jajmau Clinic",
+    address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
+    landmark: "Near Ganga Bridge",
+    distanceInfo: "Kidwai Nagar is approx. 8 km from our Jajmau Clinic, taking about 15-20 mins via Kidwai Nagar Bypass.",
+    phone: "9454756421"
+  },
+  {
+    name: "Barra",
+    slug: "barra",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Barra is approx. 10 km from our Civil Lines Clinic. Direct cabs and autos are available via Barra Bypass road.",
+    phone: "9454756421"
+  },
+  {
+    name: "Kakadeo",
+    slug: "kakadeo",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Kakadeo is approx. 6 km from our Civil Lines Clinic. It is a 12-15 min drive via Rawatpur.",
+    phone: "9454756421"
+  },
+  {
+    name: "Lajpat Nagar",
+    slug: "lajpat-nagar",
+    nearestBranch: "Civil Lines Clinic",
+    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    landmark: "Near Green Park Stadium",
+    distanceInfo: "Lajpat Nagar is only 4 km from our Civil Lines Clinic, taking about 10 mins via GT Road.",
+    phone: "9454756421"
+  },
+  {
+    name: "Unnao",
+    slug: "unnao",
+    nearestBranch: "Jajmau Clinic",
+    address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
+    landmark: "Near Ganga Bridge",
+    distanceInfo: "Unnao is located right across the Ganges bridge. Our Jajmau Clinic is approx. 15 km away, taking 25 mins via NH 27.",
+    phone: "9454756421"
+  },
+  {
+    name: "Shuklaganj",
+    slug: "shuklaganj",
+    nearestBranch: "Jajmau Clinic",
+    address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
+    landmark: "Near Ganga Bridge",
+    distanceInfo: "Shuklaganj is situated just across the Ganga. Our Jajmau Clinic is only 10 km away (approx. 15 mins drive).",
+    phone: "9454756421"
   }
 ];

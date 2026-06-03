@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
+import { DEFAULT_LOCATIONS } from '@/lib/data';
 
 // Revalidate sitemap cache every 1 hour (3600 seconds)
 export const revalidate = 3600;
@@ -67,5 +68,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error generating blogs sitemap:', err);
   }
 
-  return [...staticRoutes, ...serviceRoutes, ...blogRoutes];
+  // 4. Programmatic Local Landing pages (Kanpur neighborhoods)
+  const locationRoutes: MetadataRoute.Sitemap = DEFAULT_LOCATIONS.map(loc => ({
+    url: `${baseUrl}/locations/${loc.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...serviceRoutes, ...blogRoutes, ...locationRoutes];
 }
