@@ -95,7 +95,7 @@ export default function PatientDashboard() {
   const upcomingAppointments = appointments.filter(a => ['Pending', 'Confirmed', 'Rescheduled'].includes(a.status));
   const completedAppointments = appointments.filter(a => a.status === 'Completed');
 
-  return (
+  return ( <>
 <div className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-10 pointer-events-none" style={{ backgroundImage: "url('/logo.png')" }}></div>
       {/* Decorative Blur Blobs */}
       <div className="absolute top-12 left-1/4 w-96 h-96 blob-cyan rounded-full filter blur-3xl -z-10 animate-pulse-slow"></div>
@@ -578,12 +578,12 @@ export default function PatientDashboard() {
                 </p>
               </div>
 
-            </div>
+
           )}
 
         </div>
 
-      </div>
-    </div>
-  );
+
+
+  </> );
 }
