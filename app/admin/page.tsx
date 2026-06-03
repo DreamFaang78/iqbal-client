@@ -8,8 +8,8 @@ import {
   Settings, LogOut, Plus, Trash2, 
   ToggleLeft, ToggleRight, Check, X, RefreshCw,
   Search, ShieldAlert, ArrowUpRight, BarChart3,
-  CheckCircle2,
-  Phone, Mail, MessageSquare
+  CheckCircle2, Phone, Mail, MessageSquare,
+  Download, Filter, AlertCircle
 } from 'lucide-react';
 
 interface LeadData {
@@ -18,12 +18,22 @@ interface LeadData {
   phone: string;
   email?: string;
   inquiry: string;
-  status: 'New Lead' | 'Contacted' | 'Consultation Scheduled' | 'Follow-Up Required' | 'Converted' | 'Closed';
+  status: string;
+  followUpDate?: string;
+  followUpScheduled?: string;
+  leadSource?: string;
+  notes?: string;
+  isDuplicate?: boolean;
+  assignedTo?: string;
+  age?: number;
+  gender?: string;
+  city?: string;
   createdAt: string;
 }
 
 interface AppointmentData {
   _id: string;
+  patientId?: string;
   patientName: string;
   patientPhone: string;
   doctorName: string;
@@ -32,7 +42,15 @@ interface AppointmentData {
   scheduleTime: string;
   status: 'Pending' | 'Confirmed' | 'Rescheduled' | 'Completed' | 'Cancelled';
   paymentStatus: 'Pending' | 'Paid';
+  appointmentType?: string;
+  patientEmail?: string;
+  patientAge?: number;
+  patientGender?: string;
+  patientCity?: string;
+  disease?: string;
+  notes?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 interface ServiceData {
@@ -72,6 +90,10 @@ export default function AdminDashboard() {
   const [adminUser, setAdminUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'analytics' | 'leads' | 'appointments' | 'services' | 'blogs' | 'popups' | 'staff'>('analytics');
+  
+  // Sub-tab for leads: 'general' vs 'popup'
+  const [leadsSubTab, setLeadsSubTab] = useState<'general' | 'popup'>('general');
+
   const [staffList, setStaffList] = useState<any[]>([]);
   const [staffLoading, setStaffLoading] = useState(false);
   const [staffError, setStaffError] = useState<string | null>(null);
@@ -85,10 +107,20 @@ export default function AdminDashboard() {
 
   // Search & Filters
   const [leadSearch, setLeadSearch] = useState('');
+  const [leadStatusFilter, setLeadStatusFilter] = useState('All');
+  
+  // Appointment filters
   const [apptSearch, setApptSearch] = useState('');
+  const [apptTypeFilter, setApptTypeFilter] = useState('All');
+  const [apptStatusFilter, setApptStatusFilter] = useState('All');
+  const [apptDateFrom, setApptDateFrom] = useState('');
+  const [apptDateTo, setApptDateTo] = useState('');
 
-  // Honest data-load error state (so an auth/API failure is not masked as "no leads")
+  // Honest data-load error state
   const [leadsError, setLeadsError] = useState<string | null>(null);
+
+  // Temporary notes editor states key-ed by ID
+  const [editingNotes, setEditingNotes] = useState<{ [key: string]: string }>({});
 
   // Form states
   const [showServiceForm, setShowServiceForm] = useState(false);
@@ -127,10 +159,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Render the panel and let the server (verifyAdminToken) be the source of truth
-    // for authorization. We only hard-redirect non-admin patient sessions; any stale
-    // cached role is reconciled by the API responses (a 403 surfaces an honest error
-    // instead of silently showing empty tabs).
     if (parsedUser.role === 'patient') {
       router.push('/dashboard');
       return;
@@ -146,7 +174,7 @@ export default function AdminDashboard() {
       setLeadsError(null);
       const headers = { 'Authorization': `Bearer ${token}` };
 
-      // Load leads (surface real failures instead of silently leaving the tab empty)
+      // Load leads
       const leadsRes = await fetch('/api/leads', { headers });
       if (leadsRes.ok) {
         setLeads(await leadsRes.json());
@@ -175,17 +203,16 @@ export default function AdminDashboard() {
       const popupsRes = await fetch('/api/popups');
       if (popupsRes.ok) setPopups(await popupsRes.json());
 
-      // Load staff accounts (admin-only, real source)
+      // Load staff accounts
       await loadStaff(token);
 
     } catch (err) {
-      triggerFeedback('Error communicating with database API, loaded local fallback parameters.', 'error');
+      triggerFeedback('Error communicating with database API, loaded local parameters.', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Load clinic staff accounts from the real admin endpoint (profiles where role = 'staff')
   const loadStaff = async (token: string) => {
     setStaffLoading(true);
     setStaffError(null);
@@ -218,6 +245,14 @@ export default function AdminDashboard() {
     router.push('/login');
   };
 
+  // Status Normalizer for Leads Kanban
+  const normalizeLeadStatus = (status: string): string => {
+    if (status === 'New Lead') return 'New';
+    if (status === 'Follow-Up Required') return 'Follow-Up';
+    if (status === 'Consultation Scheduled' || status === 'Converted') return 'Confirmed';
+    return status; // New, Contacted, Confirmed, Visited, Follow-Up, Closed
+  };
+
   // Appointment Status Updates
   const handleUpdateApptStatus = async (id: string, newStatus: string) => {
     try {
@@ -235,9 +270,7 @@ export default function AdminDashboard() {
         setAppointments(prev => prev.map(a => a._id === id ? { ...a, status: newStatus as any } : a));
         triggerFeedback(`Appointment updated to ${newStatus}.`, 'success');
       } else {
-        // Fallback for demo
-        setAppointments(prev => prev.map(a => a._id === id ? { ...a, status: newStatus as any } : a));
-        triggerFeedback(`Demo Mode: Status simulated to ${newStatus}.`, 'success');
+        triggerFeedback(`Could not update appointment status.`, 'error');
       }
     } catch (e) {
       triggerFeedback('Failed to update slot.', 'error');
@@ -273,13 +306,7 @@ export default function AdminDashboard() {
         } : a));
         triggerFeedback('Appointment rescheduled successfully.', 'success');
       } else {
-        setAppointments(prev => prev.map(a => a._id === apptId ? { 
-          ...a, 
-          status: 'Rescheduled', 
-          scheduleDate: rescheduleData.date, 
-          scheduleTime: rescheduleData.time 
-        } : a));
-        triggerFeedback('Demo Mode: Reschedule simulated.', 'success');
+        triggerFeedback('Could not reschedule appointment.', 'error');
       }
       setReschedulingId(null);
     } catch (err) {
@@ -301,14 +328,62 @@ export default function AdminDashboard() {
       });
 
       if (res.ok) {
-        setLeads(prev => prev.map(l => l._id === id ? { ...l, status: newStatus as any } : l));
+        setLeads(prev => prev.map(l => l._id === id ? { ...l, status: newStatus } : l));
         triggerFeedback(`Lead moved to ${newStatus}.`, 'success');
       } else {
-        setLeads(prev => prev.map(l => l._id === id ? { ...l, status: newStatus as any } : l));
-        triggerFeedback(`Demo Mode: Status simulated to ${newStatus}.`, 'success');
+        triggerFeedback(`Could not update lead status.`, 'error');
       }
     } catch (e) {
       triggerFeedback('Failed to update lead status.', 'error');
+    }
+  };
+
+  // Save notes handler
+  const handleSaveNotes = async (id: string, notes: string, isLead: boolean) => {
+    try {
+      const token = localStorage.getItem('hommed_token');
+      const url = isLead ? '/api/leads' : '/api/appointments';
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id, notes })
+      });
+
+      if (res.ok) {
+        if (isLead) {
+          setLeads(prev => prev.map(l => l._id === id ? { ...l, notes } : l));
+        } else {
+          setAppointments(prev => prev.map(a => a._id === id ? { ...a, notes } : a));
+        }
+        triggerFeedback('Notes saved successfully.', 'success');
+      } else {
+        triggerFeedback('Failed to save notes.', 'error');
+      }
+    } catch (err) {
+      triggerFeedback('Error saving notes.', 'error');
+    }
+  };
+
+  // Delete lead handler
+  const handleDeleteLead = async (id: string) => {
+    if (!confirm('Are you sure you want to permanently delete this lead?')) return;
+    try {
+      const token = localStorage.getItem('hommed_token');
+      const res = await fetch(`/api/leads?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setLeads(prev => prev.filter(l => l._id !== id));
+        triggerFeedback('Lead permanently deleted.', 'success');
+      } else {
+        triggerFeedback('Failed to delete lead.', 'error');
+      }
+    } catch (err) {
+      triggerFeedback('Error deleting lead.', 'error');
     }
   };
 
@@ -326,15 +401,12 @@ export default function AdminDashboard() {
       });
 
       if (res.ok) {
-        const data = await res.json();
         // Reload popups list since activating one will deactivate other popups
         const popupsRes = await fetch('/api/popups');
         if (popupsRes.ok) setPopups(await popupsRes.json());
         triggerFeedback('Popup banner toggled successfully.', 'success');
       } else {
-        // Fallback simulation
-        setPopups(prev => prev.map(p => p._id === popupId ? { ...p, isActive: !currentActive } : { ...p, isActive: p._id === popupId ? !currentActive : false }));
-        triggerFeedback('Demo Mode: Popup settings saved.', 'success');
+        triggerFeedback('Could not update popup status.', 'error');
       }
     } catch (e) {
       triggerFeedback('Failed to toggle popup configuration.', 'error');
@@ -368,15 +440,7 @@ export default function AdminDashboard() {
         setShowServiceForm(false);
         setServiceForm({ title: '', icon: 'Sparkles', shortDescription: '', detailedDescription: '', symptoms: '', treatments: '' });
       } else {
-        const mockNew = {
-          ...payload,
-          slug: serviceForm.title.toLowerCase().replace(/\s+/g, '-'),
-          _id: `mock-srv-${Date.now()}`
-        };
-        setServices(prev => [mockNew, ...prev]);
-        triggerFeedback('Demo Mode: Specialization simulated.', 'success');
-        setShowServiceForm(false);
-        setServiceForm({ title: '', icon: 'Sparkles', shortDescription: '', detailedDescription: '', symptoms: '', treatments: '' });
+        triggerFeedback('Could not add service.', 'error');
       }
     } catch (err) {
       triggerFeedback('Failed to add service.', 'error');
@@ -396,8 +460,7 @@ export default function AdminDashboard() {
         setServices(prev => prev.filter(s => s._id !== id));
         triggerFeedback('Specialization deleted.', 'success');
       } else {
-        setServices(prev => prev.filter(s => s._id !== id));
-        triggerFeedback('Demo Mode: Deleted specialization.', 'success');
+        triggerFeedback('Could not delete service.', 'error');
       }
     } catch (err) {
       triggerFeedback('Error deleting service.', 'error');
@@ -425,17 +488,7 @@ export default function AdminDashboard() {
         setShowBlogForm(false);
         setBlogForm({ title: '', category: 'General Health', excerpt: '', content: '', image: '' });
       } else {
-        const mockNew = {
-          ...blogForm,
-          slug: blogForm.title.toLowerCase().replace(/\s+/g, '-'),
-          author: 'Dr. Iqbal',
-          publishedAt: new Date().toISOString(),
-          _id: `mock-blog-${Date.now()}`
-        };
-        setBlogs(prev => [mockNew, ...prev]);
-        triggerFeedback('Demo Mode: Article publication simulated.', 'success');
-        setShowBlogForm(false);
-        setBlogForm({ title: '', category: 'General Health', excerpt: '', content: '', image: '' });
+        triggerFeedback('Could not publish article.', 'error');
       }
     } catch (err) {
       triggerFeedback('Failed to publish article.', 'error');
@@ -455,12 +508,66 @@ export default function AdminDashboard() {
         setBlogs(prev => prev.filter(b => b._id !== id));
         triggerFeedback('Blog post deleted.', 'success');
       } else {
-        setBlogs(prev => prev.filter(b => b._id !== id));
-        triggerFeedback('Demo Mode: Article deleted.', 'success');
+        triggerFeedback('Could not delete article.', 'error');
       }
     } catch (err) {
       triggerFeedback('Error deleting blog post.', 'error');
     }
+  };
+
+  // CSV Export functions
+  const exportLeadsCSV = (data: LeadData[]) => {
+    const headers = ['Name', 'Phone', 'Email', 'Source', 'Status', 'Age', 'Gender', 'City', 'Notes', 'Follow-up Scheduled', 'Created At'];
+    const rows = data.map(l => [
+      l.name,
+      l.phone,
+      l.email || '',
+      l.leadSource || 'contact',
+      normalizeLeadStatus(l.status),
+      l.age || '',
+      l.gender || '',
+      l.city || '',
+      l.notes || '',
+      l.followUpScheduled || '',
+      l.createdAt
+    ]);
+    
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(val => `"${val.toString().replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `hommed_leads_${new Date().toISOString().split('T')[0]}.csv`);
+    link.click();
+  };
+
+  const exportApptsCSV = (data: AppointmentData[]) => {
+    const headers = ['Patient Name', 'Phone', 'Email', 'Type', 'Service', 'Date', 'Time', 'Status', 'Payment', 'Age', 'Gender', 'City', 'Disease', 'Notes', 'Created At'];
+    const rows = data.map(a => [
+      a.patientName,
+      a.patientPhone,
+      a.patientEmail || '',
+      a.appointmentType || 'Clinic 1',
+      a.service,
+      a.scheduleDate,
+      a.scheduleTime,
+      a.status,
+      a.paymentStatus,
+      a.patientAge || '',
+      a.patientGender || '',
+      a.patientCity || '',
+      a.disease || '',
+      a.notes || '',
+      a.createdAt
+    ]);
+    
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(val => `"${val.toString().replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `hommed_appointments_${new Date().toISOString().split('T')[0]}.csv`);
+    link.click();
   };
 
   if (loading && !adminUser) {
@@ -476,28 +583,77 @@ export default function AdminDashboard() {
 
   if (!adminUser) return null;
 
-  // Filter lists
-  const filteredLeads = leads.filter(l => 
-    l.name.toLowerCase().includes(leadSearch.toLowerCase()) || 
-    l.phone.includes(leadSearch) ||
-    (l.inquiry && l.inquiry.toLowerCase().includes(leadSearch.toLowerCase()))
-  );
+  // Filter Leads
+  const filteredLeads = leads.filter(l => {
+    // Tab filtering
+    const isPopupLead = l.leadSource === 'popup';
+    if (leadsSubTab === 'popup' && !isPopupLead) return false;
+    if (leadsSubTab === 'general' && isPopupLead) return false;
 
-  const filteredAppts = appointments.filter(a => 
-    a.patientName.toLowerCase().includes(apptSearch.toLowerCase()) || 
-    a.patientPhone.includes(apptSearch) || 
-    a.service.toLowerCase().includes(apptSearch.toLowerCase())
-  );
+    // Search query filtering
+    const searchMatch = 
+      l.name.toLowerCase().includes(leadSearch.toLowerCase()) || 
+      l.phone.includes(leadSearch) ||
+      (l.inquiry && l.inquiry.toLowerCase().includes(leadSearch.toLowerCase())) ||
+      (l.city && l.city.toLowerCase().includes(leadSearch.toLowerCase()));
 
-  // Kanban setup
+    // Status filtering
+    const normalizedStatus = normalizeLeadStatus(l.status);
+    const statusMatch = leadStatusFilter === 'All' || normalizedStatus === leadStatusFilter;
+
+    return searchMatch && statusMatch;
+  });
+
+  // Filter Appointments
+  const filteredAppts = appointments.filter(a => {
+    // Search query
+    const searchMatch = 
+      a.patientName.toLowerCase().includes(apptSearch.toLowerCase()) || 
+      a.patientPhone.includes(apptSearch) || 
+      a.service.toLowerCase().includes(apptSearch.toLowerCase()) ||
+      (a.patientEmail && a.patientEmail.toLowerCase().includes(apptSearch.toLowerCase())) ||
+      (a.patientCity && a.patientCity.toLowerCase().includes(apptSearch.toLowerCase())) ||
+      (a.disease && a.disease.toLowerCase().includes(apptSearch.toLowerCase()));
+
+    // Clinic Type filter
+    const apptType = a.appointmentType || 'Clinic 1';
+    const typeMatch = apptTypeFilter === 'All' || apptType === apptTypeFilter;
+
+    // Status filter
+    const statusMatch = apptStatusFilter === 'All' || a.status === apptStatusFilter;
+
+    // Date range filter
+    let dateMatch = true;
+    if (apptDateFrom && a.scheduleDate < apptDateFrom) dateMatch = false;
+    if (apptDateTo && a.scheduleDate > apptDateTo) dateMatch = false;
+
+    return searchMatch && typeMatch && statusMatch && dateMatch;
+  });
+
+  // Kanban columns configuration
   const kanbanColumns = [
-    { id: 'New Lead', label: 'New Leads', color: 'bg-blue-500' },
+    { id: 'New', label: 'New Leads', color: 'bg-blue-500' },
     { id: 'Contacted', label: 'Contacted', color: 'bg-cyan-500' },
-    { id: 'Consultation Scheduled', label: 'Appt Scheduled', color: 'bg-purple-500' },
-    { id: 'Follow-Up Required', label: 'Follow-Up', color: 'bg-amber-500' },
-    { id: 'Converted', label: 'Converted Patient', color: 'bg-emerald-500' },
+    { id: 'Confirmed', label: 'Confirmed', color: 'bg-purple-500' },
+    { id: 'Visited', label: 'Visited', color: 'bg-[#ff7a00]' },
+    { id: 'Follow-Up', label: 'Follow-Up', color: 'bg-amber-500' },
     { id: 'Closed', label: 'Closed/Archive', color: 'bg-slate-400' }
   ];
+
+  // Statistics calculation
+  const totalLeadsCount = leads.length;
+  const popupLeadsCount = leads.filter(l => l.leadSource === 'popup').length;
+  const totalApptsCount = appointments.length;
+
+  // Today activity metrics
+  const todayStr = new Date().toISOString().split('T')[0];
+  const apptsToday = appointments.filter(a => a.scheduleDate === todayStr);
+  const leadsToday = leads.filter(l => l.createdAt && l.createdAt.startsWith(todayStr));
+
+  // Clinic Distribution metrics
+  const clinic1Count = appointments.filter(a => (a.appointmentType || 'Clinic 1') === 'Clinic 1').length;
+  const clinic2Count = appointments.filter(a => a.appointmentType === 'Clinic 2').length;
+  const onlineCount = appointments.filter(a => a.appointmentType === 'Online').length;
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row font-sans">
@@ -513,7 +669,7 @@ export default function AdminDashboard() {
             </Link>
             <div>
               <span className="font-accent font-extrabold text-xl tracking-tight text-white">HOMMED</span>
-              <p className="text-[10px] text-brand-cyan uppercase tracking-widest font-bold">CRM Panel v1.2</p>
+              <p className="text-[10px] text-brand-cyan uppercase tracking-widest font-bold">CRM Panel v2.0</p>
             </div>
           </div>
 
@@ -676,8 +832,8 @@ export default function AdminDashboard() {
                   <span className="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><Users className="h-5 w-5" /></span>
                 </div>
                 <div>
-                  <p className="text-3xl font-extrabold text-white">{leads.length}</p>
-                  <p className="text-[10px] text-emerald-400 flex items-center mt-1"><ArrowUpRight className="h-3 w-3 mr-0.5" /> +18% from last week</p>
+                  <p className="text-3xl font-extrabold text-white">{totalLeadsCount}</p>
+                  <p className="text-[10px] text-slate-400 mt-1">{popupLeadsCount} captured via popup trigger</p>
                 </div>
               </div>
 
@@ -687,26 +843,28 @@ export default function AdminDashboard() {
                   <span className="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><Calendar className="h-5 w-5" /></span>
                 </div>
                 <div>
-                  <p className="text-3xl font-extrabold text-white">{appointments.length}</p>
+                  <p className="text-3xl font-extrabold text-white">{totalApptsCount}</p>
                   <p className="text-[10px] text-slate-400 mt-1">{appointments.filter(a => a.status === 'Pending').length} pending confirmation</p>
                 </div>
               </div>
 
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Specialties Active</span>
-                  <span className="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg"><Layers className="h-5 w-5" /></span>
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Today's Activity</span>
+                  <span className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><Clock className="h-5 w-5" /></span>
                 </div>
                 <div>
-                  <p className="text-3xl font-extrabold text-white">{services.length}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Managed dynamically on site</p>
+                  <p className="text-3xl font-extrabold text-white">
+                    {apptsToday.length + leadsToday.length}
+                  </p>
+                  <p className="text-[10px] text-emerald-400 mt-1">+{apptsToday.length} Appts | +{leadsToday.length} Leads today</p>
                 </div>
               </div>
 
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Popup Triggers</span>
-                  <span className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><Settings className="h-5 w-5" /></span>
+                  <span className="p-2 bg-[#ff7a00]/10 text-[#ff7a00] rounded-lg"><Settings className="h-5 w-5" /></span>
                 </div>
                 <div>
                   <p className="text-3xl font-extrabold text-white">
@@ -744,6 +902,7 @@ export default function AdminDashboard() {
                           <div className="flex items-center space-x-2">
                             <p className="font-bold text-sm text-white">{appt.patientName}</p>
                             <span className="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded font-semibold">{appt.service}</span>
+                            <span className="text-[9px] bg-purple-900/40 text-purple-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">{appt.appointmentType || 'Clinic 1'}</span>
                           </div>
                           <div className="flex items-center space-x-3 text-xs text-slate-400">
                             <span>Phone: <strong>{appt.patientPhone}</strong></span>
@@ -774,27 +933,51 @@ export default function AdminDashboard() {
                 )}
               </div>
 
-              {/* CRM Leads status summary */}
-              <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4">
-                <h3 className="font-bold text-lg text-white">Leads Funnel Status</h3>
+              {/* CRM Leads & Clinic Distribution status summary */}
+              <div className="space-y-6">
                 
-                <div className="space-y-3.5">
-                  {kanbanColumns.map(col => {
-                    const count = leads.filter(l => l.status === col.id).length;
-                    const pct = leads.length > 0 ? (count / leads.length) * 100 : 0;
-                    return (
-                      <div key={col.id} className="space-y-1">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="font-semibold text-slate-300">{col.label}</span>
-                          <span className="font-mono text-slate-400 font-bold">{count} leads</span>
-                        </div>
-                        <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
-                          <div className={`h-full ${col.color}`} style={{ width: `${pct}%` }}></div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                {/* Clinic Distribution */}
+                <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4">
+                  <h3 className="font-bold text-lg text-white">Clinic Distribution</h3>
+                  <div className="space-y-3 text-xs">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Clinic 1 (Kanpur Branch):</span>
+                      <strong className="text-white font-mono text-sm">{clinic1Count} bookings</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Clinic 2 (Alt Branch):</span>
+                      <strong className="text-white font-mono text-sm">{clinic2Count} bookings</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Online Consults:</span>
+                      <strong className="text-white font-mono text-sm">{onlineCount} bookings</strong>
+                    </div>
+                  </div>
                 </div>
+
+                {/* CRM Leads Funnel */}
+                <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 space-y-4">
+                  <h3 className="font-bold text-lg text-white">Leads Funnel Status</h3>
+                  
+                  <div className="space-y-3.5">
+                    {kanbanColumns.map(col => {
+                      const count = leads.filter(l => normalizeLeadStatus(l.status) === col.id).length;
+                      const pct = leads.length > 0 ? (count / leads.length) * 100 : 0;
+                      return (
+                        <div key={col.id} className="space-y-1">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-semibold text-slate-300">{col.label}</span>
+                            <span className="font-mono text-slate-400 font-bold">{count} leads</span>
+                          </div>
+                          <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                            <div className={`h-full ${col.color}`} style={{ width: `${pct}%` }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -806,7 +989,7 @@ export default function AdminDashboard() {
         {activeTab === 'leads' && (
           <div className="space-y-6">
 
-            {/* Honest error banner — shown when the leads fetch failed (e.g. expired admin session) */}
+            {/* Honest error banner */}
             {leadsError && (
               <div className="flex items-start gap-3 p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200">
                 <ShieldAlert className="h-5 w-5 shrink-0 mt-0.5 text-rose-400" />
@@ -824,23 +1007,72 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Search filter bar */}
-            <div className="relative max-w-md">
-              <input
-                type="text"
-                value={leadSearch}
-                onChange={e => setLeadSearch(e.target.value)}
-                placeholder="Search leads by patient name, phone or inquiry..."
-                className="w-full h-11 pl-10 pr-4 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:border-brand-blue focus:outline-none"
-              />
-              <Search className="h-4.5 w-4.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            {/* Search, filters, tabs and CSV Export row */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              
+              {/* Sub-tab selection */}
+              <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                <button
+                  onClick={() => setLeadsSubTab('general')}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                    leadsSubTab === 'general' ? 'bg-brand-blue text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  General CRM Leads
+                </button>
+                <button
+                  onClick={() => setLeadsSubTab('popup')}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                    leadsSubTab === 'popup' ? 'bg-brand-blue text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Popup Leads ({leads.filter(l => l.leadSource === 'popup').length})
+                </button>
+              </div>
+
+              {/* Action and filters */}
+              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <div className="relative flex-grow md:flex-grow-0 md:w-64">
+                  <input
+                    type="text"
+                    value={leadSearch}
+                    onChange={e => setLeadSearch(e.target.value)}
+                    placeholder="Search leads by name, phone or city..."
+                    className="w-full h-10 pl-9 pr-4 bg-slate-950 border border-slate-800 rounded-xl text-xs focus:border-brand-blue focus:outline-none"
+                  />
+                  <Search className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
+
+                <select
+                  value={leadStatusFilter}
+                  onChange={e => setLeadStatusFilter(e.target.value)}
+                  className="h-10 px-3 bg-slate-950 text-xs border border-slate-800 rounded-xl text-slate-300 focus:outline-none"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="New">New</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Visited">Visited</option>
+                  <option value="Follow-Up">Follow-Up</option>
+                  <option value="Closed">Closed</option>
+                </select>
+
+                <button
+                  onClick={() => exportLeadsCSV(filteredLeads)}
+                  className="h-10 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow"
+                  title="Export current filtered list to CSV file"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Export CSV</span>
+                </button>
+              </div>
             </div>
 
             {/* Kanban Columns Flex Container */}
             <div className="flex gap-5 overflow-x-auto pb-6 scrollbar-thin scroll-smooth select-none">
               
               {kanbanColumns.map(col => {
-                const columnLeads = filteredLeads.filter(l => l.status === col.id);
+                const columnLeads = filteredLeads.filter(l => normalizeLeadStatus(l.status) === col.id);
                 return (
                   <div key={col.id} className="bg-slate-950/85 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-4 w-72 shrink-0 shadow-xl backdrop-blur-md">
                     
@@ -855,7 +1087,7 @@ export default function AdminDashboard() {
                       </span>
                     </div>
 
-                    {/* Cards */}
+                    {/* Cards Container */}
                     <div className="space-y-3 flex-grow overflow-y-auto max-h-[55vh] min-h-[150px] pr-1.5 scrollbar-thin">
                       {columnLeads.length === 0 ? (
                         <div className="text-center py-10 text-slate-600 text-xs italic border border-dashed border-slate-900 rounded-xl">
@@ -868,26 +1100,50 @@ export default function AdminDashboard() {
                             `Hello ${lead.name}, this is HOMMED (Dr. Iqbal's Homeopathy Centre). We received your inquiry: "${lead.inquiry.substring(0, 60)}..."`
                           )}`;
                           
+                          const notesVal = editingNotes[lead._id] !== undefined ? editingNotes[lead._id] : (lead.notes || '');
+
                           return (
                             <div 
                               key={lead._id} 
-                              className="p-4 bg-slate-900/60 border border-slate-800/80 rounded-xl space-y-3.5 hover:border-brand-blue/40 hover:shadow-lg hover:shadow-brand-blue/5 transition-all duration-300 group"
+                              className={`p-4 bg-slate-900/60 border rounded-xl space-y-3 hover:shadow-lg hover:shadow-brand-blue/5 transition-all duration-300 group ${
+                                lead.isDuplicate ? 'border-amber-800/80 shadow shadow-amber-950/20' : 'border-slate-800/80 hover:border-brand-blue/40'
+                              }`}
                             >
+                              
+                              {/* Duplicate Warning */}
+                              {lead.isDuplicate && (
+                                <div className="px-2 py-1 bg-amber-950/60 border border-amber-900 text-amber-300 rounded text-[9px] font-bold flex items-center space-x-1.5 animate-pulse">
+                                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                                  <span>Duplicate lead detected</span>
+                                </div>
+                              )}
+
                               {/* Header User info */}
                               <div className="space-y-1">
                                 <div className="flex justify-between items-start">
                                   <p className="font-extrabold text-xs text-white group-hover:text-brand-cyan transition-colors">{lead.name}</p>
-                                  <span className="text-[9px] text-slate-500 font-medium">
-                                    {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric'}) : 'Lead'}
-                                  </span>
+                                  <button
+                                    onClick={() => handleDeleteLead(lead._id)}
+                                    className="opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-opacity p-0.5 text-slate-500 rounded"
+                                    title="Delete Lead permanently"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
                                 </div>
                                 
-                                {lead.email && (
-                                  <div className="flex items-center space-x-1.5 text-[9px] text-slate-400">
-                                    <Mail className="h-2.5 w-2.5 text-slate-500 shrink-0" />
-                                    <span className="truncate max-w-[170px]" title={lead.email}>{lead.email}</span>
-                                  </div>
-                                )}
+                                <div className="flex flex-col space-y-0.5 text-[9px] text-slate-400">
+                                  <span className="font-medium text-slate-300">Phone: {lead.phone}</span>
+                                  {lead.email && <span className="truncate" title={lead.email}>Email: {lead.email}</span>}
+                                  {lead.city && <span>City: {lead.city}</span>}
+                                  {(lead.age || lead.gender) && (
+                                    <span>
+                                      {lead.age ? `${lead.age} years` : ''} {lead.gender ? `| ${lead.gender}` : ''}
+                                    </span>
+                                  )}
+                                  <span className="text-slate-500 pt-0.5 font-light text-[8px]">
+                                    Recd: {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}) : '—'}
+                                  </span>
+                                </div>
                               </div>
 
                               {/* Inquiry content */}
@@ -896,6 +1152,33 @@ export default function AdminDashboard() {
                                   {lead.inquiry}
                                 </p>
                               )}
+
+                              {/* CRM Staff Notes text area */}
+                              <div className="space-y-1.5 pt-1.5 border-t border-slate-850/60">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">CRM Staff Notes</span>
+                                  {editingNotes[lead._id] !== undefined && (
+                                    <button 
+                                      onClick={() => {
+                                        handleSaveNotes(lead._id, notesVal, true);
+                                        // clear editing state override
+                                        const next = { ...editingNotes };
+                                        delete next[lead._id];
+                                        setEditingNotes(next);
+                                      }}
+                                      className="text-[8px] bg-brand-blue hover:bg-brand-blue/90 text-white px-2 py-0.5 rounded font-bold transition-all"
+                                    >
+                                      Save
+                                    </button>
+                                  )}
+                                </div>
+                                <textarea
+                                  value={notesVal}
+                                  onChange={e => setEditingNotes({ ...editingNotes, [lead._id]: e.target.value })}
+                                  placeholder="Type notes (history, client constraints)..."
+                                  className="w-full bg-slate-950 text-[9px] border border-slate-850 p-1.5 rounded-lg font-light text-slate-300 focus:outline-none focus:border-slate-700 min-h-[40px] resize-y"
+                                />
+                              </div>
 
                               {/* Quick Contact Action Buttons */}
                               <div className="flex items-center gap-1.5 pt-1">
@@ -921,16 +1204,19 @@ export default function AdminDashboard() {
                               </div>
                               
                               {/* Selector to change column status */}
-                              <div className="pt-2.5 border-t border-slate-800/80 flex flex-col space-y-1">
-                                <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Lead</span>
+                              <div className="pt-2 border-t border-slate-800/85 flex flex-col space-y-1">
+                                <span className="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">Move Status</span>
                                 <select
-                                  value={lead.status}
+                                  value={normalizeLeadStatus(lead.status)}
                                   onChange={e => handleUpdateLeadStatus(lead._id, e.target.value)}
                                   className="w-full bg-slate-950 text-[10px] border border-slate-800/80 p-1.5 rounded-lg font-bold text-slate-300 hover:border-slate-700 focus:border-brand-blue focus:outline-none transition-colors"
                                 >
-                                  {kanbanColumns.map(opt => (
-                                    <option key={opt.id} value={opt.id}>{opt.label}</option>
-                                  ))}
+                                  <option value="New">New</option>
+                                  <option value="Contacted">Contacted</option>
+                                  <option value="Confirmed">Confirmed</option>
+                                  <option value="Visited">Visited</option>
+                                  <option value="Follow-Up">Follow-Up</option>
+                                  <option value="Closed">Closed</option>
                                 </select>
                               </div>
                             </div>
@@ -952,147 +1238,348 @@ export default function AdminDashboard() {
         {activeTab === 'appointments' && (
           <div className="space-y-6">
             
-            {/* Search filter bar */}
-            <div className="relative max-w-md">
-              <input
-                type="text"
-                value={apptSearch}
-                onChange={e => setApptSearch(e.target.value)}
-                placeholder="Search appointments by patient name, phone, or service..."
-                className="w-full h-11 pl-10 pr-4 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:border-brand-blue focus:outline-none"
-              />
-              <Search className="h-4.5 w-4.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            {/* Search and Filters panel */}
+            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-5 space-y-4">
+              
+              <div className="flex items-center space-x-2 border-b border-slate-850 pb-2">
+                <Filter className="w-4.5 h-4.5 text-brand-cyan" />
+                <h4 className="font-bold text-sm text-white">Filter & Search Bookings</h4>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                
+                {/* Search query */}
+                <div className="space-y-1 col-span-1 sm:col-span-2">
+                  <label className="text-[10px] font-extrabold uppercase text-slate-400">Search Patients/Diseases</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={apptSearch}
+                      onChange={e => setApptSearch(e.target.value)}
+                      placeholder="Search patient, phone, city, disease..."
+                      className="w-full h-10 pl-9 pr-4 bg-slate-900 border border-slate-850 rounded-xl text-xs text-white focus:outline-none"
+                    />
+                    <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                {/* Clinic Type */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold uppercase text-slate-400">Clinic Branch/Type</label>
+                  <select
+                    value={apptTypeFilter}
+                    onChange={e => setApptTypeFilter(e.target.value)}
+                    className="w-full h-10 bg-slate-900 border border-slate-850 rounded-xl text-xs text-slate-300 focus:outline-none px-2"
+                  >
+                    <option value="All">All Locations</option>
+                    <option value="Clinic 1">Clinic 1 (Kanpur)</option>
+                    <option value="Clinic 2">Clinic 2 (Alt Branch)</option>
+                    <option value="Online">Online Consult</option>
+                  </select>
+                </div>
+
+                {/* Status */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold uppercase text-slate-400">Booking Status</label>
+                  <select
+                    value={apptStatusFilter}
+                    onChange={e => setApptStatusFilter(e.target.value)}
+                    className="w-full h-10 bg-slate-900 border border-slate-850 rounded-xl text-xs text-slate-300 focus:outline-none px-2"
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Rescheduled">Rescheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Date From */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold uppercase text-slate-400">From Date</label>
+                  <input
+                    type="date"
+                    value={apptDateFrom}
+                    onChange={e => setApptDateFrom(e.target.value)}
+                    className="w-full h-10 bg-slate-900 border border-slate-850 rounded-xl text-xs text-slate-300 focus:outline-none px-2"
+                  />
+                </div>
+
+                {/* Date To */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold uppercase text-slate-400">To Date</label>
+                  <input
+                    type="date"
+                    value={apptDateTo}
+                    onChange={e => setApptDateTo(e.target.value)}
+                    className="w-full h-10 bg-slate-900 border border-slate-850 rounded-xl text-xs text-slate-300 focus:outline-none px-2"
+                  />
+                </div>
+
+              </div>
+
+              {/* CSV Export & Clear filters row */}
+              <div className="flex justify-between items-center pt-2 border-t border-slate-850/65">
+                <span className="text-[10px] text-slate-500 font-semibold">{filteredAppts.length} appointments matched.</span>
+                <div className="flex items-center space-x-2">
+                  {(apptSearch || apptTypeFilter !== 'All' || apptStatusFilter !== 'All' || apptDateFrom || apptDateTo) && (
+                    <button
+                      onClick={() => {
+                        setApptSearch('');
+                        setApptTypeFilter('All');
+                        setApptStatusFilter('All');
+                        setApptDateFrom('');
+                        setApptDateTo('');
+                      }}
+                      className="h-9 px-3 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white rounded-xl text-xs transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                  <button
+                    onClick={() => exportApptsCSV(filteredAppts)}
+                    className="h-9 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Export Filtered to CSV</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
 
             {/* Appointments table */}
             <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[750px]">
+              <table className="w-full text-left border-collapse min-w-[950px]">
                 <thead>
                   <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                    <th className="pb-3">Patient</th>
-                    <th className="pb-3">Specialization</th>
+                    <th className="pb-3">Patient & Demographics</th>
+                    <th className="pb-3">Clinic & Service</th>
+                    <th className="pb-3">Medical Complaint</th>
                     <th className="pb-3">Requested Slot</th>
                     <th className="pb-3">Status</th>
                     <th className="pb-3">Fee Status</th>
-                    <th className="pb-3">Change Actions</th>
+                    <th className="pb-3">CRM Staff Notes</th>
+                    <th className="pb-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
-                  {filteredAppts.map(appt => (
-                    <tr key={appt._id} className="hover:bg-slate-900/50 transition-colors">
-                      <td className="py-4">
-                        <div className="space-y-0.5">
-                          <p className="font-bold text-white text-sm">{appt.patientName}</p>
-                          <p className="text-slate-400">Phone: {appt.patientPhone}</p>
-                        </div>
-                      </td>
-                      <td className="py-4 font-semibold text-white">{appt.service}</td>
-                      <td className="py-4">
-                        <div className="space-y-0.5">
-                          <p className="font-bold text-white">{appt.scheduleDate}</p>
-                          <p className="text-slate-400">{appt.scheduleTime}</p>
-                        </div>
-                      </td>
-                      <td className="py-4">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          appt.status === 'Confirmed' 
-                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' 
-                            : appt.status === 'Cancelled'
-                            ? 'bg-rose-950 text-rose-400 border border-rose-900'
-                            : appt.status === 'Rescheduled'
-                            ? 'bg-amber-950 text-amber-400 border border-amber-900'
-                            : appt.status === 'Completed'
-                            ? 'bg-slate-800 text-slate-300 border border-slate-700'
-                            : 'bg-blue-950 text-blue-400 border border-blue-900'
-                        }`}>
-                          {appt.status}
-                        </span>
-                      </td>
-                      <td className="py-4">
-                        <select
-                          value={appt.paymentStatus}
-                          onChange={async (e) => {
-                            const val = e.target.value;
-                            const token = localStorage.getItem('hommed_token');
-                            await fetch('/api/appointments', {
-                              method: 'PUT',
-                              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                              body: JSON.stringify({ id: appt._id, paymentStatus: val })
-                            });
-                            setAppointments(prev => prev.map(a => a._id === appt._id ? { ...a, paymentStatus: val as any } : a));
-                            triggerFeedback('Payment status updated.', 'success');
-                          }}
-                          className="bg-slate-900 border border-slate-800 p-1 rounded focus:outline-none"
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Paid">Paid</option>
-                        </select>
-                      </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleUpdateApptStatus(appt._id, 'Confirmed')}
-                            className="p-1.5 bg-emerald-900/40 text-emerald-400 border border-emerald-800/60 rounded hover:bg-emerald-900 hover:text-white transition-all"
-                            title="Confirm Booking"
-                          >
-                            <Check className="h-3.5 w-3.5" />
-                          </button>
-                          
-                          <button 
-                            onClick={() => {
-                              setReschedulingId(appt._id);
-                              setRescheduleData({ date: appt.scheduleDate, time: appt.scheduleTime });
-                            }}
-                            className="p-1.5 bg-amber-900/40 text-amber-400 border border-amber-800/60 rounded hover:bg-amber-900 hover:text-white transition-all"
-                            title="Reschedule / Change timing"
-                          >
-                            <Clock className="h-3.5 w-3.5" />
-                          </button>
-
-                          <button 
-                            onClick={() => handleUpdateApptStatus(appt._id, 'Completed')}
-                            className="p-1.5 bg-slate-800 text-slate-300 border border-slate-700 rounded hover:bg-slate-700 hover:text-white transition-all"
-                            title="Mark as Completed"
-                          >
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                          </button>
-
-                          <button 
-                            onClick={() => handleUpdateApptStatus(appt._id, 'Cancelled')}
-                            className="p-1.5 bg-rose-900/40 text-rose-400 border border-rose-800/60 rounded hover:bg-rose-900 hover:text-white transition-all"
-                            title="Cancel Booking"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-
-                        {/* Inline Reschedule Dialog */}
-                        {reschedulingId === appt._id && (
-                          <form onSubmit={(e) => handleRescheduleSubmit(e, appt._id)} className="absolute bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3 z-20 mt-1 shadow-2xl">
-                            <h5 className="font-bold text-xs text-white">Reschedule Patient</h5>
-                            <div className="space-y-2">
-                              <input 
-                                type="date" 
-                                value={rescheduleData.date}
-                                onChange={e => setRescheduleData({ ...rescheduleData, date: e.target.value })}
-                                className="bg-slate-900 text-xs border border-slate-800 p-1.5 rounded w-full"
-                              />
-                              <input 
-                                type="time" 
-                                value={rescheduleData.time}
-                                onChange={e => setRescheduleData({ ...rescheduleData, time: e.target.value })}
-                                className="bg-slate-900 text-xs border border-slate-800 p-1.5 rounded w-full"
-                              />
-                            </div>
-                            <div className="flex gap-2">
-                              <button type="submit" className="h-7 px-3 bg-brand-blue text-white rounded text-[10px] font-bold">Apply</button>
-                              <button type="button" onClick={() => setReschedulingId(null)} className="h-7 px-3 bg-slate-800 text-slate-300 rounded text-[10px] font-bold">Cancel</button>
-                            </div>
-                          </form>
-                        )}
+                  {filteredAppts.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center text-slate-500 italic">
+                        No appointments found matching current filters.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    filteredAppts.map(appt => {
+                      const notesVal = editingNotes[appt._id] !== undefined ? editingNotes[appt._id] : (appt.notes || '');
+                      const cleanPhone = appt.patientPhone.replace(/\D/g, '');
+                      const whatsappUrl = `https://wa.me/${cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone}?text=${encodeURIComponent(
+                        `Hello ${appt.patientName}, this is HOMMED clinic. Your booking for '${appt.service}' on ${appt.scheduleDate} at ${appt.scheduleTime} has been updated. Please confirm your attendance.`
+                      )}`;
+
+                      return (
+                        <tr key={appt._id} className="hover:bg-slate-900/50 transition-colors">
+                          
+                          {/* Patient and demographics */}
+                          <td className="py-4">
+                            <div className="space-y-0.5">
+                              <p className="font-bold text-white text-sm">{appt.patientName}</p>
+                              <p className="text-slate-400">Phone: {appt.patientPhone}</p>
+                              {appt.patientEmail && <p className="text-slate-500 text-[10px]">Email: {appt.patientEmail}</p>}
+                              {(appt.patientAge || appt.patientGender || appt.patientCity) && (
+                                <p className="text-[10px] text-brand-cyan/80 font-medium">
+                                  {appt.patientAge ? `${appt.patientAge} yrs` : ''} 
+                                  {appt.patientGender ? ` | ${appt.patientGender}` : ''} 
+                                  {appt.patientCity ? ` | ${appt.patientCity}` : ''}
+                                </p>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Clinic branch and Service */}
+                          <td className="py-4 font-semibold text-white">
+                            <div className="space-y-1">
+                              <span className="inline-block text-[9px] bg-purple-950 text-purple-300 border border-purple-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                                {appt.appointmentType || 'Clinic 1'}
+                              </span>
+                              <p className="text-slate-300 font-semibold">{appt.service}</p>
+                            </div>
+                          </td>
+
+                          {/* Medical Complaint */}
+                          <td className="py-4 max-w-[180px]">
+                            <p className="text-slate-300 font-light truncate" title={appt.disease || 'No detail provided'}>
+                              {appt.disease || '—'}
+                            </p>
+                          </td>
+
+                          {/* Schedule time */}
+                          <td className="py-4">
+                            <div className="space-y-0.5">
+                              <p className="font-bold text-white">{appt.scheduleDate}</p>
+                              <p className="text-slate-400">{appt.scheduleTime}</p>
+                            </div>
+                          </td>
+
+                          {/* Status */}
+                          <td className="py-4">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              appt.status === 'Confirmed' 
+                                ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' 
+                                : appt.status === 'Cancelled'
+                                ? 'bg-rose-950 text-rose-400 border border-rose-900'
+                                : appt.status === 'Rescheduled'
+                                ? 'bg-amber-950 text-amber-400 border border-amber-900'
+                                : appt.status === 'Completed'
+                                ? 'bg-slate-800 text-slate-300 border border-slate-700'
+                                : 'bg-blue-950 text-blue-400 border border-blue-900'
+                            }`}>
+                              {appt.status}
+                            </span>
+                          </td>
+
+                          {/* Fee Payment */}
+                          <td className="py-4">
+                            <select
+                              value={appt.paymentStatus}
+                              onChange={async (e) => {
+                                const val = e.target.value;
+                                const token = localStorage.getItem('hommed_token');
+                                await fetch('/api/appointments', {
+                                  method: 'PUT',
+                                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                                  body: JSON.stringify({ id: appt._id, paymentStatus: val })
+                                });
+                                setAppointments(prev => prev.map(a => a._id === appt._id ? { ...a, paymentStatus: val as any } : a));
+                                triggerFeedback('Payment status updated.', 'success');
+                              }}
+                              className="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-slate-300 focus:outline-none"
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Paid">Paid</option>
+                            </select>
+                          </td>
+
+                          {/* Inline Notes update box */}
+                          <td className="py-4 max-w-[200px]">
+                            <div className="flex flex-col space-y-1">
+                              <textarea
+                                value={notesVal}
+                                onChange={e => setEditingNotes({ ...editingNotes, [appt._id]: e.target.value })}
+                                placeholder="Add appointment notes..."
+                                className="w-full bg-slate-900 text-[10px] border border-slate-800 p-1 rounded-lg text-slate-300 focus:outline-none focus:border-slate-600 resize-none min-h-[36px]"
+                              />
+                              {editingNotes[appt._id] !== undefined && (
+                                <button
+                                  onClick={() => {
+                                    handleSaveNotes(appt._id, notesVal, false);
+                                    const next = { ...editingNotes };
+                                    delete next[appt._id];
+                                    setEditingNotes(next);
+                                  }}
+                                  className="self-end text-[9px] bg-brand-blue text-white px-2 py-0.5 rounded font-bold"
+                                >
+                                  Save Notes
+                                </button>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="py-4 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              
+                              {/* WhatsApp Contact */}
+                              <a
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1.5 bg-[#075e54]/20 hover:bg-[#075e54]/40 border border-[#075e54]/40 hover:border-[#075e54] text-[#25d366] rounded hover:scale-[1.02] transition-all"
+                                title="Contact patient on WhatsApp"
+                              >
+                                <MessageSquare className="h-3.5 w-3.5" />
+                              </a>
+
+                              {/* Phone Call */}
+                              <a
+                                href={`tel:${appt.patientPhone}`}
+                                className="p-1.5 bg-slate-800 text-slate-300 border border-slate-700 rounded hover:bg-slate-700 transition-all"
+                                title={`Call patient ${appt.patientName}`}
+                              >
+                                <Phone className="h-3.5 w-3.5" />
+                              </a>
+
+                              {/* Confirm status */}
+                              <button 
+                                onClick={() => handleUpdateApptStatus(appt._id, 'Confirmed')}
+                                className="p-1.5 bg-emerald-900/40 text-emerald-400 border border-emerald-800/60 rounded hover:bg-emerald-900 hover:text-white transition-all"
+                                title="Confirm Booking"
+                              >
+                                <Check className="h-3.5 w-3.5" />
+                              </button>
+                              
+                              {/* Reschedule */}
+                              <button 
+                                onClick={() => {
+                                  setReschedulingId(appt._id);
+                                  setRescheduleData({ date: appt.scheduleDate, time: appt.scheduleTime });
+                                }}
+                                className="p-1.5 bg-amber-900/40 text-amber-400 border border-amber-800/60 rounded hover:bg-amber-900 hover:text-white transition-all"
+                                title="Reschedule / Change timing"
+                              >
+                                <Clock className="h-3.5 w-3.5" />
+                              </button>
+
+                              {/* Complete */}
+                              <button 
+                                onClick={() => handleUpdateApptStatus(appt._id, 'Completed')}
+                                className="p-1.5 bg-slate-800 text-slate-300 border border-slate-700 rounded hover:bg-slate-700 hover:text-white transition-all"
+                                title="Mark as Completed"
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                              </button>
+
+                              {/* Cancel */}
+                              <button 
+                                onClick={() => handleUpdateApptStatus(appt._id, 'Cancelled')}
+                                className="p-1.5 bg-rose-900/40 text-rose-400 border border-rose-800/60 rounded hover:bg-rose-900 hover:text-white transition-all"
+                                title="Cancel Booking"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+
+                            {/* Inline Reschedule Dialog */}
+                            {reschedulingId === appt._id && (
+                              <form onSubmit={(e) => handleRescheduleSubmit(e, appt._id)} className="absolute right-6 bg-slate-950 border border-slate-850 p-4 rounded-xl space-y-3 z-25 mt-2 shadow-2xl w-60 text-left">
+                                <h5 className="font-bold text-xs text-white">Reschedule Patient</h5>
+                                <div className="space-y-2">
+                                  <input 
+                                    type="date" 
+                                    value={rescheduleData.date}
+                                    onChange={e => setRescheduleData({ ...rescheduleData, date: e.target.value })}
+                                    className="bg-slate-900 text-xs border border-slate-800 p-1.5 rounded w-full text-white"
+                                  />
+                                  <input 
+                                    type="time" 
+                                    value={rescheduleData.time}
+                                    onChange={e => setRescheduleData({ ...rescheduleData, time: e.target.value })}
+                                    className="bg-slate-900 text-xs border border-slate-800 p-1.5 rounded w-full text-white"
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <button type="submit" className="h-7 px-3 bg-brand-blue text-white rounded text-[10px] font-bold">Apply</button>
+                                  <button type="button" onClick={() => setReschedulingId(null)} className="h-7 px-3 bg-slate-850 text-slate-300 rounded text-[10px] font-bold">Cancel</button>
+                                </div>
+                              </form>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -1129,7 +1616,7 @@ export default function AdminDashboard() {
                       value={serviceForm.title}
                       onChange={e => setServiceForm({ ...serviceForm, title: e.target.value })}
                       placeholder="e.g. Skin Disorders"
-                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-white"
                     />
                   </div>
                   <div className="space-y-1">
@@ -1137,7 +1624,7 @@ export default function AdminDashboard() {
                     <select
                       value={serviceForm.icon}
                       onChange={e => setServiceForm({ ...serviceForm, icon: e.target.value })}
-                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-slate-300"
                     >
                       <option value="Sparkles">Sparkles (Skin)</option>
                       <option value="FlameKindling">FlameKindling (Hair)</option>
@@ -1159,7 +1646,7 @@ export default function AdminDashboard() {
                     value={serviceForm.shortDescription}
                     onChange={e => setServiceForm({ ...serviceForm, shortDescription: e.target.value })}
                     placeholder="Short relief summary..."
-                    className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-white"
                   />
                 </div>
 
@@ -1171,7 +1658,7 @@ export default function AdminDashboard() {
                     value={serviceForm.detailedDescription}
                     onChange={e => setServiceForm({ ...serviceForm, detailedDescription: e.target.value })}
                     placeholder="Detailed clinical approach description..."
-                    className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                    className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-white"
                   />
                 </div>
 
@@ -1183,7 +1670,7 @@ export default function AdminDashboard() {
                       value={serviceForm.symptoms}
                       onChange={e => setServiceForm({ ...serviceForm, symptoms: e.target.value })}
                       placeholder="Redness, Itching, Dry spots"
-                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-white"
                     />
                   </div>
                   <div className="space-y-1">
@@ -1193,7 +1680,7 @@ export default function AdminDashboard() {
                       value={serviceForm.treatments}
                       onChange={e => setServiceForm({ ...serviceForm, treatments: e.target.value })}
                       placeholder="Constitutional remedy, Tincture dispatch"
-                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs focus:outline-none text-white"
                     />
                   </div>
                 </div>
@@ -1208,7 +1695,7 @@ export default function AdminDashboard() {
             {/* List Services */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map(srv => (
-                <div key={srv._id || srv.slug} className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                <div key={srv._id || srv.slug} className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4 flex flex-col justify-between font-sans">
                   <div className="space-y-2">
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] bg-slate-900 border border-slate-800 text-brand-cyan px-2 py-0.5 rounded font-bold uppercase tracking-wider font-mono">
@@ -1382,7 +1869,7 @@ export default function AdminDashboard() {
                       
                       <button 
                         onClick={() => handleTogglePopup(popup._id, popup.isActive)}
-                        className="transition-all"
+                        className="transition-all focus:outline-none"
                         title={popup.isActive ? 'Deactivate Popup' : 'Activate Popup'}
                       >
                         {popup.isActive ? (
@@ -1431,10 +1918,10 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 font-sans">
               Staff accounts are read live from the <code className="text-brand-cyan">profiles</code> table (role
               <span className="text-slate-300 font-semibold"> staff</span>). To add a staff member, create their
-              account via signup and assign the staff role.
+              account via signup and assign the staff role in profiles.
             </p>
 
             <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6">

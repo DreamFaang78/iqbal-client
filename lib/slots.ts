@@ -9,7 +9,7 @@
  */
 
 export const CLINIC_OPEN_HOUR = 10; // 10:00 AM
-export const CLINIC_CLOSE_HOUR = 21; // 9:00 PM (slots run up to, not past, this)
+export const CLINIC_CLOSE_HOUR = 22; // 10:00 PM (slots run up to, not past, this)
 export const SLOT_MINUTES = 15;
 
 export interface Slot {

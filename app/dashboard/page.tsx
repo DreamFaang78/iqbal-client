@@ -96,7 +96,7 @@ export default function PatientDashboard() {
   const completedAppointments = appointments.filter(a => a.status === 'Completed');
 
   return (
-    <div className="min-h-screen bg-[#0A1628] bg-grid py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
+<div className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-10 pointer-events-none" style={{ backgroundImage: "url('/logo.png')" }}></div>
       {/* Decorative Blur Blobs */}
       <div className="absolute top-12 left-1/4 w-96 h-96 blob-cyan rounded-full filter blur-3xl -z-10 animate-pulse-slow"></div>
       <div className="absolute top-1/3 right-1/4 w-96 h-96 blob-gold rounded-full filter blur-3xl -z-10 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>

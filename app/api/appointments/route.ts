@@ -65,7 +65,15 @@ export async function GET(request: Request) {
       scheduleTime: a.schedule_time,
       status: a.status,
       paymentStatus: a.payment_status,
-      createdAt: a.created_at
+      appointmentType: a.appointment_type,
+      patientEmail: a.patient_email,
+      patientAge: a.patient_age,
+      patientGender: a.patient_gender,
+      patientCity: a.patient_city,
+      disease: a.disease,
+      notes: a.notes,
+      createdAt: a.created_at,
+      updatedAt: a.updated_at
     }));
 
     return NextResponse.json(mapped, { status: 200 });
@@ -80,7 +88,20 @@ export async function POST(request: Request) {
   try {
     const decoded = await verifyToken(request);
     const body = await request.json();
-    const { patientName, patientPhone, service, scheduleDate, scheduleTime } = body;
+    const { 
+      patientName, 
+      patientPhone, 
+      service, 
+      scheduleDate, 
+      scheduleTime,
+      appointmentType,
+      patientEmail,
+      patientAge,
+      patientGender,
+      patientCity,
+      disease,
+      notes
+    } = body;
 
     if (!patientName || !patientPhone || !service || !scheduleDate || !scheduleTime) {
       return NextResponse.json(
@@ -107,6 +128,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const type = appointmentType || 'Clinic 1';
+
     // Create the Appointment record
     const { data: appointment, error: insertError } = await db
       .from('appointments')
@@ -118,7 +141,14 @@ export async function POST(request: Request) {
         schedule_date: scheduleDate,
         schedule_time: scheduleTime,
         status: 'Pending',
-        payment_status: 'Pending'
+        payment_status: 'Pending',
+        appointment_type: type,
+        patient_email: patientEmail || null,
+        patient_age: patientAge ? parseInt(patientAge.toString()) : null,
+        patient_gender: patientGender || null,
+        patient_city: patientCity || null,
+        disease: disease || null,
+        notes: notes || null
       })
       .select()
       .single();
@@ -135,8 +165,13 @@ export async function POST(request: Request) {
         .insert({
           name: patientName,
           phone: patientPhone,
-          inquiry: `Auto-generated Lead from appointment booking request for: ${service} on ${scheduleDate} @ ${scheduleTime}`,
-          status: 'New Lead'
+          email: patientEmail || null,
+          inquiry: `Auto-generated Lead from appointment booking request. Problem: ${disease || service}. Requested: ${type} on ${scheduleDate} @ ${scheduleTime}`,
+          status: 'New Lead',
+          lead_source: 'booking',
+          age: patientAge ? parseInt(patientAge.toString()) : null,
+          gender: patientGender || null,
+          city: patientCity || null
         });
       if (leadError) {
         console.warn("Auto-lead creation from booking failed: ", leadError.message);
@@ -152,9 +187,13 @@ export async function POST(request: Request) {
         `🚨 *New Appointment Request*\n\n` +
         `👤 *Patient:* ${patientName}\n` +
         `📞 *Phone:* ${patientPhone}\n` +
+        `📧 *Email:* ${patientEmail || 'N/A'}\n` +
         `💼 *Service:* ${service}\n` +
+        `🌐 *Type:* ${type}\n` +
         `📅 *Date:* ${scheduleDate}\n` +
-        `⏰ *Time:* ${scheduleTime}\n\n` +
+        `⏰ *Time:* ${scheduleTime}\n` +
+        `📍 *City:* ${patientCity || 'N/A'}\n` +
+        `🩺 *Disease/Inquiry:* ${disease || 'N/A'}\n\n` +
         `Please review this booking on your HOMMED Admin CRM dashboard.`
       );
     } catch (e) {
@@ -172,7 +211,15 @@ export async function POST(request: Request) {
       scheduleTime: appointment.schedule_time,
       status: appointment.status,
       paymentStatus: appointment.payment_status,
-      createdAt: appointment.created_at
+      appointmentType: appointment.appointment_type,
+      patientEmail: appointment.patient_email,
+      patientAge: appointment.patient_age,
+      patientGender: appointment.patient_gender,
+      patientCity: appointment.patient_city,
+      disease: appointment.disease,
+      notes: appointment.notes,
+      createdAt: appointment.created_at,
+      updatedAt: appointment.updated_at
     };
 
     return NextResponse.json({
@@ -198,26 +245,50 @@ export async function PUT(request: Request) {
       return NextResponse.json({ message: 'Unauthorized. Admin access required.' }, { status: 403 });
     }
 
-    const { id, status, paymentStatus, scheduleDate, scheduleTime } = await request.json();
+    const body = await request.json();
+    const { 
+      id, 
+      status, 
+      paymentStatus, 
+      scheduleDate, 
+      scheduleTime,
+      appointmentType,
+      patientEmail,
+      patientAge,
+      patientGender,
+      patientCity,
+      disease,
+      notes
+    } = body;
 
     if (!id) {
       return NextResponse.json({ message: 'Appointment ID required' }, { status: 400 });
     }
 
+    const updateData: any = {
+      updated_at: new Date().toISOString()
+    };
+    if (status !== undefined) updateData.status = status;
+    if (paymentStatus !== undefined) updateData.payment_status = paymentStatus;
+    if (scheduleDate !== undefined) updateData.schedule_date = scheduleDate;
+    if (scheduleTime !== undefined) updateData.schedule_time = scheduleTime;
+    if (appointmentType !== undefined) updateData.appointment_type = appointmentType;
+    if (patientEmail !== undefined) updateData.patient_email = patientEmail;
+    if (patientAge !== undefined) updateData.patient_age = patientAge ? parseInt(patientAge.toString()) : null;
+    if (patientGender !== undefined) updateData.patient_gender = patientGender;
+    if (patientCity !== undefined) updateData.patient_city = patientCity;
+    if (disease !== undefined) updateData.disease = disease;
+    if (notes !== undefined) updateData.notes = notes;
+
     const { data: updated, error: updateError } = await db
       .from('appointments')
-      .update({
-        ...(status && { status }),
-        ...(paymentStatus && { payment_status: paymentStatus }),
-        ...(scheduleDate && { schedule_date: scheduleDate }),
-        ...(scheduleTime && { schedule_time: scheduleTime })
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
 
     if (updateError || !updated) {
-      return NextResponse.json({ message: 'Appointment not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Appointment not found or update failed' }, { status: 404 });
     }
 
     const mappedAppointment = {
@@ -231,7 +302,15 @@ export async function PUT(request: Request) {
       scheduleTime: updated.schedule_time,
       status: updated.status,
       paymentStatus: updated.payment_status,
-      createdAt: updated.created_at
+      appointmentType: updated.appointment_type,
+      patientEmail: updated.patient_email,
+      patientAge: updated.patient_age,
+      patientGender: updated.patient_gender,
+      patientCity: updated.patient_city,
+      disease: updated.disease,
+      notes: updated.notes,
+      createdAt: updated.created_at,
+      updatedAt: updated.updated_at
     };
 
     return NextResponse.json({

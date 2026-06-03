@@ -17,6 +17,7 @@ function BookForm() {
     patientName: '',
     patientPhone: '',
     service: '',
+    appointmentPlace: '',
     scheduleDate: '',
     scheduleTime: ''
   });
@@ -26,6 +27,26 @@ function BookForm() {
 
   // 15-minute slots for the clinic day (Mon–Sat, 10:00 AM – 9:00 PM)
   const slotGroups = useMemo(() => groupSlotsByHour(generateDailySlots()), []);
+  const filteredSlotGroups = useMemo(() => {
+  if (!formData.appointmentPlace) return [];
+  const place = formData.appointmentPlace;
+  return slotGroups.filter((group) => {
+    // Extract hour number and period from hourLabel, e.g., "1:00 PM"
+    const [hourPart, period] = group.hourLabel.split(' ');
+    const hourNum = parseInt(hourPart.split(':')[0], 10);
+    if (place === 'Online Consultation') {
+      // Allow only slots from 1 PM to 10 PM (hour groups 1-9 PM)
+      return period === 'PM' && hourNum >= 1 && hourNum <= 9;
+    }
+    if (place === 'Jajmau Clinic') {
+      return period === 'PM' && hourNum >= 1 && hourNum <= 3; // 1 PM to 4 PM slots (hour groups 1-3)
+    }
+    if (place === 'Civil Lines Clinic') {
+      return period === 'PM' && hourNum >= 5 && hourNum <= 9; // 5 PM to 10 PM slots (hour groups 5-9)
+    }
+    return false;
+  });
+}, [slotGroups, formData.appointmentPlace]);
 
   // Slots already taken for the chosen date (so patients can't double-book)
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
@@ -97,7 +118,7 @@ function BookForm() {
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.patientName || !formData.patientPhone || !formData.service || !formData.scheduleDate || !formData.scheduleTime) {
+    if (!formData.patientName || !formData.patientPhone || !formData.service || !formData.appointmentPlace || !formData.scheduleDate || !formData.scheduleTime) {
       setError('Please fill in all scheduling fields.');
       return;
     }
@@ -258,8 +279,27 @@ function BookForm() {
 
               {/* Service & Date selector */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Appointment Place */}
                 <div className="space-y-1.5">
-                  <label htmlFor="service" className="text-xs font-semibold text-slate-300">Specialization / Department *</label>
+                  <label htmlFor="appointmentPlace" className="text-xs font-semibold text-slate-300">Appointment Place *</label>
+                  <select
+                    name="appointmentPlace"
+                    id="appointmentPlace"
+                    required
+                    value={formData.appointmentPlace}
+                    onChange={handleChange}
+                    className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/45 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 appearance-none"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" disabled className="bg-[#0D1F3A] text-white/40">Select appointment location</option>
+                    <option value="Online Consultation" className="bg-[#0D1F3A] text-white">Online Consultation</option>
+                    <option value="Jajmau Clinic" className="bg-[#0D1F3A] text-white">Jajmau Clinic</option>
+                    <option value="Civil Lines Clinic" className="bg-[#0D1F3A] text-white">Civil Lines Clinic</option>
+                  </select>
+                </div>
+                {/* Service */}
+                <div className="space-y-1.5">
+                  <label htmlFor="service" className="text-xs font-semibold text-slate-300">Your Problem *</label>
                   <select
                     name="service"
                     id="service"
@@ -269,29 +309,28 @@ function BookForm() {
                     className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/45 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 appearance-none"
                     style={{ colorScheme: 'dark' }}
                   >
-                    <option value="" disabled className="bg-[#0D1F3A] text-white/40">Select treatment area</option>
+                    <option value="" disabled className="bg-[#0D1F3A] text-white/40">Select your problem</option>
                     {DEFAULT_SERVICES.map((s) => (
                       <option key={s.slug} value={s.title} className="bg-[#0D1F3A] text-white">{s.title}</option>
                     ))}
                   </select>
                 </div>
-
-                <div className="space-y-1.5">
-                  <label htmlFor="scheduleDate" className="text-xs font-semibold text-slate-300">Preferred Date *</label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      name="scheduleDate"
-                      id="scheduleDate"
-                      required
-                      min={minDate}
-                      value={formData.scheduleDate}
-                      onChange={handleChange}
-                      className="w-full h-11 pl-10 pr-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20"
-                      style={{ colorScheme: 'dark' }}
-                    />
-                    <CalendarIcon className="h-4.5 w-4.5 text-brand-cyan/70 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="scheduleDate" className="text-xs font-semibold text-slate-300">Preferred Date *</label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    name="scheduleDate"
+                    id="scheduleDate"
+                    required
+                    min={minDate}
+                    value={formData.scheduleDate}
+                    onChange={handleChange}
+                    className="w-full h-11 pl-10 pr-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20"
+                    style={{ colorScheme: 'dark' }}
+                  />
+                  <CalendarIcon className="h-4.5 w-4.5 text-brand-cyan/70 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
 
@@ -309,7 +348,11 @@ function BookForm() {
                   )}
                 </label>
 
-                {!formData.scheduleDate ? (
+                {!formData.appointmentPlace ? (
+                  <div className="p-6 text-center text-sm text-white/50 bg-[#162847]/30 border border-dashed border-white/10 rounded-2xl">
+                    Please select Appointment Place first.
+                  </div>
+                ) : !formData.scheduleDate ? (
                   <div className="p-6 text-center text-sm text-white/50 bg-[#162847]/30 border border-dashed border-white/10 rounded-2xl">
                     Please choose a preferred date above to see available slots.
                   </div>
@@ -322,7 +365,7 @@ function BookForm() {
                     {slotsLoading && (
                       <p className="text-xs text-white/50">Checking slot availability…</p>
                     )}
-                    {slotGroups.map((group) => (
+                    {filteredSlotGroups.map((group) => (
                       <div key={group.hourLabel} className="space-y-2">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
                           {group.hourLabel}
