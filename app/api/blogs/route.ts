@@ -63,15 +63,21 @@ export async function GET(request: Request) {
       return NextResponse.json(mapBlog(blog), { status: 200 });
     }
 
-    const { data: blogs, error } = await db
+    const { data: dbBlogs, error } = await db
       .from('blogs')
       .select('*')
       .order('published_at', { ascending: false });
 
-    if (error || !blogs || blogs.length === 0) {
-      return NextResponse.json(DEFAULT_BLOGS, { status: 200 });
-    }
-    return NextResponse.json(blogs.map(mapBlog), { status: 200 });
+    // Always merge: DB blogs first, then DEFAULT_BLOGS not already in DB (by slug)
+    const dbBlogsMapped = (!error && dbBlogs && dbBlogs.length > 0)
+      ? dbBlogs.map(mapBlog)
+      : [];
+
+    const dbSlugs = new Set(dbBlogsMapped.map((b: any) => b.slug));
+    const localOnly = DEFAULT_BLOGS.filter(b => !dbSlugs.has(b.slug));
+
+    const merged = [...dbBlogsMapped, ...localOnly];
+    return NextResponse.json(merged, { status: 200 });
 
   } catch (err: any) {
     // Graceful fallback to default data
