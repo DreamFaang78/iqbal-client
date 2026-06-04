@@ -34,7 +34,7 @@ export default function WhyChoose() {
       id: 5,
       icon: <ShieldCheck className="h-6 w-6 text-indigo-500" />,
       title: 'Kanpur Mein Clinic, Online Bhi Available',
-      desc: 'Ghar baithke bhi follow-up ho sakta hai.'
+      desc: 'Aap kahi se bhi call se bat karke Online Consultation le sakte hai.'
     },
     {
       id: 6,
