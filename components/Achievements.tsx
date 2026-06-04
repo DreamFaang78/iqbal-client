@@ -61,7 +61,7 @@ export default function Achievements() {
       org: 'Presented by Hahnemann Educational & Development Society in association with Indian Society of Homoeopathy',
       orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
       description: "UP ke sabse bade scientific platform — KGMU Lucknow — par Dr. Iqbal ko 'Homoeopathic Icon Award 2025' diya gaya. Yeh award unke 10 saal ke kaam ka, 10,000 patients ke bharose ka — public recognition hai.",
-      imageSrc: '/Iqbal-Achievement.jpeg',
+      imageSrc: '/Iqbal-Achievement-Real.jpg',
       footerTag: 'Scientific Excellence',
       footerDate: 'January 2025'
     },
