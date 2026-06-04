@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, LayoutDashboard, LogOut, Calendar } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogOut, Calendar, MapPin, ChevronDown } from 'lucide-react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const [branchesOpen, setBranchesOpen] = useState(false);
+  const [mobileBranchesOpen, setMobileBranchesOpen] = useState(false);
+  const branchesRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -31,6 +34,17 @@ export default function Navbar() {
     return () => window.removeEventListener('auth-change', handleAuthChange);
   }, [pathname]);
 
+  // Close branches dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (branchesRef.current && !branchesRef.current.contains(e.target as Node)) {
+        setBranchesOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('hommed_user');
     localStorage.removeItem('hommed_token');
@@ -45,6 +59,19 @@ export default function Navbar() {
     { name: 'About', href: '/#doctor' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/#contact' },
+  ];
+
+  const branches = [
+    {
+      name: 'Civil Lines Branch',
+      href: '/locations/civil-lines',
+      address: 'Near Green Park Stadium, Civil Lines, Kanpur',
+    },
+    {
+      name: 'Jajmau Branch',
+      href: '/locations/jajmau',
+      address: 'Near Ganga Bridge, Jajmau, Kanpur',
+    },
   ];
 
   // Hide the Navbar entirely on Staff, Admin, Dashboard and Auth pages to maximize portal workspace
@@ -91,6 +118,64 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+
+            {/* ── OUR BRANCHES DROPDOWN ── */}
+            <div className="relative" ref={branchesRef}>
+              <button
+                id="branches-dropdown-btn"
+                onClick={() => setBranchesOpen(!branchesOpen)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  branchesOpen
+                    ? 'text-[#4CAF6E] bg-[#4CAF6E]/10'
+                    : 'text-white/70 hover:text-white hover:bg-white/6'
+                }`}
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                Our Branches
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${branchesOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Panel */}
+              {branchesOpen && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-[#132918]/98 backdrop-blur-xl border border-[#4CAF6E]/15 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)] overflow-hidden animate-fade-in z-50">
+                  <div className="p-2 space-y-1">
+                    <p className="px-3 pt-2 pb-1 text-[10px] font-bold text-[#4CAF6E]/60 uppercase tracking-widest">
+                      Choose a Location
+                    </p>
+                    {branches.map((branch) => (
+                      <Link
+                        key={branch.name}
+                        href={branch.href}
+                        onClick={() => setBranchesOpen(false)}
+                        className="flex items-start gap-3 px-3 py-3 rounded-xl hover:bg-[#4CAF6E]/10 transition-all group"
+                      >
+                        <div className="mt-0.5 p-1.5 bg-[#4CAF6E]/15 rounded-lg shrink-0 group-hover:bg-[#4CAF6E]/25 transition-colors">
+                          <MapPin className="h-3.5 w-3.5 text-[#4CAF6E]" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white group-hover:text-[#4CAF6E] transition-colors leading-tight">
+                            {branch.name}
+                          </p>
+                          <p className="text-[11px] text-white/45 mt-0.5 leading-snug">
+                            {branch.address}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                    <div className="px-3 py-2 border-t border-white/8 mt-1">
+                      <Link
+                        href="/book"
+                        onClick={() => setBranchesOpen(false)}
+                        className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#4CAF6E]/15 hover:bg-[#4CAF6E]/25 text-[#4CAF6E] text-xs font-semibold rounded-xl transition-all"
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                        Book Appointment at Any Branch
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ── DESKTOP RIGHT ACTIONS ── */}
@@ -161,6 +246,41 @@ export default function Navbar() {
               </Link>
             ))}
 
+            {/* ── MOBILE: OUR BRANCHES ACCORDION ── */}
+            <div className="rounded-xl overflow-hidden">
+              <button
+                onClick={() => setMobileBranchesOpen(!mobileBranchesOpen)}
+                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/6 transition-all rounded-xl"
+              >
+                <span className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-[#4CAF6E]" />
+                  Our Branches
+                </span>
+                <ChevronDown className={`h-4 w-4 text-[#4CAF6E] transition-transform duration-200 ${mobileBranchesOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {mobileBranchesOpen && (
+                <div className="mx-2 mb-1 bg-[#0E1F12]/60 border border-[#4CAF6E]/12 rounded-xl overflow-hidden">
+                  {branches.map((branch, i) => (
+                    <Link
+                      key={branch.name}
+                      href={branch.href}
+                      onClick={() => { setIsOpen(false); setMobileBranchesOpen(false); }}
+                      className={`flex items-start gap-3 px-4 py-3 hover:bg-[#4CAF6E]/10 transition-all ${
+                        i < branches.length - 1 ? 'border-b border-white/6' : ''
+                      }`}
+                    >
+                      <MapPin className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-white">{branch.name}</p>
+                        <p className="text-[11px] text-white/45 mt-0.5">{branch.address}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div className="pt-3 border-t border-white/8 space-y-2">
               {user ? (
                 <>
@@ -206,3 +326,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

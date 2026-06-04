@@ -80,6 +80,21 @@ export default function Achievements() {
       footerTag: 'Academic Leadership',
       footerDate: 'National Conference',
       hasVideoPlaceholder: true
+    },
+    {
+      id: 'rigomo-certificate-2023',
+      badge: 'Certified Excellence',
+      badgeIcon: <Award className="h-3.5 w-3.5" />,
+      title: 'Rigomo Certificate of Completion',
+      subtitle: 'Integrative Diabetes Treatment Support',
+      venue: 'Rigomo — Learning for Life',
+      venueIcon: <MapPin className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      org: 'Issued by Vinay Tuli (Founder & Chairperson, Rigomo) & MS Ansari (Co-Founder & CTO, Rigomo) — Certificate No. 6725712943',
+      orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      description: "Dr. Iqbal Quasim ne Rigomo ke prestigious 'Integrative Diabetes Treatment Support' course ko successfully complete kiya — November 2023 mein. Yeh certification unki diabetes management mein cutting-edge integrative knowledge ki proof hai.",
+      imageSrc: '/Iqbal-Rigomo-Certificate.png',
+      footerTag: 'Professional Development',
+      footerDate: 'November 2023'
     }
   ];
 
