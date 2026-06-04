@@ -64,7 +64,7 @@ export default function DoctorProfile() {
             <div className="space-y-3">
               <span className="text-[#4CAF6E] font-accent text-sm font-semibold tracking-wider uppercase">Aapke Doctor Kaun Hain?</span>
               <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                Dr. Iqbal Quasim — Kanpur Ka Bharoseband Homeopathic Specialist
+                Dr iqbal quasim- Kanpur ke best Homeopathic doctor
               </h3>
               <p className="text-[#4CAF6E] font-semibold text-base font-accent">
                 10 Saal Ki Dedicated Clinical Experience in Classic HOMOEOPATHY
