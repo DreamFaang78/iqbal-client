@@ -116,9 +116,9 @@ export default function ShopIndex() {
                 <article className="bg-[#132918]/60 backdrop-blur-md border border-[#4CAF6E]/15 rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_8px_30px_rgba(76,175,110,0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full relative">
                   
                   {/* Image Placeholder or Actual Image */}
-                  <div className="w-full h-64 bg-gradient-to-br from-[#0E1F12] to-[#132918] flex items-center justify-center border-b border-[#4CAF6E]/10 relative overflow-hidden">
+                  <div className="relative h-64 overflow-hidden bg-[#0A140C] group-hover:bg-[#0E1F12] transition-colors flex items-center justify-center p-6">
                     {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={product.image_url.split(',')[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <ShoppingBag className="h-16 w-16 text-[#4CAF6E]/30" />
                     )}

@@ -25,6 +25,9 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
+
+  const productImages = product?.image_url ? product.image_url.split(',').filter(Boolean) : [];
 
   useEffect(() => {
     if (slug) {
@@ -107,21 +110,38 @@ export default function ProductDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           
-          {/* Product Image */}
-          <div className="bg-[#132918]/60 backdrop-blur-md border border-[#4CAF6E]/15 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.3)] aspect-square flex items-center justify-center relative">
-            {product.image_url ? (
-              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="text-center p-8">
-                <ShoppingBag className="w-24 h-24 text-[#4CAF6E]/30 mx-auto mb-4" />
-                <p className="text-white/30 text-sm">No image available</p>
-              </div>
-            )}
-            {product.stock <= 0 && (
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-                <span className="bg-red-500 text-white px-6 py-2 rounded-full font-bold tracking-widest uppercase">
-                  Out of Stock
-                </span>
+          {/* Product Image Gallery */}
+          <div className="space-y-4">
+            <div className="bg-[#132918]/60 backdrop-blur-md border border-[#4CAF6E]/15 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.3)] aspect-square flex items-center justify-center relative">
+              {productImages.length > 0 ? (
+                <img src={productImages[activeImage]} alt={product.name} className="w-full h-full object-cover transition-opacity duration-300" />
+              ) : (
+                <div className="text-center p-8">
+                  <ShoppingBag className="w-24 h-24 text-[#4CAF6E]/30 mx-auto mb-4" />
+                  <p className="text-white/30 text-sm">No image available</p>
+                </div>
+              )}
+              {product.stock <= 0 && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                  <span className="bg-red-500 text-white px-6 py-2 rounded-full font-bold tracking-widest uppercase">
+                    Out of Stock
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            {/* Thumbnails */}
+            {productImages.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {productImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImage(idx)}
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 ${activeImage === idx ? 'border-[#4CAF6E] opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  >
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
             )}
           </div>

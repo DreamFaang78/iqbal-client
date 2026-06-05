@@ -54,7 +54,8 @@ export default function AdminProductsPage() {
       }
 
       const data = await res.json();
-      setEditProduct({ ...editProduct, image_url: data.url });
+      const currentUrls = editProduct.image_url ? editProduct.image_url.split(',').filter(Boolean) : [];
+      setEditProduct({ ...editProduct, image_url: [...currentUrls, data.url].join(',') });
     } catch (error: any) {
       alert('Upload failed: ' + (error.message || 'Make sure the "product-images" bucket exists in Supabase and is public.'));
     } finally {
@@ -227,7 +228,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded bg-[#0E1F12] overflow-hidden border border-white/10 shrink-0">
                           {product.image_url ? (
-                            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                            <img src={product.image_url.split(',')[0]} alt={product.name} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <ShoppingBag className="w-4 h-4 text-white/20" />
@@ -359,19 +360,19 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-white/60 mb-1">Product Image</label>
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  <label className="block text-sm text-white/60 mb-1">Product Images (Upload up to 4)</label>
+                  <div className="flex flex-col sm:flex-row gap-3 mb-3">
                     <input 
-                      type="url"
-                      placeholder="Image URL (https://...)"
-                      className="flex-1 bg-[#0E1F12] border border-white/10 rounded-xl p-3 outline-none focus:border-[#4CAF6E] text-white"
+                      type="text"
+                      placeholder="Or paste multiple image URLs (comma separated)"
+                      className="flex-1 bg-[#0E1F12] border border-white/10 rounded-xl p-3 outline-none focus:border-[#4CAF6E] text-white text-xs"
                       value={editProduct.image_url || ''}
                       onChange={e => setEditProduct({...editProduct, image_url: e.target.value})}
                     />
                     <div className="relative overflow-hidden shrink-0">
                       <button 
                         type="button"
-                        disabled={isUploading}
+                        disabled={isUploading || (editProduct.image_url ? editProduct.image_url.split(',').filter(Boolean).length >= 4 : false)}
                         className="h-full px-4 py-3 bg-[#1A3322] border border-[#4CAF6E]/30 text-[#4CAF6E] hover:bg-[#20402A] rounded-xl font-bold flex items-center justify-center gap-2 transition-colors disabled:opacity-50 min-w-[140px]"
                       >
                         {isUploading ? (
@@ -379,27 +380,41 @@ export default function AdminProductsPage() {
                         ) : (
                           <UploadCloud className="w-4 h-4" />
                         )}
-                        <span>{isUploading ? 'Uploading...' : 'Upload File'}</span>
+                        <span>{isUploading ? 'Uploading...' : 'Upload Image'}</span>
                       </button>
                       <input 
                         type="file" 
                         accept="image/*"
                         className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed w-full h-full"
-                        disabled={isUploading}
+                        disabled={isUploading || (editProduct.image_url ? editProduct.image_url.split(',').filter(Boolean).length >= 4 : false)}
                         onChange={handleImageUpload}
                       />
                     </div>
                   </div>
+                  
                   {editProduct.image_url && (
-                    <div className="mt-3 w-32 h-32 rounded-xl bg-[#0E1F12] border border-white/10 overflow-hidden relative group">
-                      <img src={editProduct.image_url} alt="Preview" className="w-full h-full object-cover" />
-                      <button 
-                        type="button"
-                        onClick={() => setEditProduct({...editProduct, image_url: ''})}
-                        className="absolute top-1 right-1 bg-black/60 p-1.5 rounded-lg hover:bg-red-500/80 transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-                      >
-                        <XCircle className="w-4 h-4 text-white" />
-                      </button>
+                    <div className="flex flex-wrap gap-3">
+                      {editProduct.image_url.split(',').filter(Boolean).map((url, index) => (
+                        <div key={index} className="w-24 h-24 rounded-xl bg-[#0E1F12] border border-white/10 overflow-hidden relative group">
+                          <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              const newUrls = editProduct.image_url!.split(',').filter(Boolean);
+                              newUrls.splice(index, 1);
+                              setEditProduct({...editProduct, image_url: newUrls.join(',')});
+                            }}
+                            className="absolute top-1 right-1 bg-black/60 p-1 rounded hover:bg-red-500/80 transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                          >
+                            <XCircle className="w-4 h-4 text-white" />
+                          </button>
+                          {index === 0 && (
+                            <span className="absolute bottom-0 left-0 right-0 bg-black/70 text-[10px] text-center py-0.5 text-[#4CAF6E] font-bold">
+                              Main Image
+                            </span>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
