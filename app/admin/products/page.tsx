@@ -35,18 +35,26 @@ export default function AdminProductsPage() {
 
     try {
       setIsUploading(true);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const token = localStorage.getItem('hommed_token');
+      
+      const formData = new FormData();
+      formData.append('file', file);
 
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
-      if (uploadError) throw uploadError;
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+      }
 
-      const { data } = supabase.storage.from('product-images').getPublicUrl(filePath);
-      setEditProduct({ ...editProduct, image_url: data.publicUrl });
+      const data = await res.json();
+      setEditProduct({ ...editProduct, image_url: data.url });
     } catch (error: any) {
       alert('Upload failed: ' + (error.message || 'Make sure the "product-images" bucket exists in Supabase and is public.'));
     } finally {
