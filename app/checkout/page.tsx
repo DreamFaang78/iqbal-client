@@ -73,14 +73,6 @@ export default function CheckoutPage() {
       setIsLoaded(true);
     }
 
-    // Try to pre-fill user data if logged in
-    const user = localStorage.getItem('hommed_user');
-    if (user) {
-      try {
-        const u = JSON.parse(user);
-        setFormData(prev => ({ ...prev, name: u.name, email: u.email || '' }));
-      } catch (e) {}
-    }
   }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -161,7 +153,7 @@ export default function CheckoutPage() {
               // Success
               localStorage.removeItem('hommed_cart');
               window.dispatchEvent(new Event('cart-updated'));
-              router.push('/dashboard/orders');
+              router.push('/checkout/success');
             } else {
               alert('Payment verification failed.');
               setIsProcessing(false);
@@ -187,7 +179,7 @@ export default function CheckoutPage() {
         // COD Success
         localStorage.removeItem('hommed_cart');
         window.dispatchEvent(new Event('cart-updated'));
-        router.push('/dashboard/orders');
+        router.push('/checkout/success');
       }
     } catch (err: any) {
       alert(err.message);
