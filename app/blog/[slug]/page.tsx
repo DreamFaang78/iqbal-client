@@ -95,5 +95,60 @@ export default async function BlogPostPage({ params }: PageProps) {
   // Sidebar recent posts
   const otherPosts = DEFAULT_BLOGS.filter((b) => b.slug !== resolvedParams.slug).slice(0, 4);
 
-  return <BlogContent blog={blog} otherPosts={otherPosts} />;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    headline: blog.title,
+    description: blog.excerpt,
+    url: `https://www.hommed.org/blog/${blog.slug}`,
+    datePublished: blog.publishedAt,
+    dateModified: blog.publishedAt,
+    author: {
+      '@type': 'Physician',
+      name: 'Dr. Iqbal Quasim',
+      jobTitle: 'Chief Homeopathic Physician',
+      medicalSpecialty: 'Homeopathy',
+      worksFor: {
+        '@type': 'MedicalClinic',
+        name: 'HOMMED Homoeopathic Centre',
+        url: 'https://www.hommed.org',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Kanpur',
+          addressRegion: 'Uttar Pradesh',
+          addressCountry: 'IN',
+        },
+      },
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HOMMED Homoeopathic Centre',
+      url: 'https://www.hommed.org',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hommed.org/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://www.hommed.org/blog/${blog.slug}`,
+    },
+    about: {
+      '@type': 'MedicalCondition',
+      name: blog.category,
+    },
+    inLanguage: 'hi-IN',
+    isAccessibleForFree: true,
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <BlogContent blog={blog} otherPosts={otherPosts} />
+    </>
+  );
 }
+
