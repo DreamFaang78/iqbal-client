@@ -1468,7 +1468,7 @@ export default function AdminDashboard() {
                                   value={notesVal}
                                   onChange={e => setEditingNotes({ ...editingNotes, [lead._id]: e.target.value })}
                                   placeholder="Type notes..."
-                                  className="w-full bg-slate-50 text-[9px] border border-slate-100 focus:border-slate-200 p-2 rounded-xl font-light text-slate-705 focus:outline-none min-h-[35px] max-h-[100px] resize-y"
+                                  className="w-full bg-slate-50 text-[9px] border border-slate-100 focus:border-slate-200 p-2 rounded-xl font-light text-slate-900 focus:outline-none min-h-[35px] max-h-[100px] resize-y"
                                 />
                               </div>
 
