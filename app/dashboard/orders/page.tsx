@@ -150,7 +150,7 @@ export default function UserOrdersPage() {
                     <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4">
                       <div className="w-16 h-16 bg-[#0E1F12] rounded-xl flex items-center justify-center border border-white/5 overflow-hidden shrink-0">
                         {item.products.image_url ? (
-                          <img src={item.products.image_url.split(',')[0]} alt={item.products.name} className="w-full h-full object-cover" />
+                          <img src={item.products.image_url.split(',')[0]} alt={item.products.name} className="w-full h-full object-cover" loading="lazy" />
                         ) : (
                           <Package className="w-6 h-6 text-[#4CAF6E]/30" />
                         )}

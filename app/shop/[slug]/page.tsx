@@ -114,7 +114,7 @@ export default function ProductDetail() {
           <div className="space-y-4">
             <div className="bg-[#132918]/60 backdrop-blur-md border border-[#4CAF6E]/15 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.3)] aspect-square flex items-center justify-center relative">
               {productImages.length > 0 ? (
-                <img src={productImages[activeImage]} alt={product.name} className="w-full h-full object-cover transition-opacity duration-300" />
+                <img src={productImages[activeImage]} alt={product.name} className="w-full h-full object-cover transition-opacity duration-300" loading="lazy" />
               ) : (
                 <div className="text-center p-8">
                   <ShoppingBag className="w-24 h-24 text-[#4CAF6E]/30 mx-auto mb-4" />
@@ -139,7 +139,7 @@ export default function ProductDetail() {
                     onClick={() => setActiveImage(idx)}
                     className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 ${activeImage === idx ? 'border-[#4CAF6E] opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   >
-                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
