@@ -9,7 +9,7 @@ import {
   ToggleLeft, ToggleRight, Check, X, RefreshCw,
   Search, ShieldAlert, ArrowUpRight, BarChart3,
   CheckCircle2, Phone, Mail, MessageSquare,
-  Download, Filter, AlertCircle, ChevronDown
+  Download, Filter, AlertCircle, ChevronDown, ShoppingBag, Package
 } from 'lucide-react';
 
 interface LeadData {
@@ -1017,6 +1017,26 @@ export default function AdminDashboard() {
               <Users className="h-4.5 w-4.5" />
               <span>Staff Accounts</span>
             </button>
+
+            <div className="pt-2 pb-1">
+              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-4 mb-2">E-Commerce</div>
+              
+              <Link 
+                href="/admin/products"
+                className="w-full h-11 px-4 rounded-xl text-sm font-semibold flex items-center space-x-3 transition-all text-slate-400 hover:bg-slate-800 hover:text-white"
+              >
+                <ShoppingBag className="h-4.5 w-4.5" />
+                <span>Products CMS</span>
+              </Link>
+              
+              <Link 
+                href="/admin/orders"
+                className="w-full h-11 px-4 rounded-xl text-sm font-semibold flex items-center space-x-3 transition-all text-slate-400 hover:bg-slate-800 hover:text-white"
+              >
+                <Package className="h-4.5 w-4.5" />
+                <span>Orders Manager</span>
+              </Link>
+            </div>
           </nav>
         </div>
 

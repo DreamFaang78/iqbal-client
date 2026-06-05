@@ -32,8 +32,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const search = searchParams.get('search');
+    const all = searchParams.get('all') === 'true';
 
-    let query = db.from('products').select('*').eq('is_active', true);
+    let query = db.from('products').select('*');
+    
+    if (!all) {
+      query = query.eq('is_active', true);
+    }
 
     if (category) {
       query = query.eq('category', category);
