@@ -1,14 +1,14 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
-import { DEFAULT_LOCATIONS } from '@/lib/data';
+import { DEFAULT_LOCATIONS, DEFAULT_BLOGS } from '@/lib/data';
 
-// Revalidate sitemap cache every 1 hour (3600 seconds)
+// Revalidate sitemap cache every 1 hour
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://hommed.org';
+  const baseUrl = 'https://www.hommed.org';
 
-  // 1. Core static routes of the website
+  // 1. Core static routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. Dynamic Specialization/Services pages (fetched directly from Supabase)
+  // 2. Service pages from Supabase
   let serviceRoutes: MetadataRoute.Sitemap = [];
   try {
     const { data: services } = await supabase
@@ -38,10 +38,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select('slug, created_at');
 
     if (services) {
-      serviceRoutes = services.map(s => ({
+      serviceRoutes = services.map((s: any) => ({
         url: `${baseUrl}/services/${s.slug}`,
         lastModified: s.created_at ? new Date(s.created_at) : new Date(),
-        changeFrequency: 'weekly',
+        changeFrequency: 'weekly' as const,
         priority: 0.8,
       }));
     }
@@ -49,30 +49,48 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error generating services sitemap:', err);
   }
 
-  // 3. Dynamic Medical Blog articles (fetched directly from Supabase)
+  // 3. Blog articles — merge Supabase blogs + DEFAULT_BLOGS (deduplicated by slug)
   let blogRoutes: MetadataRoute.Sitemap = [];
   try {
-    const { data: blogs } = await supabase
+    const { data: dbBlogs } = await supabase
       .from('blogs')
       .select('slug, published_at');
 
-    if (blogs) {
-      blogRoutes = blogs.map(b => ({
+    const dbSlugs = new Set((dbBlogs || []).map((b: any) => b.slug));
+
+    const dbBlogRoutes: MetadataRoute.Sitemap = (dbBlogs || []).map((b: any) => ({
+      url: `${baseUrl}/blog/${b.slug}`,
+      lastModified: b.published_at ? new Date(b.published_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
+
+    const localBlogRoutes: MetadataRoute.Sitemap = DEFAULT_BLOGS
+      .filter(b => !dbSlugs.has(b.slug))
+      .map(b => ({
         url: `${baseUrl}/blog/${b.slug}`,
-        lastModified: b.published_at ? new Date(b.published_at) : new Date(),
-        changeFrequency: 'weekly',
+        lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(),
+        changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));
-    }
+
+    blogRoutes = [...dbBlogRoutes, ...localBlogRoutes];
   } catch (err) {
+    // Fallback: all DEFAULT_BLOGS
+    blogRoutes = DEFAULT_BLOGS.map(b => ({
+      url: `${baseUrl}/blog/${b.slug}`,
+      lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
     console.error('Error generating blogs sitemap:', err);
   }
 
-  // 4. Programmatic Local Landing pages (Kanpur neighborhoods)
+  // 4. Local landing pages (Kanpur neighborhoods)
   const locationRoutes: MetadataRoute.Sitemap = DEFAULT_LOCATIONS.map(loc => ({
     url: `${baseUrl}/locations/${loc.slug}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly',
+    changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
 
