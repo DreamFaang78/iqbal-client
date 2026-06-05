@@ -28,7 +28,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     pincode: '',
-    paymentMethod: 'Razorpay'
+    paymentMethod: 'COD'
   });
 
   useEffect(() => {
@@ -199,7 +199,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="bg-[#0A140C] min-h-screen py-12 font-sans relative overflow-hidden">
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       
       {/* Background Ornaments */}
       <div className="absolute top-[20%] left-[-10%] w-[40rem] h-[40rem] bg-[#D4AF37]/5 rounded-full blur-[100px] pointer-events-none" />
@@ -278,17 +277,6 @@ export default function CheckoutPage() {
                   Payment Method
                 </h2>
                 <div className="space-y-4">
-                  <label className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${formData.paymentMethod === 'Razorpay' ? 'bg-[#4CAF6E]/10 border-[#4CAF6E]' : 'bg-[#0E1F12] border-white/10 hover:border-white/30'}`}>
-                    <input type="radio" name="paymentMethod" value="Razorpay" checked={formData.paymentMethod === 'Razorpay'} onChange={handleInputChange} className="w-5 h-5 accent-[#4CAF6E]" />
-                    <div className="flex-grow">
-                      <h4 className="text-white font-semibold flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-[#4CAF6E]" />
-                        Pay Online (Razorpay)
-                      </h4>
-                      <p className="text-white/50 text-sm">Credit/Debit Cards, UPI, NetBanking</p>
-                    </div>
-                  </label>
-
                   <label className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${formData.paymentMethod === 'COD' ? 'bg-[#4CAF6E]/10 border-[#4CAF6E]' : 'bg-[#0E1F12] border-white/10 hover:border-white/30'}`}>
                     <input type="radio" name="paymentMethod" value="COD" checked={formData.paymentMethod === 'COD'} onChange={handleInputChange} className="w-5 h-5 accent-[#4CAF6E]" />
                     <div className="flex-grow">
