@@ -58,6 +58,7 @@ export default function Navbar() {
     { name: 'Services', href: '/#services' },
     { name: 'About', href: '/#doctor' },
     { name: 'Blog', href: '/blog' },
+    { name: 'Shop', href: '/shop' },
     { name: 'Contact', href: '/#contact' },
   ];
 
@@ -180,6 +181,13 @@ export default function Navbar() {
 
           {/* ── DESKTOP RIGHT ACTIONS ── */}
           <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/cart"
+              className="flex items-center gap-2 px-3 h-10 text-sm text-white/70 hover:text-[#4CAF6E] transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            </Link>
+
             {user ? (
               <>
                 <Link
@@ -282,6 +290,14 @@ export default function Navbar() {
             </div>
 
             <div className="pt-3 border-t border-white/8 space-y-2">
+              <Link
+                href="/cart"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 w-full py-3 text-sm text-[#4CAF6E] border border-[#4CAF6E]/30 rounded-xl hover:bg-[#4CAF6E]/10"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                View Cart
+              </Link>
               {user ? (
                 <>
                   <Link

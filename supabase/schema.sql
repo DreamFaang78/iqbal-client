@@ -526,3 +526,138 @@ from (values
   )
 ) as v(type, title, content, is_active, delay_seconds)
 where not exists (select 1 from public.popups);
+
+-- ============================================================================
+-- ============ SHOP TABLES (E-commerce) ============
+-- ============================================================================
+
+-- products: store skin care and fairness products.
+create table if not exists public.products (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  slug        text unique not null,
+  description text,
+  price       numeric not null,
+  image_url   text,
+  category    text,
+  stock       int default 0,
+  is_active   boolean default true,
+  created_at  timestamptz default now(),
+  updated_at  timestamptz default now()
+);
+
+-- orders: store user orders with Razorpay & COD support.
+create table if not exists public.orders (
+  id                  uuid primary key default gen_random_uuid(),
+  user_id             uuid references auth.users(id),
+  total_amount        numeric not null,
+  status              text default 'Pending',
+  payment_method      text not null,
+  payment_status      text default 'Pending',
+  razorpay_order_id   text,
+  razorpay_payment_id text,
+  shipping_address    jsonb,
+  billing_address     jsonb,
+  customer_name       text not null,
+  customer_email      text not null,
+  customer_phone      text not null,
+  created_at          timestamptz default now(),
+  updated_at          timestamptz default now()
+);
+
+-- order_items: line items for each order.
+create table if not exists public.order_items (
+  id                uuid primary key default gen_random_uuid(),
+  order_id          uuid references public.orders(id) on delete cascade not null,
+  product_id        uuid references public.products(id) not null,
+  quantity          int not null,
+  price_at_purchase numeric not null
+);
+
+-- ----------------------------------------------------------------------------
+-- SHOP RLS POLICIES
+-- ----------------------------------------------------------------------------
+alter table public.products enable row level security;
+alter table public.orders enable row level security;
+alter table public.order_items enable row level security;
+
+-- products: public read
+drop policy if exists "products_select_public" on public.products;
+create policy "products_select_public"
+  on public.products
+  for select
+  to anon, authenticated
+  using (true);
+
+-- orders: users can read their own orders. Admin bypasses RLS via service_role.
+drop policy if exists "orders_select_own" on public.orders;
+create policy "orders_select_own"
+  on public.orders
+  for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+-- orders: users can insert their own orders. For guest checkout, anyone can insert.
+drop policy if exists "orders_insert_public" on public.orders;
+create policy "orders_insert_public"
+  on public.orders
+  for insert
+  to anon, authenticated
+  with check (true);
+
+-- order_items: same as orders
+drop policy if exists "order_items_select_own" on public.order_items;
+create policy "order_items_select_own"
+  on public.order_items
+  for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.orders o
+      where o.id = public.order_items.order_id
+      and o.user_id = auth.uid()
+    )
+  );
+
+drop policy if exists "order_items_insert_public" on public.order_items;
+create policy "order_items_insert_public"
+  on public.order_items
+  for insert
+  to anon, authenticated
+  with check (true);
+
+-- ----------------------------------------------------------------------------
+-- Seed: products
+-- ----------------------------------------------------------------------------
+insert into public.products
+  (name, slug, description, price, image_url, category, stock)
+values
+  (
+    'ClearSkin Acne Treatment',
+    'clearskin-acne-treatment',
+    'Advanced homeopathic formula to clear stubborn acne and prevent future breakouts without drying out your skin.',
+    499.00,
+    null,
+    'Skin Care',
+    100
+  ),
+  (
+    'Radiance Fairness Drops',
+    'radiance-fairness-drops',
+    'Natural drops to help reduce pigmentation and dark spots, promoting an even, glowing complexion.',
+    599.00,
+    null,
+    'Fairness',
+    100
+  ),
+  (
+    'Eczema Relief Cream',
+    'eczema-relief-cream',
+    'Soothing natural cream for dry, itchy, and irritated skin caused by eczema or psoriasis.',
+    349.00,
+    null,
+    'Skin Care',
+    50
+  )
+on conflict (slug) do nothing;
+

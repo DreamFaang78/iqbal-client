@@ -7,6 +7,7 @@ import ClinicGallery from "@/components/ClinicGallery";
 import WhyChoose from "@/components/WhyChoose";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
+import BusinessInfo from "@/components/BusinessInfo";
 import Contact from "@/components/Contact";
 import AIAssistant from "@/components/AIAssistant";
 import PopupManager from "@/components/PopupManager";
@@ -23,6 +24,7 @@ export default function Home() {
       <WhyChoose />
       <Testimonials />
       <FAQ />
+      <BusinessInfo />
       <Contact />
       
       {/* Floating Interactive Overlays */}
