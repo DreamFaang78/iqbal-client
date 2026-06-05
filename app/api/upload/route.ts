@@ -3,17 +3,33 @@ import { supabaseAdmin, supabase } from '@/lib/supabase';
 
 const db = supabaseAdmin || supabase;
 
-export async function POST(request: Request) {
+async function verifyAdminToken(request: Request) {
   try {
-    // Verify admin token
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return false;
     }
     const token = authHeader.split(' ')[1];
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (!user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) return false;
+
+    const { data: profile } = await db
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    return profile?.role === 'admin' || user.email?.toLowerCase() === 'admin@hommed.com';
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const isAdmin = await verifyAdminToken(request);
+    if (!isAdmin) {
+      return NextResponse.json({ message: 'Unauthorized: Admin access required' }, { status: 401 });
     }
 
     const formData = await request.formData();
