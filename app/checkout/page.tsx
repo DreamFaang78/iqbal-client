@@ -179,7 +179,7 @@ export default function CheckoutPage() {
         // COD Success
         localStorage.removeItem('hommed_cart');
         window.dispatchEvent(new Event('cart-updated'));
-        router.push('/checkout/success');
+        router.push('/checkout/success?order=' + data.orderId);
       }
     } catch (err: any) {
       alert(err.message);

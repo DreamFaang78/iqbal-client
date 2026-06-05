@@ -59,6 +59,7 @@ export default function Navbar() {
     { name: 'About', href: '/#doctor' },
     { name: 'Blog', href: '/blog' },
     { name: 'Shop', href: '/shop' },
+    { name: 'Track Order', href: '/track-order' },
     { name: 'Contact', href: '/#contact' },
   ];
 
