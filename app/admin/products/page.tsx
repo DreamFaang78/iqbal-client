@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Edit2, Trash2, XCircle, Search, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Plus, Edit2, Trash2, XCircle, Search, ShoppingBag, UploadCloud } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Product {
   id: string;
@@ -26,6 +27,33 @@ export default function AdminProductsPage() {
   
   const [isEditing, setIsEditing] = useState(false);
   const [editProduct, setEditProduct] = useState<Partial<Product>>({});
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('product-images').getPublicUrl(filePath);
+      setEditProduct({ ...editProduct, image_url: data.publicUrl });
+    } catch (error: any) {
+      alert('Upload failed: ' + (error.message || 'Make sure the "product-images" bucket exists in Supabase and is public.'));
+    } finally {
+      setIsUploading(false);
+      if (e.target) e.target.value = ''; // Reset input
+    }
+  };
   
   const router = useRouter();
 
@@ -323,14 +351,49 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-white/60 mb-1">Image URL</label>
-                  <input 
-                    type="url"
-                    placeholder="https://..."
-                    className="w-full bg-[#0E1F12] border border-white/10 rounded-xl p-3 outline-none focus:border-[#4CAF6E] text-white"
-                    value={editProduct.image_url || ''}
-                    onChange={e => setEditProduct({...editProduct, image_url: e.target.value})}
-                  />
+                  <label className="block text-sm text-white/60 mb-1">Product Image</label>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input 
+                      type="url"
+                      placeholder="Image URL (https://...)"
+                      className="flex-1 bg-[#0E1F12] border border-white/10 rounded-xl p-3 outline-none focus:border-[#4CAF6E] text-white"
+                      value={editProduct.image_url || ''}
+                      onChange={e => setEditProduct({...editProduct, image_url: e.target.value})}
+                    />
+                    <div className="relative overflow-hidden shrink-0">
+                      <button 
+                        type="button"
+                        disabled={isUploading}
+                        className="h-full px-4 py-3 bg-[#1A3322] border border-[#4CAF6E]/30 text-[#4CAF6E] hover:bg-[#20402A] rounded-xl font-bold flex items-center justify-center gap-2 transition-colors disabled:opacity-50 min-w-[140px]"
+                      >
+                        {isUploading ? (
+                          <div className="w-4 h-4 border-2 border-[#4CAF6E] border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <UploadCloud className="w-4 h-4" />
+                        )}
+                        <span>{isUploading ? 'Uploading...' : 'Upload File'}</span>
+                      </button>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed w-full h-full"
+                        disabled={isUploading}
+                        onChange={handleImageUpload}
+                      />
+                    </div>
+                  </div>
+                  {editProduct.image_url && (
+                    <div className="mt-3 w-32 h-32 rounded-xl bg-[#0E1F12] border border-white/10 overflow-hidden relative group">
+                      <img src={editProduct.image_url} alt="Preview" className="w-full h-full object-cover" />
+                      <button 
+                        type="button"
+                        onClick={() => setEditProduct({...editProduct, image_url: ''})}
+                        className="absolute top-1 right-1 bg-black/60 p-1.5 rounded-lg hover:bg-red-500/80 transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                      >
+                        <XCircle className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-3 pt-2">
