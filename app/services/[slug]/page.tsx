@@ -50,13 +50,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `${service.title} Treatment in Kanpur | Dr. Iqbal HOMMED`;
-  const description = service.shortDescription || `Advanced homeopathic clinical care for ${service.title} by Dr. Iqbal at Kanpur. Safe, natural treatment with zero side effects.`;
+  const title = `${service.title} Treatment in Kanpur | Dr. Iqbal`;
+  const rawDescription = service.shortDescription || `Advanced homeopathic clinical care for ${service.title} by Dr. Iqbal at Kanpur. Safe, natural treatment with zero side effects.`;
+  const description = rawDescription.length > 155 ? `${rawDescription.slice(0, 152).trim()}...` : rawDescription;
   const shareImage = '/logo.png';
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://www.hommed.org/services/${service.slug}`,
+    },
     openGraph: {
       title,
       description,

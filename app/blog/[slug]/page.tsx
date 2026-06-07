@@ -52,18 +52,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `${blog.title} | HOMMED Medical Blog`;
-  const description = blog.excerpt || 'Read medical insights and holistic health articles from Dr. Iqbal\'s Homoeopathic Centre.';
+  const title = blog.title;
+  const rawDescription = blog.excerpt || 'Read medical insights and holistic health articles from Dr. Iqbal\'s Homoeopathic Centre, Kanpur.';
+  const description = rawDescription.length > 155 ? `${rawDescription.slice(0, 152).trim()}...` : rawDescription;
   const shareImage = blog.image || '/logo.png';
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://www.hommed.org/blog/${blog.slug}`,
+    },
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://hommed.org/blog/${blog.slug}`,
+      url: `https://www.hommed.org/blog/${blog.slug}`,
       images: [
         {
           url: shareImage,
@@ -141,11 +145,35 @@ export default async function BlogPostPage({ params }: PageProps) {
     isAccessibleForFree: true,
   };
 
+  const blogPostingJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: blog.title,
+    author: {
+      '@type': 'Person',
+      name: 'Dr. Iqbal Quasim',
+      jobTitle: 'BHMS Homoeopathic Physician',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HOMMED',
+      url: 'https://www.hommed.org',
+    },
+    datePublished: blog.publishedAt,
+    dateModified: blog.publishedAt,
+    image: blog.image || 'https://www.hommed.org/logo.png',
+    url: `https://www.hommed.org/blog/${blog.slug}`,
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }}
       />
       <BlogContent blog={blog} otherPosts={otherPosts} />
     </>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Quote, Play, X, MessageSquare, Calendar } from 'lucide-react';
 import { DEFAULT_TESTIMONIALS } from '@/lib/data';
@@ -186,10 +187,12 @@ export default function Testimonials() {
               >
                 {/* Image Wrapper */}
                 <div className="relative h-60 w-full overflow-hidden bg-slate-950 border-b border-white/5">
-                  <img 
-                    src={study.image} 
+                  <Image
+                    src={study.image}
                     alt={study.title}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-[1.02]"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                   />
                   <div className="absolute top-3.5 left-3.5 bg-[#0A1628]/95 backdrop-blur-md text-brand-cyan text-[10px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-xl border border-brand-cyan/20">
                     {study.tag}

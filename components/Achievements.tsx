@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Presentation, Play, Calendar, MapPin, Users, Sparkles, X, Maximize2 } from 'lucide-react';
 
@@ -171,10 +172,12 @@ export default function Achievements() {
                   onClick={() => setActiveImage(item.imageSrc)}
                   className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-[4/3] sm:aspect-video lg:aspect-[4/3] group/img cursor-pointer shadow-premium select-none"
                 >
-                  <img 
-                    src={item.imageSrc} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+                  <Image
+                    src={item.imageSrc}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover/img:scale-105"
                   />
                   
                   {/* Frosted zoom / click to view overlay */}
@@ -290,9 +293,12 @@ export default function Achievements() {
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-5xl max-h-[85vh] sm:max-h-[80vh] w-full rounded-2xl overflow-hidden border border-white/10 bg-[#0E1F12] shadow-premium flex items-center justify-center cursor-default"
             >
-              <img 
-                src={activeImage} 
-                alt="Enlarged achievement view" 
+              <Image
+                src={activeImage}
+                alt="Enlarged achievement view"
+                width={1200}
+                height={900}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="max-w-full max-h-[85vh] sm:max-h-[80vh] object-contain w-auto h-auto"
               />
             </motion.div>

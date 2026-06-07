@@ -12,8 +12,25 @@ export default function FAQ() {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: DEFAULT_FAQS.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <section id="faq" className="reveal-on-scroll py-24 bg-[#060E1A] relative overflow-hidden font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#00B4D8]/8 rounded-full filter blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

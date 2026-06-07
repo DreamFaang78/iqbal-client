@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, LayoutDashboard, LogOut, Calendar, MapPin, ChevronDown } from 'lucide-react';
@@ -98,9 +99,11 @@ export default function Navbar() {
 
           {/* ── LOGO ── */}
           <Link href="/" className="flex items-center group shrink-0">
-            <img
+            <Image
               src="/logo.png"
               alt="HomMed Logo"
+              width={48}
+              height={48}
               className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </Link>

@@ -5,6 +5,9 @@ import { DEFAULT_LOCATIONS, DEFAULT_BLOGS } from '@/lib/data';
 // Revalidate sitemap cache every 1 hour
 export const revalidate = 3600;
 
+// Last time each static section's content was meaningfully updated (ISO date)
+const STATIC_CONTENT_LAST_MODIFIED = '2026-06-07';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.hommed.org';
 
@@ -12,19 +15,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: new Date(STATIC_CONTENT_LAST_MODIFIED),
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/book`,
-      lastModified: new Date(),
+      lastModified: new Date(STATIC_CONTENT_LAST_MODIFIED),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/blog`,
-      lastModified: new Date(),
+      lastModified: new Date(STATIC_CONTENT_LAST_MODIFIED),
       changeFrequency: 'daily',
       priority: 0.8,
     },
@@ -40,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (services) {
       serviceRoutes = services.map((s: any) => ({
         url: `${baseUrl}/services/${s.slug}`,
-        lastModified: s.created_at ? new Date(s.created_at) : new Date(),
+        lastModified: s.created_at ? new Date(s.created_at) : new Date(STATIC_CONTENT_LAST_MODIFIED),
         changeFrequency: 'weekly' as const,
         priority: 0.8,
       }));
@@ -60,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const dbBlogRoutes: MetadataRoute.Sitemap = (dbBlogs || []).map((b: any) => ({
       url: `${baseUrl}/blog/${b.slug}`,
-      lastModified: b.published_at ? new Date(b.published_at) : new Date(),
+      lastModified: b.published_at ? new Date(b.published_at) : new Date(STATIC_CONTENT_LAST_MODIFIED),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }));
@@ -69,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter(b => !dbSlugs.has(b.slug))
       .map(b => ({
         url: `${baseUrl}/blog/${b.slug}`,
-        lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(),
+        lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(STATIC_CONTENT_LAST_MODIFIED),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));
@@ -79,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fallback: all DEFAULT_BLOGS
     blogRoutes = DEFAULT_BLOGS.map(b => ({
       url: `${baseUrl}/blog/${b.slug}`,
-      lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(),
+      lastModified: b.publishedAt ? new Date(b.publishedAt) : new Date(STATIC_CONTENT_LAST_MODIFIED),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }));
@@ -89,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 4. Local landing pages (Kanpur neighborhoods)
   const locationRoutes: MetadataRoute.Sitemap = DEFAULT_LOCATIONS.map(loc => ({
     url: `${baseUrl}/locations/${loc.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(STATIC_CONTENT_LAST_MODIFIED),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));

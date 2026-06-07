@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion'; // Wait, let's fix this typo: should be 'framer-motion'
 import { Calendar, Award, GraduationCap, MapPin, Stethoscope } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function DoctorProfile() {
   return (
@@ -19,10 +20,12 @@ export default function DoctorProfile() {
             {/* Visual Frame */}
             <div className="relative w-80 sm:w-96 h-[460px] rounded-[36px] overflow-hidden bg-[#0E1F12] border border-[#4CAF6E]/15 shadow-xl group">
               {/* Doctor Image */}
-              <img 
-                src="/doctor-iqbal.jpg" 
-                alt="Dr. Iqbal" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              <Image
+                src="/doctor-iqbal.jpg"
+                alt="Dr. Iqbal"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               
               {/* Gradient Overlay for Text Readability */}

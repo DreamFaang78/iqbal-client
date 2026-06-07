@@ -15,9 +15,63 @@ export default function LocationContent({ location }: LocationContentProps) {
     `Hello Dr. Iqbal, I am writing to you from ${location.name}. I would like to inquire about homeopathic treatment.`
   )}`;
 
+  const pageUrl = `https://www.hommed.org/locations/${location.slug}`;
+
+  const jsonLd = location.isBranch
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'MedicalClinic',
+        '@id': `${pageUrl}#clinic`,
+        name: `HOMMED — Dr. Iqbal's Homoeopathic Centre, ${location.name}`,
+        branchOf: { '@id': 'https://www.hommed.org/#organization' },
+        url: pageUrl,
+        telephone: '+91-8707868504',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: location.name,
+          addressLocality: 'Kanpur',
+          addressRegion: 'Uttar Pradesh',
+          postalCode: location.slug === 'jajmau' ? '208010' : '208001',
+          addressCountry: 'IN',
+        },
+        geo: location.geo
+          ? { '@type': 'GeoCoordinates', latitude: location.geo.latitude, longitude: location.geo.longitude }
+          : undefined,
+        openingHoursSpecification: (location.hours || []).map((h) => ({
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          opens: h.opens,
+          closes: h.closes,
+        })),
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4.9',
+          bestRating: '5',
+          worstRating: '1',
+          reviewCount: '200',
+        },
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'MedicalWebPage',
+        name: `Best Homeopathic Clinic & Doctor in ${location.name}, Kanpur`,
+        url: pageUrl,
+        about: { '@type': 'MedicalCondition', name: 'Homeopathic treatment for chronic and skin disorders' },
+        areaServed: {
+          '@type': 'City',
+          name: location.name,
+        },
+        provider: { '@id': 'https://www.hommed.org/#organization' },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+      };
+
   return (
     <div className="bg-slate-50 min-h-screen font-sans text-slate-800">
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#0a4b3e] to-[#04261f] text-white py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent)]"></div>
@@ -26,7 +80,7 @@ export default function LocationContent({ location }: LocationContentProps) {
             Kanpur Local SEO Directory
           </span>
           <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-tight max-w-4xl mx-auto">
-            Best Homeopathic Clinic & Doctor in {location.name}, Kanpur
+            Best Homeopathy Doctor Near {location.name}, Kanpur | Dr. Iqbal's HOMMED Centre
           </h1>
           <p className="text-slate-350 text-sm sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
             {location.name} ke hazaron log chronic skin, hair, thyroid aur joint problems se permanent relief paa rahe hain — bina steroid, bina side effects ke.
@@ -57,7 +111,40 @@ export default function LocationContent({ location }: LocationContentProps) {
           
           {/* Main Info */}
           <div className="lg:col-span-8 space-y-12">
-            
+
+            {!location.isBranch && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-900 font-medium">
+                Serving patients from {location.name} at our Civil Lines and Jajmau branches.
+              </div>
+            )}
+
+            {location.intro && (
+              <div className="bg-white border border-slate-150 rounded-3xl p-8 sm:p-10 shadow-sm space-y-4">
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-brand-navy">
+                  Homeopathy Care for {location.name} Residents
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">{location.intro}</p>
+              </div>
+            )}
+
+            {location.commute && (
+              <div className="bg-white border border-slate-150 rounded-3xl p-8 sm:p-10 shadow-sm space-y-4">
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-brand-navy">
+                  How to Reach Our Clinic from {location.name}
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">{location.commute}</p>
+              </div>
+            )}
+
+            {location.testimonial && (
+              <div className="bg-white border border-slate-150 rounded-3xl p-8 sm:p-10 shadow-sm space-y-4">
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-brand-navy">
+                  A Patient Story from {location.name}
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light italic">"{location.testimonial}"</p>
+              </div>
+            )}
+
             {/* Value Proposition */}
             <div className="bg-white border border-slate-150 rounded-3xl p-8 sm:p-10 shadow-sm space-y-6">
               <h2 className="font-heading font-bold text-xl sm:text-2xl text-brand-navy">

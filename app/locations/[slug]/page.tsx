@@ -32,13 +32,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `Best Homeopathic Clinic & Doctor in ${location.name}, Kanpur | Dr. Iqbal`;
-  const description = `Looking for homeopathy treatment in ${location.name}, Kanpur? Dr. Iqbal offers expert constitutional solutions for Skin, Hair, Thyroid, and Chronic Diseases with zero side effects.`;
+  const title = `Homeopathy Doctor Near ${location.name} Kanpur | HOMMED`;
+  const description = `Looking for homeopathy near ${location.name}, Kanpur? Visit HOMMED — Dr. Iqbal's clinic in Civil Lines. Treating hairfall, skin, thyroid & more. FREE consultation.`;
   const shareImage = '/logo.png'; // Fallback sharing brand image
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://www.hommed.org/locations/${location.slug}`,
+    },
     openGraph: {
       title,
       description,

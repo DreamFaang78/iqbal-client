@@ -4,17 +4,20 @@ import Navbar from "@/components/Navbar";
 import ConditionalFooter from "@/components/ConditionalFooter";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hommed.org'),
-  title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
-  description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders. Serving Kanpur, Uttar Pradesh.",
+  metadataBase: new URL('https://www.hommed.org'),
+  title: "HOMMED — Best Homeopathy Doctor Kanpur | Dr. Iqbal",
+  description: "Expert homoeopathic treatment in Kanpur by Dr. Iqbal. Skin, Hair Fall, Thyroid, PCOS & chronic diseases. 10,000+ patients healed. Book FREE consultation.",
+  alternates: {
+    canonical: 'https://www.hommed.org/',
+  },
   keywords: "homoeopathy kanpur, dr iqbal homoeopathy, homoeopathic doctor kanpur, best homeopathic doctor kanpur, advanced homoeopathic clinic, natural healing, hommed clinic, best homoeopathy clinic kanpur, skin treatment kanpur, hair fall homoeopathy, thyroid treatment kanpur, PCOS treatment kanpur, diabetes homeopathy kanpur, joint pain treatment kanpur, dr iqbal quasim kanpur",
   verification: {
     google: "g9FB4jAnR6UT9SVxdAI7RYpdswg7K_Mkd0wH-U", // Add verification fallback from user GSC setup
   },
   openGraph: {
-    title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
-    description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders.",
-    url: 'https://hommed.org',
+    title: "HOMMED — Best Homeopathy Doctor Kanpur | Dr. Iqbal",
+    description: "Expert homoeopathic treatment in Kanpur by Dr. Iqbal. Skin, Hair Fall, Thyroid, PCOS & chronic diseases. 10,000+ patients healed. Book FREE consultation.",
+    url: 'https://www.hommed.org',
     siteName: 'HOMMED Homoeopathy',
     images: [
       {
@@ -29,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "HOMMED — Dr. IQBAL'S Homoeopathy Centre | Best Homoeopathic Doctor Kanpur",
-    description: "An Advanced Homoeopathic Clinic in Kanpur — HOMMED offers expert HOMOEOPATHY consultation by Dr. Iqbal. Natural, safe treatments for Skin, Hair, Allergies, PCOS, Joint Pain and chronic disorders.",
+    title: "HOMMED — Best Homeopathy Doctor Kanpur | Dr. Iqbal",
+    description: "Expert homoeopathic treatment in Kanpur by Dr. Iqbal. Skin, Hair Fall, Thyroid, PCOS & chronic diseases. 10,000+ patients healed. Book FREE consultation.",
     images: ['/logo.png'],
   },
 };
@@ -57,13 +60,14 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "MedicalClinic",
+              "@id": "https://www.hommed.org/#organization",
               "name": "HOMMED — Dr. Iqbal's Homoeopathic Centre",
               "alternateName": "HOMMED Homoeopathy",
               "description": "Best Homeopathic clinic in Kanpur run by Dr. Iqbal Quasim. Treats thyroid, PCOS, skin disorders, hair fall, diabetes, joint pain, migraine and more. Online consultations available.",
               "url": "https://www.hommed.org",
               "logo": "https://www.hommed.org/logo.png",
               "image": "https://www.hommed.org/logo.png",
-              "telephone": "+91-XXXXXXXXXX",
+              "telephone": "+91-8707868504",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Civil Lines",
@@ -74,16 +78,33 @@ export default function RootLayout({
               },
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": "26.4499",
-                "longitude": "80.3319"
+                "latitude": "26.4806871",
+                "longitude": "80.3013233"
               },
               "openingHoursSpecification": [
                 {
                   "@type": "OpeningHoursSpecification",
                   "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-                  "opens": "09:00",
+                  "opens": "10:00",
+                  "closes": "14:00"
+                },
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                  "opens": "17:00",
                   "closes": "20:00"
                 }
+              ],
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "bestRating": "5",
+                "worstRating": "1",
+                "reviewCount": "200"
+              },
+              "department": [
+                { "@id": "https://www.hommed.org/locations/civil-lines#clinic" },
+                { "@id": "https://www.hommed.org/locations/jajmau#clinic" }
               ],
               "medicalSpecialty": "Homeopathy",
               "availableService": [

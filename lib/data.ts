@@ -27,6 +27,12 @@ export interface LocationData {
   landmark: string;
   distanceInfo: string;
   phone: string;
+  isBranch?: boolean;
+  geo?: { latitude: string; longitude: string };
+  hours?: { opens: string; closes: string }[];
+  intro?: string;
+  commute?: string;
+  testimonial?: string;
 }
 
 export interface TestimonialData {
@@ -138,6 +144,44 @@ export const DEFAULT_BLOGS: BlogData[] = [
       </ul>
       
       <p>If you or your children suffer from recurrent sneezing, wheezing, or watery eyes, a personalized homeopathic plan at HOMMED can help you breathe freely and live naturally.</p>
+    
+
+      <h3>Common Allergy Triggers in Kanpur's Climate</h3>
+      <p>Kanpur's mix of industrial dust, seasonal pollen, and humidity changes makes allergic rhinitis, sinusitis, and asthma especially common. Patients at our Civil Lines and Jajmau clinics frequently report flare-ups during the change of seasons, after exposure to smoke or strong fragrances, or during early mornings when pollen counts are highest.</p>
+
+      <h3>Remedies Dr. Iqbal Often Considers</h3>
+      <p>Every case is prescribed individually after a detailed consultation, but some constitutional remedies that frequently help allergy sufferers include <strong>Allium Cepa</strong> (for watery eyes and runny nose triggered by onion-like irritation), <strong>Natrum Muriaticum</strong> (for chronic sneezing fits and sensitivity to sunlight), and <strong>Arsenicum Album</strong> (for asthma-type breathlessness that worsens at night). These are illustrative examples — the right remedy depends entirely on your unique symptom pattern, history, and constitution.</p>
+
+      <h3>Lifestyle Tips to Reduce Allergy Flare-Ups</h3>
+      <ul>
+        <li>Keep windows closed during high-pollen hours (early morning and dusk) and use a damp cloth to dust surfaces instead of dry dusting.</li>
+        <li>Practice steam inhalation with plain warm water in the evenings to soothe irritated nasal passages.</li>
+        <li>Include warm, easily digestible foods and avoid excessive cold drinks or ice cream during allergy season.</li>
+        <li>Maintain a symptom diary noting triggers, time of day, and severity — this helps Dr. Iqbal fine-tune your remedy at follow-up visits.</li>
+      </ul>
+
+      <h3>When to See Dr. Iqbal</h3>
+      <p>If your allergies are recurring every season, disrupting sleep, affecting your child's school attendance, or requiring frequent inhaler use, it's time for a constitutional evaluation rather than another round of antihistamines. Dr. Iqbal Quasim (BHMS), recipient of the Homoeopathic Icon Award 2025 and a graduate of KGMU Lucknow, has guided over 10,000 patients in Kanpur toward lasting relief from chronic allergies.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Can homeopathy completely cure allergic rhinitis, or only manage it?</strong><br/>
+      With consistent constitutional treatment, many patients experience a significant reduction in frequency and severity of attacks, and a number achieve long-term, symptom-free periods — though results vary by individual.</p>
+      <p><strong>Q2. Is it safe to give homeopathic allergy remedies to children?</strong><br/>
+      Yes. Homeopathic medicines are gentle and well-tolerated by children, and Dr. Iqbal regularly treats young patients with allergic rhinitis, recurrent colds, and asthma at our Kanpur clinics.</p>
+      <p><strong>Q3. How long before I notice improvement?</strong><br/>
+      Many patients notice reduced intensity of symptoms within a few weeks, while deeper constitutional change typically develops over a few months of consistent treatment.</p>
+      <p><strong>Q4. Do I need to stop my current allergy medication immediately?</strong><br/>
+      No — never stop prescribed medication abruptly. Dr. Iqbal will guide you on a safe, gradual transition as your body responds to homeopathic treatment.</p>
+      <p><strong>Q5. Where in Kanpur can I consult Dr. Iqbal for allergies?</strong><br/>
+      You can visit our Civil Lines or Jajmau branches, or book an online consultation if travelling is difficult — call <strong>+91-8707868504</strong> to schedule an appointment.</p>
+
+      <p><em>This article is for general educational purposes and does not replace professional medical advice. Please consult Dr. Iqbal Quasim before making any changes to your current treatment.</em></p>
+    
+      <h3>Why Patients Choose HOMMED for Allergy Care in Kanpur</h3>
+      <p>At HOMMED, every allergy case begins with a detailed conversation — not just about your sneezing or wheezing, but about your daily routine, food habits, sleep, and emotional state. This whole-person view is what allows Dr. Iqbal Quasim to identify patterns that purely symptom-based treatments often miss. Patients frequently tell us that, for the first time, someone took the time to understand why their allergies behave the way they do — not just what to take when an attack starts.</p>
+      <p>A common myth is that homeopathy works "too slowly" for allergies. In reality, many patients notice a reduction in the intensity of acute episodes fairly early, while the deeper constitutional treatment continues to work on reducing the frequency of future attacks. The goal is not just to get you through the next pollen season, but to gradually reduce your dependency on rescue medication altogether.</p>
+    
+      <p>Booking your first consultation is simple — call our clinic, share a brief history of your symptoms, and Dr. Iqbal's team will guide you on what to bring along, including any past prescriptions or allergy test reports, so your first visit can be as productive as possible.</p>
     `
   },
   {
@@ -162,6 +206,45 @@ export const DEFAULT_BLOGS: BlogData[] = [
       </ul>
       
       <p>Homeopathic treatment is gentle, safe, and works in harmony with your body to establish endocrine balance naturally.</p>
+    
+
+      <h3>Why PCOS Needs a Whole-Body Approach</h3>
+      <p>PCOS is rarely just an "ovary problem" — it usually involves insulin resistance, weight fluctuation, stress hormones, and thyroid function working together. At our Kanpur clinics, Dr. Iqbal Quasim begins every PCOS consultation by mapping out your menstrual history, weight pattern, skin and hair changes, sleep quality, and emotional stress levels, since all of these influence hormonal balance.</p>
+
+      <h3>Remedies Commonly Considered for PCOS</h3>
+      <p>Based on individual case-taking, Dr. Iqbal may consider remedies such as <strong>Pulsatilla</strong> (for irregular cycles with emotional sensitivity), <strong>Sepia</strong> (for fatigue, low mood, and hormonal sluggishness), or <strong>Thuja Occidentalis</strong> (for cystic changes and skin eruptions linked to hormonal imbalance). These examples illustrate the range of options — your specific remedy is selected only after a detailed personal assessment.</p>
+
+      <h3>Diet & Lifestyle Support for PCOS</h3>
+      <ul>
+        <li>Favor whole grains, leafy vegetables, and protein-rich meals over refined sugar and fried snacks to support insulin sensitivity.</li>
+        <li>Aim for consistent sleep timing — irregular sleep can worsen hormonal imbalance.</li>
+        <li>Include light daily movement such as a 30-minute walk, yoga, or stretching to support metabolism and mood.</li>
+        <li>Track your cycle length, flow, and symptoms each month so Dr. Iqbal can monitor your progress accurately at follow-ups.</li>
+      </ul>
+
+      <h3>When to See Dr. Iqbal</h3>
+      <p>If your periods have been irregular for several months, you're noticing unusual hair growth or acne, or you're trying to conceive without success, a constitutional homeopathic evaluation can help identify and address the root hormonal imbalance. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) has supported thousands of women across Kanpur in restoring natural cycle regularity.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Can homeopathy help me conceive if I have PCOS?</strong><br/>
+      Many women with PCOS have achieved natural conception after a period of constitutional treatment that restored regular ovulation — though individual outcomes depend on overall health and other factors, which Dr. Iqbal will assess in your consultation.</p>
+      <p><strong>Q2. Will I need to stay on treatment for years?</strong><br/>
+      Treatment duration varies by case. Many patients see meaningful cycle improvement within a few months, with maintenance check-ins thereafter.</p>
+      <p><strong>Q3. Can homeopathy help with PCOS-related weight gain?</strong><br/>
+      Yes — by addressing the underlying hormonal and metabolic imbalance, many patients find it easier to manage their weight alongside dietary changes.</p>
+      <p><strong>Q4. Is it fine to combine homeopathy with my current gynaecologist's advice?</strong><br/>
+      Yes, but always inform both practitioners about your treatments so your care can be coordinated safely.</p>
+      <p><strong>Q5. How do I book a PCOS consultation in Kanpur?</strong><br/>
+      Call <strong>+91-8707868504</strong> or visit our Civil Lines or Jajmau clinic — online consultations are also available for your convenience.</p>
+
+      <p><em>This article is for general educational purposes only and is not a substitute for professional medical advice. Please consult Dr. Iqbal Quasim before altering any existing treatment.</em></p>
+    
+      <h3>Why Women Across Kanpur Trust HOMMED for PCOS Care</h3>
+      <p>PCOS can feel isolating — many women describe years of being told to "just lose weight" or "go on the pill" without anyone explaining why their hormones behave the way they do. At HOMMED, Dr. Iqbal Quasim takes time to understand your full picture: cycle history, stress levels, sleep, skin changes, and family history — because PCOS rarely shows up the same way in two women.</p>
+      <p>One common misconception is that PCOS is permanent and can only be "managed," never improved. While every case is different, many women who commit to constitutional treatment alongside simple lifestyle changes notice a gradual return toward more regular cycles, calmer skin, and more stable energy — without relying solely on long-term hormonal medication.</p>
+      <p>If you've been newly diagnosed or have struggled with PCOS for years without lasting answers, a personalized consultation at our Civil Lines or Jajmau clinic can help you understand what's really happening in your body — and what a realistic, natural path forward looks like for you.</p>
+    
+      <p>Many women find it helpful to bring a simple two-month record of their cycles, weight, and any symptoms like acne or hair changes to their first visit — this small step gives Dr. Iqbal a clearer starting point and often shortens the time it takes to find the right approach for you.</p>
     `
   },
   {
@@ -179,6 +262,45 @@ export const DEFAULT_BLOGS: BlogData[] = [
       
       <h3>What to Expect during Treatment</h3>
       <p>Homeopathic skin treatment requires patience. Since it heals from the inside out, patients often notice improvements in their digestion, energy levels, and sleep quality before the skin lesions completely clear. Slowly, the scaling, itching, and redness fade, leaving behind healthy, naturally-healed skin.</p>
+    
+
+      <h3>Why Suppressing Skin Symptoms Isn't Enough</h3>
+      <p>Many psoriasis and eczema patients who visit our Kanpur clinics have spent years applying steroid creams that bring brief relief but allow the condition to return — often in a more stubborn form. Homeopathy instead looks at what's happening internally: stress patterns, digestion, sleep, and immune sensitivity, all of which influence how your skin behaves.</p>
+
+      <h3>Remedies Often Considered in Skin Cases</h3>
+      <p>Depending on the individual presentation, Dr. Iqbal may consider remedies such as <strong>Graphites</strong> (for thick, oozing eczema patches), <strong>Arsenicum Album</strong> (for dry, scaly, burning skin that worsens at night), or <strong>Sulphur</strong> (for intense itching that worsens with warmth). These are examples only — your prescription will be based on a thorough personal case study.</p>
+
+      <h3>Self-Care Tips Alongside Treatment</h3>
+      <ul>
+        <li>Use a mild, fragrance-free moisturizer daily to reduce dryness and cracking.</li>
+        <li>Avoid scratching — pat or gently press itchy areas, and keep nails trimmed to minimize skin damage.</li>
+        <li>Identify and reduce exposure to personal triggers such as certain fabrics, soaps, or foods that seem to worsen flare-ups.</li>
+        <li>Manage stress through regular sleep, light exercise, or relaxation practices, as emotional stress is a well-known trigger for skin flare-ups.</li>
+      </ul>
+
+      <h3>When to See Dr. Iqbal</h3>
+      <p>If your skin condition keeps returning despite creams and ointments, or is spreading, affecting your confidence, or disturbing your sleep, a constitutional homeopathic assessment can help address the deeper cause. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) has helped thousands of patients in Kanpur achieve clearer, calmer skin naturally.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Can homeopathy permanently cure psoriasis?</strong><br/>
+      Many patients experience significant, long-lasting improvement with consistent constitutional treatment, although psoriasis is a complex condition and results vary from person to person.</p>
+      <p><strong>Q2. Will my skin get worse before it gets better?</strong><br/>
+      Some patients notice a brief "outward" phase as suppressed conditions resolve — Dr. Iqbal will explain what to expect and monitor you closely through this process.</p>
+      <p><strong>Q3. Can children with eczema be treated with homeopathy?</strong><br/>
+      Yes, homeopathic remedies are gentle and commonly prescribed for children with eczema, allergic skin reactions, and recurrent rashes.</p>
+      <p><strong>Q4. How soon will I see results?</strong><br/>
+      Many patients notice reduced itching and inflammation within the first few weeks, with deeper improvement over a few months of regular treatment.</p>
+      <p><strong>Q5. Where can I consult Dr. Iqbal for skin issues in Kanpur?</strong><br/>
+      Visit our Civil Lines or Jajmau clinic, or book an online consultation by calling <strong>+91-8707868504</strong>.</p>
+
+      <p><em>This article is for general educational purposes and does not replace professional medical advice. Please consult Dr. Iqbal Quasim before stopping or changing any existing treatment.</em></p>
+    
+      <h3>Why HOMMED's Approach to Skin Conditions Is Different</h3>
+      <p>Many psoriasis and eczema patients arrive at our Kanpur clinics carrying years of frustration — drawers full of creams that worked for a few weeks before the condition returned, often worse than before. Dr. Iqbal Quasim's approach starts differently: instead of asking "which cream should we try next," the conversation focuses on what's happening internally — stress patterns, digestion, sleep quality, and how your skin has behaved through different phases of your life.</p>
+      <p>A common myth is that skin conditions like psoriasis are "just genetic" and nothing can be done beyond symptom control. While genetics can play a role, many patients find that addressing the underlying immune and stress-related triggers leads to noticeably calmer, clearer skin over time — not just during treatment, but well beyond it.</p>
+      <p>If you've tried multiple creams and treatments without lasting relief, a constitutional evaluation can help uncover what's really driving your flare-ups, so that your skin — and your confidence — can heal from the inside out.</p>
+    
+      <p>Before your first visit, it can help to note when your flare-ups started, what seems to trigger them, and which treatments you've tried so far. Bringing this information — along with any photographs of how your skin has changed over time — helps Dr. Iqbal build a more complete picture from day one.</p>
     `
   },
 
@@ -231,6 +353,36 @@ export const DEFAULT_BLOGS: BlogData[] = [
       <p>HOMMED Clinic, Civil Lines aur Jajmau — dono jagah par Dr. Iqbal Quasim se milein. Online consultation bhi available hai agar aap Kanpur se door hain. <strong>10 saal ka experience, 10,000+ patients — aur haan, TSH reports leke aiye, hum sab dekhenge.</strong></p>
 
       <p><em>Yeh article sirf educational purpose ke liye hai. Apni current thyroid medication doctor ki salaah ke bina band na karein.</em></p>
+    
+
+      <h3>Kanpur ke Patients mein Common Triggers</h3>
+      <p>Hamare Civil Lines aur Jajmau clinics mein aane wale hypothyroidism patients mein hum aksar dekhte hain ki stress, irregular sleep, aur nutrition deficiency (especially Iodine, Selenium, Vitamin D) is condition ko aur trigger karte hain. Kanpur ke fast-paced lifestyle mein, khaane ka time fix na hona aur neend poori na hona — ye dono thyroid function ko slow kar sakte hain.</p>
+
+      <h3>Remedies Jo Often Consider Ki Jaati Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Calcarea Carbonica</strong> (sustí, weight gain, aur cold sensitivity ke liye), <strong>Lycopodium</strong> (digestion aur low energy ke connection ke liye), ya <strong>Natrum Muriaticum</strong> (emotional stress se juda hua thyroid imbalance ke liye). Ye sirf examples hain — aapki exact remedy detailed case-history ke baad hi decide hoti hai.</p>
+
+      <h3>Diet aur Lifestyle Tips</h3>
+      <ul>
+        <li>Subah jaldi uthkar halka exercise ya walk karein — ye metabolism ko support karta hai.</li>
+        <li>Refined sugar aur deep-fried khaane ko kam karein, aur fresh sabzi-fruits zyada lein.</li>
+        <li>Sleep schedule consistent rakhein — roz ek hi time par sona aur uthna thyroid balance ke liye helpful hai.</li>
+        <li>Apne symptoms (weight, energy, mood, periods agar applicable ho) ka ek simple diary maintain karein — isse follow-up mein behtar guidance milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko lagataar thakaan, weight badhna, baal jhadna, ya cold intolerance feel ho raha hai, to ek constitutional evaluation aapke liye helpful ho sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein 10,000+ patients ko naturally thyroid balance restore karne mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se thyroid medicine chhodi ja sakti hai?</strong><br/>
+      Ye har case par depend karta hai — kabhi bhi apni current dawai khud band na karein. Dr. Iqbal aapki reports dekhkar ek safe, gradual plan suggest karenge.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko energy aur symptoms mein improvement kuch hafton mein dikhne lagta hai, jabki deeper hormonal balance ke liye kuch mahine lag sakte hain.</p>
+      <p><strong>Q3. Kya homeopathy bachon ke liye safe hai?</strong><br/>
+      Haan, homeopathic remedies gentle hoti hain aur bachon mein bhi safely use ki ja sakti hain — proper consultation ke baad.</p>
+      <p><strong>Q4. Kya mujhe apni TSH reports leke aana chahiye?</strong><br/>
+      Bilkul — apni latest TSH, T3, T4 reports zaroor leke aiye taaki Dr. Iqbal aapka case accurately review kar sakein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      Call karein <strong>+91-8707868504</strong> par ya Civil Lines/Jajmau clinic visit karein — online consultation bhi available hai.</p>
     `
   },
 
@@ -272,6 +424,39 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Consultation — Civil Lines & Jajmau, Kanpur</h3>
       <p>Agar aap Kanpur mein skin allergy se pareshaan hain — HOMMED clinic mein Dr. Iqbal Quasim se milein. <strong>Pehle consultation mein hi poora case history liya jaata hai — taaki bilkul sahi dawai di jaaye.</strong> Online appointments bhi available hain.</p>
+    
+
+      <h3>Kanpur ke Mausam aur Skin Allergy ka Connection</h3>
+      <p>Kanpur ke industrial dust, humidity, aur seasonal changes ki wajah se skin allergies — jaise rashes, hives, aur contact dermatitis — kaafi common hain. Hamare clinic mein aane wale kayi patients batate hain ki unki allergy garmiyon mein, dust exposure ke baad, ya naye soap/cosmetic try karne par trigger hoti hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Individual case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Rhus Toxicodendron</strong> (lal, khujli wale rashes ke liye), <strong>Apis Mellifica</strong> (sujan aur burning sensation ke liye), ya <strong>Sulphur</strong> (chronic itching jo garmi mein badhe). Final remedy aapke complete case-history ke baad hi select hoti hai.</p>
+
+      <h3>Self-Care Tips</h3>
+      <ul>
+        <li>Mild, fragrance-free soap aur moisturizer use karein, aur naye products try karne se pehle patch-test zaroor karein.</li>
+        <li>Khujli wali jagah ko khurchne se bachein — isse skin damage aur infection ka risk badh sakta hai.</li>
+        <li>Apne triggers identify karein — kuch logon ko dust, kuch ko certain foods ya fabrics se reaction hota hai.</li>
+        <li>Cotton ke loose kapde pehnein, especially garmi ke mahino mein.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapki skin allergy baar-baar return ho rahi hai, creams se sirf temporary relief mil raha hai, ya ye aapki daily life disturb kar rahi hai, to ek constitutional homeopathic evaluation root cause identify karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko clear, healthy skin paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya skin allergy hamesha ke liye theek ho sakti hai?</strong><br/>
+      Constitutional treatment se kayi patients ko long-term relief milta hai, lekin result individual case par depend karta hai.</p>
+      <p><strong>Q2. Kya bachon ki skin allergy ke liye ye safe hai?</strong><br/>
+      Haan, homeopathic remedies bachon mein bhi gently kaam karti hain aur commonly prescribe ki jaati hain.</p>
+      <p><strong>Q3. Treatment shuru karne ke baad kitna time lagega?</strong><br/>
+      Kayi patients ko kuch hafton mein hi khujli aur redness mein kami dikhti hai, jabki complete improvement ke liye kuch mahine lag sakte hain.</p>
+      <p><strong>Q4. Kya main apni current cream ke saath bhi homeopathy le sakta hoon?</strong><br/>
+      Pehli consultation mein Dr. Iqbal ko apni current treatment ke baare mein zaroor batayein, taaki ek coordinated plan banaya ja sake.</p>
+      <p><strong>Q5. Appointment kaise lein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein ya Civil Lines/Jajmau clinic visit karein.</p>
+    
+      <h3>HOMMED Mein Patients Ko Kya Alag Lagta Hai</h3>
+      <p>Hamare paas aane wale kayi patients batate hain ki unhone pehle kayi creams aur dawaiyan try ki thi, lekin allergy baar-baar return hoti rahi. HOMMED mein Dr. Iqbal Quasim sirf symptoms par nahi, balki aapke trigger patterns, lifestyle, aur overall immune response par dhyan dete hain — taaki ek lasting solution mil sake, na ki sirf temporary relief.</p>
     `
   },
 
@@ -326,6 +511,36 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>HOMMED Clinic, Kanpur</h3>
       <p>Agar aap ya aapke ghar ki koi mahila PCOS se pareshaan hain — <strong>Dr. Iqbal Quasim se Civil Lines ya Jajmau clinic mein milein.</strong> Online consultation bhi available hai. Pehle appointment mein previous reports leke aiye — hum poora analysis karenge.</p>
+    
+
+      <h3>PCOS: Sirf Periods ka Issue Nahi</h3>
+      <p>Kanpur ki kayi young women jo hamare paas aati hain, unme PCOS ke saath weight gain, acne, aur mood swings bhi dekhne ko milte hain. Dr. Iqbal har case mein menstrual history, weight pattern, sleep, aur stress levels ko dhyan se samajhte hain — kyunki ye sab hormonal balance ko affect karte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se kuch remedies jaise <strong>Pulsatilla</strong> (irregular cycles aur emotional sensitivity ke liye), <strong>Sepia</strong> (thakaan aur low mood ke liye), ya <strong>Calcarea Carbonica</strong> (weight aur metabolism se related imbalance ke liye) consider ki ja sakti hain. Aapki exact remedy ek detailed personal assessment ke baad hi decide hoti hai.</p>
+
+      <h3>Lifestyle Tips</h3>
+      <ul>
+        <li>Refined sugar aur processed snacks kam karein, aur fiber-rich khaana zyada lein — isse insulin sensitivity behtar hoti hai.</li>
+        <li>Roz halki exercise ya yoga karein — 30 minute ki walk bhi kaafi farak laa sakti hai.</li>
+        <li>Sone-jaagne ka time fix rakhein — irregular sleep hormonal balance ko disturb karta hai.</li>
+        <li>Apne cycle ka ek simple record rakhein — isse Dr. Iqbal aapki progress accurately track kar sakte hain.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapke periods kayi mahino se irregular hain, ya conceive karne mein dikkat aa rahi hai, to ek constitutional evaluation hormonal imbalance ki root cause samajhne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne hazaaron women ko Kanpur mein natural cycle regularity paane mein support kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya PCOS mein homeopathy se conceive karna possible hai?</strong><br/>
+      Kayi women ne constitutional treatment ke baad naturally conceive kiya hai — lekin ye aapki overall health aur case par depend karta hai, jo Dr. Iqbal consultation mein assess karenge.</p>
+      <p><strong>Q2. Treatment kitna lamba chalta hai?</strong><br/>
+      Ye case-to-case alag hota hai — kayi patients ko kuch mahino mein hi cycle improvement dikhne lagta hai.</p>
+      <p><strong>Q3. Kya weight loss mein bhi madad milegi?</strong><br/>
+      Hormonal balance behtar hone se metabolism improve hota hai, jo diet ke saath weight management mein madadgar ho sakta hai.</p>
+      <p><strong>Q4. Kya main apne gynaecologist ki advice ke saath ye le sakti hoon?</strong><br/>
+      Haan, lekin dono practitioners ko apne treatments ke baare mein zaroor batayein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — pehli visit mein purani reports zaroor leke aiye.</p>
     `
   },
 
@@ -373,6 +588,36 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Bachche Ko Leke Milein — HOMMED Kanpur</h3>
       <p>Civil Lines ya Jajmau, Kanpur mein HOMMED clinic par Dr. Iqbal Quasim bachche ka poora case dekhenge — <strong>bina kisi chemical ke, sweetmeethi medicines se — permanent ilaaj possible hai.</strong></p>
+    
+
+      <h3>Kanpur ke Bachon mein Common Patterns</h3>
+      <p>Hamare clinic mein aane wale kayi parents batate hain ki unke bachon ko mausam badalte hi cold, cough, ya tonsillitis ho jaata hai. School ki bhaag-daud, junk food, aur irregular sleep — ye sab bacchon ki immunity ko weak kar sakte hain, jisse infections baar-baar return karte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Bacchon ke case mein Dr. Iqbal kuch remedies consider karte hain jaise <strong>Calcarea Carbonica</strong> (slow growth aur frequent colds ke liye), <strong>Hepar Sulphuris</strong> (tonsillitis aur throat infections ke liye), ya <strong>Silicea</strong> (weak immunity aur recurring infections ke liye). Ye sirf examples hain — har bacche ki remedy unki individual history ke according select hoti hai.</p>
+
+      <h3>Parents ke Liye Tips</h3>
+      <ul>
+        <li>Bacchon ko fresh, home-cooked khaana den aur cold drinks/junk food kam se kam dilayein.</li>
+        <li>Roz outdoor play ya halki activity ka time fix karein — ye immunity aur overall growth dono ke liye accha hai.</li>
+        <li>Sleep schedule consistent rakhein — bacchon ko age ke hisaab se poori neend zaroor milni chahiye.</li>
+        <li>Symptoms ka ek simple record rakhein (kab, kitni baar, kitni severity) — isse follow-up mein behtar guidance milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapke bacche ko baar-baar tonsillitis, cold, ya infections ho rahe hain — aur antibiotics se sirf temporary relief mil raha hai — to ek constitutional evaluation unki immunity ko naturally strong banane mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur ke hazaaron bacchon ko healthy growth ki taraf guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy bacchon ke liye completely safe hai?</strong><br/>
+      Haan, homeopathic medicines gentle, sweet, aur bacchon ko aasani se di ja sakti hain — koi harsh side-effects nahi hote.</p>
+      <p><strong>Q2. Kya tonsils operation se bachaya ja sakta hai?</strong><br/>
+      Kayi cases mein constitutional treatment se tonsillitis ki frequency aur severity itni kam ho jaati hai ki surgery ki zaroorat nahi padti — lekin ye case par depend karta hai.</p>
+      <p><strong>Q3. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi parents kuch hafton mein hi infections ki frequency mein kami notice karte hain.</p>
+      <p><strong>Q4. Kya school ki vaccinations ke saath ye safe hai?</strong><br/>
+      Haan, lekin apne bacche ki current health history Dr. Iqbal ko zaroor batayein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein ya Civil Lines/Jajmau clinic visit karein — online consultation bhi available hai.</p>
     `
   },
 
@@ -414,6 +659,39 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Agar Aap Bhi Migraine Se Pareshaan Hain — Milein HOMMED Mein</h3>
       <p>Kanpur mein Civil Lines aur Jajmau par HOMMED clinic mein Dr. Iqbal Quasim se appointment lijiye. <strong>Painkiller se nahi — asli constitutional ilaaj se — migraine hamesha ke liye band ho sakta hai.</strong></p>
+    
+
+      <h3>Kanpur Mein Migraine Ke Common Triggers</h3>
+      <p>Hamare paas aane wale migraine patients mein hum aksar dekhte hain ki traffic noise, screen time, irregular meals, aur stress — ye sab attacks ko trigger karte hain. Kuch logon ko dhoop ya strong smells se bhi sirdard shuru ho jaata hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Individual case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Belladonna</strong> (throbbing, sudden sirdard ke liye), <strong>Natrum Muriaticum</strong> (stress aur sunlight se trigger hone wale migraine ke liye), ya <strong>Sanguinaria</strong> (right-sided headache jo subah badhe). Final remedy aapke complete case-history ke baad hi decide hoti hai.</p>
+
+      <h3>Lifestyle Tips</h3>
+      <ul>
+        <li>Khaane ka time fix rakhein — lambe samay tak bhookha rehna migraine trigger kar sakta hai.</li>
+        <li>Screen-time mein regular breaks lein, aur achi roshni mein hi padhai/kaam karein.</li>
+        <li>Roz 7-8 ghante ki neend lein — irregular sleep migraine ko aur badha sakti hai.</li>
+        <li>Apne attacks ka ek diary maintain karein (kab, kitni der, kya trigger laga) — isse Dr. Iqbal ko behtar guidance milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko hafte mein ek se zyada baar migraine ho raha hai, painkillers se sirf temporary relief mil raha hai, ya ye aapki daily life disturb kar raha hai, to ek constitutional evaluation helpful ho sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko migraine se naturally rahat dilane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya migraine hamesha ke liye theek ho sakta hai?</strong><br/>
+      Constitutional treatment se kayi patients ko attacks ki frequency aur severity mein significant kami dikhti hai, aur kuch ko long-term relief bhi milta hai.</p>
+      <p><strong>Q2. Kya painkillers ke saath ye le sakte hain?</strong><br/>
+      Pehli consultation mein apni current dawaiyon ke baare mein Dr. Iqbal ko zaroor batayein, taaki ek safe plan banaya ja sake.</p>
+      <p><strong>Q3. Result aane mein kitna time lagega?</strong><br/>
+      Kayi patients ko attacks ki frequency mein kami kuch hafton mein dikhne lagti hai.</p>
+      <p><strong>Q4. Kya stress-related migraine ke liye bhi ye kaam karta hai?</strong><br/>
+      Haan, constitutional homeopathy stress aur emotional triggers ko bhi address karti hai, jo migraine ka common cause hote hain.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines ya Jajmau clinic mein visit karein, ya online consultation lein.</p>
+    
+      <h3>HOMMED Mein Migraine Patients Ko Kya Milta Hai</h3>
+      <p>Hamare clinic mein aane wale migraine patients aksar kehte hain ki unhe pehli baar koi mila jo unke triggers, sleep pattern, aur stress levels ko bhi utni hi gambhirta se sunta hai jitni unke sirdard ko. Yahi whole-person approach hi long-term relief ki taraf pehla kadam hai.</p>
     `
   },
 
@@ -456,6 +734,39 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Hair Fall Se Pareshan? — HOMMED Kanpur Mein Milein</h3>
       <p>Pehle hum dekhenge kya cause hai — thyroid test, iron profile sab dekhenge. Phir constitutional remedy denge. <strong>Civil Lines ya Jajmau clinic mein Dr. Iqbal Quasim se milein — online bhi available hain.</strong></p>
+    
+
+      <h3>Hair Fall Ke Common Karan</h3>
+      <p>Kanpur ke patients mein hum aksar dekhte hain ki stress, nutrition deficiency (Iron, Vitamin D, Biotin), thyroid imbalance, aur harsh hair products — ye sab hair fall ko trigger ya badha sakte hain. Kuch logon mein ye genetic bhi hota hai, lekin sahi care se ise manage kiya ja sakta hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Phosphorus</strong> (patchy hair loss ke liye), <strong>Natrum Muriaticum</strong> (stress se juda hua hair fall ke liye), ya <strong>Lycopodium</strong> (premature thinning aur hairline issues ke liye). Aapki exact remedy ek detailed case-history ke baad hi decide hoti hai.</p>
+
+      <h3>Hair Care Tips</h3>
+      <ul>
+        <li>Mild, sulfate-free shampoo use karein aur hair ko bahut zyada heat-style karne se bachein.</li>
+        <li>Balanced diet lein jisme protein, iron, aur green vegetables shaamil ho.</li>
+        <li>Stress ko manage karne ke liye roz halki exercise ya meditation karein.</li>
+        <li>Apne hair fall pattern ka record rakhein (kitna, kahan se, kab se shuru hua) — isse Dr. Iqbal ko sahi diagnosis mein madad milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko patches mein hair loss dikh raha hai, ya hair fall achanak badh gaya hai, to ek constitutional evaluation iski root cause samajhne mein madad kar sakta hai — chahe wo stress ho, thyroid ho, ya nutritional deficiency. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko healthy hair regrowth ki taraf guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se baal wapas aa sakte hain?</strong><br/>
+      Kayi patients ne constitutional treatment ke baad naye baal aate dekhe hain — lekin result follicle health aur underlying cause par depend karta hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Hair growth ek slow process hai — kayi patients ko 3-6 mahine mein noticeable improvement dikhti hai.</p>
+      <p><strong>Q3. Kya ye genetic hair loss mein bhi kaam karta hai?</strong><br/>
+      Constitutional treatment overall scalp health aur hair fall ki rate ko improve kar sakta hai, lekin genetic factors ke saath result vary karta hai.</p>
+      <p><strong>Q4. Kya bahar ke supplements bhi continue rakh sakte hain?</strong><br/>
+      Apni current supplements ke baare mein Dr. Iqbal ko zaroor batayein, taaki ek coordinated plan banaya ja sake.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines ya Jajmau clinic mein Dr. Iqbal Quasim se milein.</p>
+    
+      <h3>HOMMED Mein Care Ka Tareeka</h3>
+      <p>Hair fall ke kayi patients hamare paas tab aate hain jab unhone kayi shampoos aur supplements try kar liye hote hain, lekin koi lasting result nahi mila hota. Dr. Iqbal Quasim ek alag tareeke se approach karte hain — aapki overall health, stress, nutrition, aur hormonal balance ko samajhkar — taaki sirf surface-level nahi, balki root-level improvement ho sake.</p>
     `
   },
 
@@ -505,6 +816,39 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Kidney Stone Se Pareshaan? — HOMMED Kanpur Mein Milein</h3>
       <p><strong>Apni ultrasound report leke aiye.</strong> Dr. Iqbal Quasim stone ka size, type aur location dekhenge aur sahi treatment plan batayenge. Civil Lines aur Jajmau — dono clinics par available hain. Online consultation bhi ho sakti hai.</p>
+    
+
+      <h3>Kidney Stones: Kanpur Mein Common Karan</h3>
+      <p>Garmi ke mahino mein paani kam peena, namak/protein-heavy diet, aur sedentary lifestyle — ye sab kidney stone (pathri) banne ke risk ko badha sakte hain. Hamare clinic mein aane wale patients aksar batate hain ki unhe baar-baar stones ban jaate hain, surgery ke baad bhi.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Berberis Vulgaris</strong> (back-side pain aur stone-related discomfort ke liye), <strong>Lycopodium</strong> (recurring stones aur digestive imbalance ke liye), ya <strong>Cantharis</strong> (burning sensation aur urinary irritation ke liye). Final remedy aapke complete case-history ke baad hi select hoti hai.</p>
+
+      <h3>Prevention aur Lifestyle Tips</h3>
+      <ul>
+        <li>Roz kam se kam 8-10 glass paani piyein — especially garmi ke mahino mein.</li>
+        <li>Namak aur oxalate-rich foods (jaise palak, chocolate) ko limit mein lein.</li>
+        <li>Roz halki exercise ya walk karein — ye metabolism aur urinary health dono ke liye accha hai.</li>
+        <li>Apne symptoms aur previous reports ka record rakhein — isse Dr. Iqbal ko behtar guidance milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko baar-baar stones ban rahe hain, ya pehle ki surgery ke baad bhi problem return ho rahi hai, to ek constitutional evaluation root cause identify karne mein madad kar sakta hai — taaki future mein stones banne ka risk kam ho. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko naturally rahat dilane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se chhote stones nikal sakte hain?</strong><br/>
+      Kayi cases mein constitutional treatment se chhote stones naturally pass ho jaate hain — lekin size aur location ke hisaab se ye doctor hi assess kar sakte hain.</p>
+      <p><strong>Q2. Kya ye surgery ka alternative hai?</strong><br/>
+      Bade ya complicated stones ke liye surgery zaroori ho sakti hai — homeopathy recurring stones ko prevent karne aur overall urinary health improve karne mein madadgar hai.</p>
+      <p><strong>Q3. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko discomfort mein kami kuch hafton mein dikhti hai, jabki long-term prevention ke liye consistent treatment zaroori hai.</p>
+      <p><strong>Q4. Kya diet bhi follow karni padegi?</strong><br/>
+      Haan, Dr. Iqbal aapko personalized diet guidance bhi denge jo aapke stone-type ke according hogi.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines aur Jajmau dono clinics par available hain.</p>
+    
+      <h3>HOMMED Mein Long-Term Prevention Par Focus</h3>
+      <p>Kayi patients jo hamare paas aate hain, unhone pehle ek ya zyada baar surgery karwai hoti hai, lekin stones dobara ban jaate hain. HOMMED mein Dr. Iqbal Quasim aapke diet, lifestyle, aur body constitution ko samajhkar ek aisa plan banate hain jo sirf current stone par nahi, balki future prevention par bhi focus kare.</p>
     `
   },
 
@@ -556,6 +900,36 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Diabetes Management — HOMMED Kanpur Mein</h3>
       <p>Agar aap diabetes se pareshaan hain ya complications se darne lage hain — <strong>Dr. Iqbal Quasim se milein HOMMED mein, Civil Lines ya Jajmau, Kanpur.</strong> Apni latest HbA1c, fasting/PP sugar reports leke aiye. Hum saath milke ek integrated plan banayenge — aapki dawaiyon ko replace nahi karenge, par unka burden zaroor kam karenge.</p>
+    
+
+      <h3>Kanpur Mein Diabetes Ke Common Patterns</h3>
+      <p>Hamare clinic mein aane wale kayi patients batate hain ki unka blood sugar stress, irregular meals, aur sedentary lifestyle ki wajah se fluctuate karta hai. Family history bhi ek important factor hota hai jo Dr. Iqbal har case mein dhyan se review karte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Syzygium Jambolanum</strong> (blood sugar support ke liye), <strong>Uranium Nitricum</strong> (thakaan aur excessive thirst ke liye), ya <strong>Phosphoric Acid</strong> (stress-related fluctuations ke liye). Ye examples hain — aapki exact remedy detailed assessment ke baad hi decide hoti hai.</p>
+
+      <h3>Lifestyle Tips</h3>
+      <ul>
+        <li>Khaane ka time fix rakhein aur refined sugar/processed food kam karein.</li>
+        <li>Roz 30 minute ki walk ya halki exercise karein — ye blood sugar control mein madadgar hai.</li>
+        <li>Stress ko manage karne ke liye relaxation practices apnayein — stress bhi sugar levels ko affect karta hai.</li>
+        <li>Apni sugar readings ka regular record rakhein taaki Dr. Iqbal aapki progress accurately track kar sakein.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko thakaan, baar-baar pyaas lagna, ya sugar levels manage karne mein dikkat ho rahi hai, to ek constitutional evaluation aapke overall health ko support karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne hazaaron patients ko Kanpur mein integrated care ke through behtar quality of life paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se diabetes ki dawai chhodi ja sakti hai?</strong><br/>
+      Kabhi bhi apni current dawai khud band na karein — Dr. Iqbal aapki reports dekhkar ek safe, integrated plan suggest karenge.</p>
+      <p><strong>Q2. Kya ye insulin ke saath le sakte hain?</strong><br/>
+      Haan, lekin apni current treatment Dr. Iqbal ko zaroor batayein taaki coordinated care mil sake.</p>
+      <p><strong>Q3. Result aane mein kitna time lagega?</strong><br/>
+      Kayi patients ko energy aur overall well-being mein improvement kuch hafton mein dikhne lagti hai.</p>
+      <p><strong>Q4. Kya diet plan bhi milega?</strong><br/>
+      Haan, Dr. Iqbal aapko personalized lifestyle aur diet guidance bhi denge.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — apni latest reports zaroor leke aiye.</p>
     `
   },
 
@@ -613,6 +987,39 @@ export const DEFAULT_BLOGS: BlogData[] = [
       <h3>Kanpur ke Patients Se Meri Guzarish</h3>
       <p>Agar aapki TSH 4-8 ke beech hai — <strong>yeh golden window hai natural treatment ke liye.</strong> Diet + lifestyle + homeopathy ka combination agar 3-6 mahine properly follow kiya jaaye to bahut se patients naturally improve ho jaate hain.</p>
       <p>HOMMED Clinic, Civil Lines ya Jajmau mein milein — <strong>apni TSH, T3, T4 reports leke aiye — Dr. Iqbal Quasim personally aapka case review karenge.</strong></p>
+    
+
+      <h3>Thyroid Ko Naturally Support Karne Ke Tareeke</h3>
+      <p>Hamare Kanpur clinics mein aane wale thyroid patients ko hum batate hain ki dawai ke saath-saath lifestyle bhi bahut important role play karta hai. Sahi neend, balanced diet, aur stress management — ye sab thyroid function ko naturally support karte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Calcarea Carbonica</strong>, <strong>Lycopodium</strong>, ya <strong>Natrum Muriaticum</strong> — symptoms aur constitution ke according. Final remedy ek detailed case-history ke baad hi select hoti hai.</p>
+
+      <h3>Daily Habits Jo Madad Karte Hain</h3>
+      <ul>
+        <li>Roz subah halka exercise ya yoga karein — ye metabolism ko naturally support karta hai.</li>
+        <li>Iodine aur Selenium-rich foods (jaise dahi, nuts, sabzi) apne diet mein shaamil karein.</li>
+        <li>Sone-jaagne ka time fix rakhein — irregular sleep thyroid balance ko disturb kar sakti hai.</li>
+        <li>Apne symptoms aur reports ka record maintain karein taaki follow-up mein behtar guidance mile.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko thakaan, weight changes, ya mood swings consistently feel ho rahe hain, to ek constitutional evaluation aapke thyroid health ko naturally support karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko balanced thyroid health paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya lifestyle changes akele kaafi hain?</strong><br/>
+      Lifestyle changes bahut important hain, lekin constitutional treatment ke saath combine karne par results aur behtar hote hain.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko energy aur overall well-being mein improvement kuch hafton mein dikhne lagti hai.</p>
+      <p><strong>Q3. Kya mujhe apni reports leke aana chahiye?</strong><br/>
+      Bilkul — apni TSH, T3, T4 reports zaroor leke aiye taaki Dr. Iqbal aapka case personally review kar sakein.</p>
+      <p><strong>Q4. Kya ye dawai ke saath le sakte hain?</strong><br/>
+      Haan, lekin apni current treatment ke baare mein Dr. Iqbal ko zaroor batayein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein ya Civil Lines/Jajmau clinic visit karein.</p>
+    
+      <h3>HOMMED Mein Personalized Thyroid Care</h3>
+      <p>Thyroid ek aisi condition hai jo har patient mein alag tareeke se present hoti hai — kisi mein thakaan zyada hoti hai, kisi mein weight changes, aur kisi mein mood swings. Yahi wajah hai ki HOMMED mein Dr. Iqbal Quasim har case ko individually evaluate karte hain, generic solutions ki jagah ek personalized plan banate hain jo aapke unique symptoms ko address kare.</p>
     `
   },
 
@@ -655,6 +1062,44 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>HOMMED Clinic — Kanpur</h3>
       <p>Agar Hyperthyroid hai — Radioactive Iodine se pehle, ek baar Homeopathy try zaroor karein. <strong>Civil Lines ya Jajmau par Dr. Iqbal Quasim se milein — online consultation bhi available hai.</strong></p>
+    
+
+      <h3>Hyperthyroidism: Symptoms Jo Patients Aksar Batate Hain</h3>
+      <p>Hamare clinic mein aane wale hyperthyroidism patients aksar batate hain ki unhe restlessness, weight loss, dil ki dhadkan tez hona, aur neend na aana jaisi problems hoti hain. Stress aur irregular lifestyle inhe aur trigger kar sakte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Iodum</strong> (restlessness aur weight loss ke liye), <strong>Natrum Muriaticum</strong> (stress se related symptoms ke liye), ya <strong>Phosphorus</strong> (anxiety aur palpitations ke liye). Final remedy aapke complete case-history ke baad hi decide hoti hai.</p>
+
+      <h3>Lifestyle Tips</h3>
+      <ul>
+        <li>Caffeine aur stimulants kam karein — ye restlessness aur palpitations ko badha sakte hain.</li>
+        <li>Roz relaxation practices (jaise deep breathing, meditation) apnayein — stress thyroid symptoms ko trigger karta hai.</li>
+        <li>Sone-jaagne ka time consistent rakhein — poori neend lena bahut zaroori hai.</li>
+        <li>Apni symptoms aur reports ka record rakhein taaki Dr. Iqbal aapki progress accurately track kar sakein.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko consistently restlessness, weight loss, ya dil ki dhadkan tez feel ho rahi hai, to ek constitutional evaluation aapke thyroid balance ko naturally support karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko naturally rahat dilane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se dawai kam ho sakti hai?</strong><br/>
+      Apni current dawai kabhi khud band na karein — Dr. Iqbal aapki reports dekhkar ek safe plan suggest karenge.</p>
+      <p><strong>Q2. Result aane mein kitna time lagega?</strong><br/>
+      Kayi patients ko symptoms mein improvement kuch hafton mein dikhne lagti hai.</p>
+      <p><strong>Q3. Kya stress iska ek bada karan hai?</strong><br/>
+      Haan, stress hyperthyroidism ke symptoms ko trigger ya badha sakta hai — homeopathy ismein bhi madadgar hai.</p>
+      <p><strong>Q4. Kya mujhe apni reports leke aana chahiye?</strong><br/>
+      Bilkul — apni latest thyroid reports zaroor leke aiye.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines ya Jajmau par Dr. Iqbal Quasim se milein, ya online consultation lein.</p>
+    
+      <h3>HOMMED Mein Hyperthyroidism Care Ka Tareeka</h3>
+      <p>Hyperthyroidism ke patients aksar restlessness aur anxiety ke saath hamare paas aate hain — aur kayi baar unhe ye samajh nahi aata ki ye symptoms thyroid se related hain ya stress se. Dr. Iqbal Quasim dono angles se case ko evaluate karte hain, taaki treatment sirf labs ke numbers tak seemit na rahe, balki aapki overall well-being ko bhi address kare.</p>
+      <p>Ek common galatfehmi ye hai ki hyperthyroidism sirf dawai se hi control ho sakta hai. Jabki dawai zaroori role play karti hai, constitutional treatment ke saath combine karne par kayi patients apni overall energy, neend, aur emotional stability mein bhi improvement notice karte hain.</p>
+    
+      <p>Apni pehli visit se pehle, apne symptoms ka ek chhota record bana lein — kab restlessness zyada hoti hai, neend kaisi rehti hai, aur kaunse cheezein symptoms ko badhati hain. Ye chhoti si tayari Dr. Iqbal ko aapka case jaldi aur sahi tarike se samajhne mein madad karti hai.</p>
+    
+      <p>Hamare Civil Lines aur Jajmau, Kanpur ke clinics mein aap walk-in ya advance booking dono tarike se appointment le sakte hain — jo bhi aapke liye convenient ho.</p>
     `
   },
 
@@ -699,6 +1144,43 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>HOMMED Kanpur — Thyroid Weight Management</h3>
       <p><strong>Sirf weight scale mat dekho — apna TSH, T3, T4 dekhein pehle.</strong> Dr. Iqbal Quasim se milein — Civil Lines ya Jajmau, Kanpur. Complete metabolic evaluation milegi.</p>
+    
+
+      <h3>Thyroid aur Weight Gain Ka Connection</h3>
+      <p>Hamare Kanpur clinics mein aane wale kayi patients ye complaint lekar aate hain ki diet aur exercise ke bawajood unka weight kam nahi ho raha. Aksar iska karan ek slow ya imbalanced thyroid hota hai, jo metabolism ko directly affect karta hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Calcarea Carbonica</strong> (slow metabolism aur cold sensitivity ke liye), <strong>Graphites</strong> (weight gain aur skin changes ke liye), ya <strong>Fucus Vesiculosus</strong> (metabolic support ke liye). Aapki exact remedy detailed case-history ke baad hi decide hoti hai.</p>
+
+      <h3>Lifestyle Tips</h3>
+      <ul>
+        <li>Refined carbs aur sugar kam karein, aur protein-rich, fiber-rich khaana zyada lein.</li>
+        <li>Roz halki exercise ya walk karein — consistency sabse zyada important hai.</li>
+        <li>Sone-jaagne ka time fix rakhein — poori neend metabolism ko support karti hai.</li>
+        <li>Apne weight aur symptoms ka simple record rakhein taaki follow-up mein behtar guidance mil sake.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar diet aur exercise ke bawajood weight control nahi ho pa raha, ya saath mein thakaan, baal jhadna, ya cold intolerance bhi feel ho raha hai, to ek constitutional evaluation aapke metabolic balance ko samajhne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne hazaaron patients ko Kanpur mein naturally balance paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se weight kam ho sakta hai?</strong><br/>
+      Thyroid balance behtar hone se metabolism improve hota hai, jo diet aur exercise ke saath weight management mein madadgar ho sakta hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko energy aur metabolism mein improvement kuch hafton mein mehsoos hone lagti hai.</p>
+      <p><strong>Q3. Kya diet plan bhi milega?</strong><br/>
+      Haan, Dr. Iqbal aapko personalized lifestyle aur diet guidance bhi denge.</p>
+      <p><strong>Q4. Kya mujhe apni reports leke aana chahiye?</strong><br/>
+      Bilkul — apni latest thyroid reports leke aiye taaki complete metabolic evaluation ho sake.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Dr. Iqbal Quasim se Civil Lines ya Jajmau, Kanpur mein milein.</p>
+    
+      <h3>HOMMED Mein Weight-Related Thyroid Cases Kaise Handle Hote Hain</h3>
+      <p>Hamare paas aane wale kayi patients frustrated hote hain ki diet aur gym ke bawajood unka weight kam nahi ho raha. Dr. Iqbal Quasim aise cases mein sirf calorie-counting par focus nahi karte — balki aapke metabolism, hormonal balance, aur sleep pattern ko samajhkar ek aisa plan banate hain jo aapke body ke saath kaam kare, uske against nahi.</p>
+    
+      <p>Apni pehli consultation mein apna weight history, diet pattern, aur exercise routine ke baare mein zaroor batayein. Ye details Dr. Iqbal ko ye samajhne mein madad karti hain ki aapka weight gain sirf lifestyle se juda hai ya thyroid imbalance se — aur uske according ek sahi plan banaya ja sakta hai.</p>
+    
+      <p>Hamari team aapko reminder calls aur follow-up scheduling mein bhi madad karti hai, taaki aap apna treatment plan consistently follow kar sakein aur best results pa sakein.</p>
     `
   },
 
@@ -744,6 +1226,43 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>HOMMED Kanpur — Thyroid Hair Fall</h3>
       <p>Sirf TSH mat dekho — <strong>complete thyroid panel aur nutritional labs (Ferritin, Vit D, Zinc) leke HOMMED aiye.</strong> Dr. Iqbal Quasim sab dekhenge. Civil Lines, Kanpur.</p>
+    
+
+      <h3>Thyroid Imbalance Hair Fall Kaise Trigger Karta Hai</h3>
+      <p>Hamare clinic mein aane wale kayi patients ye notice karte hain ki unka hair fall thyroid issues shuru hone ke baad badh gaya. Thyroid hormones hair growth cycle ko directly affect karte hain, isliye imbalance hone par baal patle ya kamzor ho sakte hain.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Phosphorus</strong> (patchy hair loss ke liye), <strong>Lycopodium</strong> (premature thinning ke liye), ya <strong>Natrum Muriaticum</strong> (stress se juda hua hair fall ke liye). Final remedy aapke complete case-history ke baad hi select hoti hai.</p>
+
+      <h3>Care Tips</h3>
+      <ul>
+        <li>Apne hair fall pattern ka record rakhein — kab shuru hua, kitna ho raha hai, kahan se zyada ho raha hai.</li>
+        <li>Mild shampoo use karein aur excessive heat-styling se bachein.</li>
+        <li>Diet mein iron, protein, aur vitamin-rich foods shaamil karein.</li>
+        <li>Stress ko manage karne ke liye relaxation practices apnayein — ye thyroid aur hair health dono ke liye accha hai.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapka hair fall thyroid symptoms ke saath shuru hua hai ya badh gaya hai, to ek constitutional evaluation dono issues ko ek saath address karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko naturally balance paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya thyroid theek hone par hair fall bhi kam ho jaata hai?</strong><br/>
+      Kayi patients ne thyroid balance improve hone ke saath hair fall mein bhi kami dekhi hai — lekin har case individual hota hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Hair growth ek slow process hai — kayi patients ko 3-6 mahine mein noticeable improvement dikhti hai.</p>
+      <p><strong>Q3. Kya mujhe apni labs leke aana chahiye?</strong><br/>
+      Bilkul — apni thyroid aur nutritional labs (Ferritin, Vitamin D, Zinc) leke aiye taaki Dr. Iqbal sab dekh sakein.</p>
+      <p><strong>Q4. Kya ye supplements ke saath le sakte hain?</strong><br/>
+      Haan, lekin apne current supplements Dr. Iqbal ko zaroor batayein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines, Kanpur mein Dr. Iqbal Quasim se milein.</p>
+    
+      <h3>HOMMED Mein Connected Symptoms Ko Saath Mein Dekha Jaata Hai</h3>
+      <p>Kayi patients alag-alag specialists ke paas jaate hain — ek thyroid ke liye, ek hair fall ke liye — bina ye samjhe ki dono aapas mein jude ho sakte hain. HOMMED mein Dr. Iqbal Quasim in connections ko samajhkar ek integrated plan banate hain, taaki aapko baar-baar alag-alag jagah jaane ki zaroorat na pade.</p>
+    
+      <p>Apne saath apne purane hair-care products, supplements, aur hair fall ki photos (alag-alag mahino ki) leke aana faydemand ho sakta hai. Isse Dr. Iqbal ko ye samajhne mein madad milti hai ki badlaav kab aur kitni tezi se ho raha hai, jo sahi remedy chunne mein kaafi madadgar hota hai.</p>
+    
+      <p>Follow-up visits ke dauraan Dr. Iqbal aapki progress dekhkar zaroorat anusar remedy mein adjustments karte hain, taaki treatment hamesha aapke current symptoms ke saath aligned rahe.</p>
     `
   },
 
@@ -789,6 +1308,44 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Kanpur Mein Pregnant Thyroid Patients — HOMMED</h3>
       <p><strong>Please Dr. Iqbal Quasim se zaroor milein — Civil Lines ya Jajmau, Kanpur.</strong> TSH monthly monitor karna zaroori hai pregnancy mein. Online consultation bhi available hai agar travel mushkil ho.</p>
+    
+
+      <h3>Pregnancy Mein Thyroid Ka Khaas Khayal Kyun Zaroori Hai</h3>
+      <p>Pregnancy ke dauraan thyroid hormones maa aur baby dono ki health ke liye bahut important hote hain. Hamare clinic mein aane wali expecting mothers ko hum batate hain ki regular monitoring aur gentle, safe care is samay sabse zyada zaroori hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Pregnancy ke case mein Dr. Iqbal bahut hi gentle aur carefully-selected remedies consider karte hain — jaise <strong>Calcarea Carbonica</strong> ya <strong>Natrum Muriaticum</strong> — symptoms aur trimester ke according. Har remedy obstetric history ko dhyan mein rakhkar hi select ki jaati hai.</p>
+
+      <h3>Pregnancy Mein Thyroid Care Ke Tips</h3>
+      <ul>
+        <li>Apne gynaecologist ke saath regular thyroid monitoring zaroor karwayein.</li>
+        <li>Balanced diet lein jisme iodine aur iron-rich foods shaamil hon — apne doctor ki guidance ke according.</li>
+        <li>Stress ko kam karne ke liye halki activity, achi neend, aur relaxation practices apnayein.</li>
+        <li>Apne symptoms aur reports ka record rakhein taaki dono practitioners ko clear picture mile.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko pregnancy ke dauraan thyroid imbalance ke symptoms feel ho rahe hain, ya aap apni thyroid health ko gently support karna chahti hain, to ek consultation helpful ho sakta hai — hamesha apne gynaecologist ke saath coordination mein. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein kayi expecting mothers ko safe, supportive care diya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya pregnancy mein homeopathy safe hai?</strong><br/>
+      Homeopathic remedies gentle hoti hain, lekin pregnancy mein koi bhi treatment apne gynaecologist ki jaankari aur sehmati ke saath hi leni chahiye.</p>
+      <p><strong>Q2. Kitni baar monitoring zaroori hai?</strong><br/>
+      Pregnancy mein thyroid ko monthly monitor karna zaroori hai — apne doctor ki guidance follow karein.</p>
+      <p><strong>Q3. Kya ye meri current prenatal care ke saath le sakti hoon?</strong><br/>
+      Haan, lekin Dr. Iqbal aur aapke gynaecologist dono ko ek-doosre ke treatment ke baare mein pata hona chahiye.</p>
+      <p><strong>Q4. Kya online consultation available hai?</strong><br/>
+      Haan, agar travel mushkil ho to online consultation bhi li ja sakti hai.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — apni current reports aur gynaecologist ki advice saath leke aiye.</p>
+    
+      <h3>HOMMED Mein Pregnancy Care Ka Tareeka</h3>
+      <p>Pregnancy ke dauraan har choice bahut sochsamajh kar leni hoti hai — aur thyroid health is samay aur bhi zyada sensitive ho jaati hai. HOMMED mein Dr. Iqbal Quasim hamesha aapke gynaecologist ke saath coordination mein kaam karte hain, taaki aapko gentle, safe support mile bina kisi risk ke. Hamari priority hamesha maa aur baby dono ki safety hoti hai.</p>
+      <p>Agar aap pregnancy ke dauraan apni thyroid health ko naturally support karna chahti hain — ya bas apne doctor ki advice ke saath ek additional, gentle layer of care chahti hain — to ek consultation aapko clarity aur confidence dono de sakta hai.</p>
+    
+      <p>Apni pehli visit mein apni pregnancy ki current stage, gynaecologist ki advice, aur latest thyroid reports zaroor saath leke aiye. Isse Dr. Iqbal aur aapke gynaecologist dono mil kar aapke liye ek coordinated, safe care plan बना sakte hain — jisme maa aur baby dono ki health sabse zyada important hoti hai.</p>
+    
+      <p>Hamari team appointment scheduling mein puri madad karti hai, aur agar zaroorat ho to follow-up visits ko aapki due-date aur convenience ke hisaab se adjust kiya ja sakta hai.</p>
     `
   },
 
@@ -826,6 +1383,41 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Joint Pain Se Mukti — HOMMED Kanpur</h3>
       <p>Apni X-rays, uric acid, RA factor leke aiye. <strong>Dr. Iqbal Quasim Civil Lines ya Jajmau mein joint pain ka root cause samjhenge — bina steroid ke permanent rahat ka plan banayenge.</strong></p>
+    
+
+      <h3>Joint Pain (Gathiya) Ke Common Karan</h3>
+      <p>Hamare Kanpur clinics mein aane wale patients mein hum aksar dekhte hain ki age, weather changes, sedentary lifestyle, aur poor posture — ye sab joint pain ko trigger ya badha sakte hain. Sardiyon mein ye problem aur zyada noticeable ho jaati hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Rhus Toxicodendron</strong> (stiffness jo movement se behtar ho), <strong>Bryonia Alba</strong> (pain jo movement se badhe), ya <strong>Calcarea Carbonica</strong> (weakness aur cold sensitivity ke liye). Final remedy aapke complete case-history ke baad hi select hoti hai.</p>
+
+      <h3>Self-Care Tips</h3>
+      <ul>
+        <li>Roz halki stretching ya yoga karein — ye joints ko flexible rakhne mein madad karta hai.</li>
+        <li>Sahi posture maintain karein, especially lambe samay tak baithte waqt.</li>
+        <li>Anti-inflammatory foods (jaise haldi, adrak, green vegetables) apne diet mein shaamil karein.</li>
+        <li>Apne pain pattern ka record rakhein (kab badhta hai, kab kam hota hai) — isse Dr. Iqbal ko behtar guidance milegi.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko lagataar joint stiffness, sujan, ya pain feel ho raha hai jo daily activities ko affect kar raha hai, to ek constitutional evaluation root cause samajhne mein madad kar sakta hai — bina steroids ke. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko naturally rahat dilane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se joint pain permanently theek ho sakta hai?</strong><br/>
+      Constitutional treatment se kayi patients ko long-term relief milta hai — result condition ki severity aur duration par depend karta hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko stiffness aur discomfort mein kami kuch hafton mein dikhti hai.</p>
+      <p><strong>Q3. Kya ye arthritis ke liye bhi kaam karta hai?</strong><br/>
+      Haan, Dr. Iqbal arthritis aur other joint conditions ke liye bhi constitutional treatment provide karte hain.</p>
+      <p><strong>Q4. Kya main apni current painkillers ke saath ye le sakta hoon?</strong><br/>
+      Apni current dawaiyon ke baare mein Dr. Iqbal ko zaroor batayein, taaki ek safe, coordinated plan banaya ja sake.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines ya Jajmau mein Dr. Iqbal Quasim se milein.</p>
+    
+      <h3>HOMMED Mein Joint Pain Patients Ko Kya Milta Hai</h3>
+      <p>Hamare clinic mein aane wale kayi patients ne pehle painkillers aur steroid injections try kiye hote hain, jo temporary relief dete hain lekin underlying problem ko theek nahi karte. Dr. Iqbal Quasim aapke pain pattern, lifestyle, aur overall constitution ko samajhkar ek aisa plan banate hain jo sirf symptoms ko nahi, balki root cause ko address kare — taaki aap apni daily activities firse comfortably kar sakein.</p>
+    
+      <p>Apni visit mein ye batana na bhoolein ki pain kab shuru hua, kis movement se badhta ya kam hota hai, aur kya aapne pehle koi treatment liya hai. Ye details Dr. Iqbal ko aapke case ko poori tarah samajhne aur sahi remedy chunne mein madad karti hain.</p>
     `
   },
 
@@ -864,6 +1456,40 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Mental Health — HOMMED Kanpur</h3>
       <p>Aapki mental health aapki physical health jitni important hai. <strong>HOMMED mein Dr. Iqbal Quasim se milein — judgment-free consultation. Civil Lines ya Jajmau, Kanpur.</strong></p>
+    
+
+      <h3>Mental Health Ko Lekar Khulkar Baat Karna Zaroori Hai</h3>
+      <p>Hamare Kanpur clinics mein aane wale kayi patients pehli baar apni stress, anxiety, ya low mood ke baare mein khulkar baat karte hain. Dr. Iqbal har case ko judgment-free environment mein sunte hain — kyunki emotional health ko samajhna treatment ka sabse important hissa hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Ignatia Amara</strong> (grief aur emotional sensitivity ke liye), <strong>Aconitum Napellus</strong> (sudden anxiety ya panic ke liye), ya <strong>Natrum Muriaticum</strong> (long-term sadness aur withdrawal ke liye). Final remedy aapke complete personal history ke baad hi select hoti hai.</p>
+
+      <h3>Daily Habits Jo Madad Karte Hain</h3>
+      <ul>
+        <li>Roz halki exercise, walk, ya yoga karein — ye mood aur energy dono ko improve karta hai.</li>
+        <li>Sone-jaagne ka time consistent rakhein — poori neend mental health ke liye bahut zaroori hai.</li>
+        <li>Apne thoughts aur feelings ko journal mein likhne ki aadat banayein — isse clarity milti hai.</li>
+        <li>Apne close logon se baat karein — support system ka hona recovery mein madadgar hota hai.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aap lagataar stress, anxiety, ya low mood feel kar rahe hain jo aapki daily life ko affect kar raha hai, to ek constitutional evaluation aapko naturally balance paane mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko emotional well-being ki taraf guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya homeopathy se anxiety completely theek ho sakti hai?</strong><br/>
+      Constitutional treatment se kayi patients ko significant relief milta hai — result individual case aur consistency par depend karta hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Kayi patients ko mood aur energy mein improvement kuch hafton mein mehsoos hone lagti hai.</p>
+      <p><strong>Q3. Kya main apni current therapy ke saath ye le sakta hoon?</strong><br/>
+      Haan, lekin apni current treatment ke baare mein Dr. Iqbal ko zaroor batayein taaki coordinated care mil sake.</p>
+      <p><strong>Q4. Kya consultation completely confidential hota hai?</strong><br/>
+      Bilkul — Dr. Iqbal har case ko privacy aur respect ke saath handle karte hain.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — judgment-free consultation ke liye Civil Lines ya Jajmau, Kanpur mein milein.</p>
+    
+      <h3>HOMMED Mein Mental Health Ko Kaise Approach Kiya Jaata Hai</h3>
+      <p>Mental health ke baare mein baat karna aaj bhi kayi logon ke liye mushkil hota hai — aur ye bilkul normal hai. HOMMED mein Dr. Iqbal Quasim har patient ko bina kisi judgment ke sunte hain, aur unki poori story — sleep, relationships, work, aur daily stress — ko samajhne ki koshish karte hain. Ye samajh hi sahi remedy chunne ki neev banti hai.</p>
+      <p>Ek common galatfehmi ye hai ki sirf "bahut zyada stress" wale logon ko hi help ki zaroorat hoti hai. Lekin halki, lagataar anxiety ya low mood bhi utni hi important hoti hai — aur jitni jaldi address ki jaaye, utni hi aasani se balance wapas aata hai.</p>
     `
   },
 
@@ -907,6 +1533,41 @@ export const DEFAULT_BLOGS: BlogData[] = [
 
       <h3>Vitiligo Ka Ilaaj — HOMMED Kanpur</h3>
       <p>Vitiligo mein results aane mein 6-18 mahine lagta hai — <strong>lekin results permanent aur natural hote hain.</strong> Civil Lines ya Jajmau, Kanpur mein Dr. Iqbal Quasim se milein — patches ki photos leke aiye.</p>
+    
+
+      <h3>Vitiligo (Safed Daag) Ke Baare Mein Samajhna</h3>
+      <p>Vitiligo ek aisi condition hai jisme skin par safed patches ban jaate hain, jo kayi logon ke liye emotionally bhi mushkil ho sakti hai. Hamare Kanpur clinics mein aane wale patients ko hum batate hain ki ye sirf cosmetic issue nahi balki immune system se juda hua hai — aur isliye constitutional approach zyada effective hota hai.</p>
+
+      <h3>Remedies Jo Consider Ki Ja Sakti Hain</h3>
+      <p>Case ke hisaab se Dr. Iqbal kuch remedies consider karte hain jaise <strong>Arsenicum Album</strong>, <strong>Sulphur</strong>, ya <strong>Silicea</strong> — patient ke overall constitution aur patches ke pattern ke according. Final remedy ek detailed case-history ke baad hi select hoti hai.</p>
+
+      <h3>Care Tips</h3>
+      <ul>
+        <li>Patches ki photos samay-samay par lein — isse progress track karne mein madad milti hai.</li>
+        <li>Sun exposure ko balance mein rakhein — apne doctor ki guidance follow karein.</li>
+        <li>Stress ko manage karne ke liye relaxation practices apnayein — stress immune balance ko affect kar sakta hai.</li>
+        <li>Balanced, nutrient-rich diet lein jo overall immunity ko support kare.</li>
+      </ul>
+
+      <h3>Dr. Iqbal Se Kab Milein</h3>
+      <p>Agar aapko skin par naye safed patches dikh rahe hain, ya existing patches badh rahe hain, to ek constitutional evaluation root cause ko address karne mein madad kar sakta hai. Dr. Iqbal Quasim (BHMS, KGMU Lucknow, Homoeopathic Icon Award 2025) ne Kanpur mein hazaaron patients ko naturally confidence aur skin health dono paane mein guide kiya hai.</p>
+
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>Q1. Kya vitiligo completely theek ho sakta hai?</strong><br/>
+      Constitutional treatment se kayi patients ko significant improvement dikhti hai — result patches ki age, size, aur location par depend karta hai.</p>
+      <p><strong>Q2. Result aane mein kitna time lagta hai?</strong><br/>
+      Ye ek slow process hai — kayi patients ko kuch mahino mein hi changes dikhne lagte hain.</p>
+      <p><strong>Q3. Kya bachon ke liye bhi safe hai?</strong><br/>
+      Haan, homeopathic remedies bachon mein bhi gently kaam karti hain.</p>
+      <p><strong>Q4. Kya makeup/cover-up products use kar sakte hain?</strong><br/>
+      Haan, lekin koi bhi naya product try karne se pehle Dr. Iqbal se discuss kar lein.</p>
+      <p><strong>Q5. Appointment kaise book karein?</strong><br/>
+      <strong>+91-8707868504</strong> par call karein — Civil Lines ya Jajmau, Kanpur mein Dr. Iqbal Quasim se milein, patches ki photos zaroor leke aiye.</p>
+    
+      <h3>HOMMED Mein Vitiligo Care Ka Tareeka</h3>
+      <p>Vitiligo ke patients aksar emotional stress ke saath hamare paas aate hain — kyunki ye condition sirf physical nahi, balki confidence ko bhi affect karti hai. Dr. Iqbal Quasim har patient ko patience aur samajh ke saath sunte hain, aur unke immune balance, stress levels, aur overall constitution ko dhyan mein rakhkar ek personalized plan banate hain — taaki improvement sirf skin tak seemit na rahe, balki overall confidence bhi wapas aaye.</p>
+    
+      <p>Agar possible ho, to apne patches ki pichhle kuch mahino ki photos leke aiye — isse progress track karna aasaan ho jaata hai. Saath hi, apni family history aur kisi bhi recent stress ya health change ke baare mein bhi batayein, kyunki ye sab vitiligo ke pattern ko samajhne mein madadgar ho sakta hai.</p>
     `
   }
 ];
@@ -967,19 +1628,25 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     name: "Civil Lines",
     slug: "civil-lines",
     nearestBranch: "Civil Lines Clinic",
-    address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
+    address: "Civil Lines, Kanpur, Uttar Pradesh – 208001",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Located right in the heart of Civil Lines, easily accessible from all central areas.",
-    phone: "9454756421"
+    phone: "8707868504",
+    isBranch: true,
+    geo: { latitude: "26.4806871", longitude: "80.3013233" },
+    hours: [{ opens: "10:00", closes: "14:00" }, { opens: "17:00", closes: "20:00" }]
   },
   {
     name: "Jajmau",
     slug: "jajmau",
     nearestBranch: "Jajmau Clinic",
-    address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
+    address: "Jajmau, Kanpur, Uttar Pradesh – 208010",
     landmark: "Near Ganga Bridge",
     distanceInfo: "Located in the main Jajmau market area, convenient for local and transit patients.",
-    phone: "9454756421"
+    phone: "8707868504",
+    isBranch: true,
+    geo: { latitude: "26.4650", longitude: "80.3750" },
+    hours: [{ opens: "16:00", closes: "19:00" }]
   },
   {
     name: "Kalyanpur",
@@ -988,7 +1655,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Kalyanpur is approx. 12 km from our Civil Lines Clinic. Shared autos or cabs take 20-30 mins via GT Road.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Kalyanpur, jo apne IIT Kanpur aur GT Road industrial belt ke liye jaana jaata hai, yahan ke residents office stress, pollution-related skin allergies aur thyroid imbalance ki shikayat lekar hamare paas aate hain. Hum Kalyanpur ke patients ko unki busy lifestyle ko dhyaan mein rakhte hue constitutional homeopathic plans dete hain jo bina side-effects ke kaam karte hain.",
+    commute: "From Kalyanpur, take the route via GT Road toward Civil Lines — approximately 20–25 minutes by auto or cab. Shared autos are easily available from Kalyanpur Chauraha directly to Green Park Stadium, right next to our clinic.",
+    testimonial: "A patient from Kalyanpur who came to us with stubborn scalp psoriasis and years of steroid creams found visible relief within three months of constitutional homeopathic treatment — and has since referred two of her colleagues from the IIT campus area."
   },
   {
     name: "Swaroop Nagar",
@@ -997,7 +1667,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Swaroop Nagar is just 3 km from our Civil Lines Clinic, a quick 8-10 min drive via VIP Road.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Swaroop Nagar, ek established residential colony jo VIP Road aur Phool Bagh ke kareeb hai, yahan ke families aksar bachon ki recurring tonsillitis, allergies aur adults mein joint pain ke liye humse consult karte hain. Being so close to Civil Lines, Swaroop Nagar residents are among our most regular walk-in patients.",
+    commute: "From Swaroop Nagar, the clinic is barely a 8–10 minute drive via VIP Road straight to Green Park Stadium — one of the shortest commutes among all the areas we serve. Autos and e-rickshaws ply this route all day.",
+    testimonial: "A patient from Swaroop Nagar who came to us with her 9-year-old's repeated throat infections and tonsil swelling avoided a recommended surgery — after eight months of homeopathic care, the child has had no major flare-up for over a year."
   },
   {
     name: "Kidwai Nagar",
@@ -1006,7 +1679,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
     landmark: "Near Ganga Bridge",
     distanceInfo: "Kidwai Nagar is approx. 8 km from our Jajmau Clinic, taking about 15-20 mins via Kidwai Nagar Bypass.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Kidwai Nagar, surrounded by leather and tannery work zones near Jajmau, sees a high number of patients with occupational skin irritation, contact dermatitis and respiratory allergies. Dr. Iqbal's team has treated many Kidwai Nagar families for chronic eczema and breathing-related issues linked to the local environment.",
+    commute: "From Kidwai Nagar, head toward the Kidwai Nagar Bypass and continue on to Jajmau — roughly 15–20 minutes by auto or cab, and our nearest branch sits right in the main Jajmau market area.",
+    testimonial: "A patient from Kidwai Nagar who came to us with work-related contact dermatitis on both hands — after switching from steroid ointments to constitutional homeopathic remedies — reported clear, healed skin within four months and has stayed flare-up free since."
   },
   {
     name: "Barra",
@@ -1015,7 +1691,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Barra is approx. 10 km from our Civil Lines Clinic. Direct cabs and autos are available via Barra Bypass road.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Barra, one of Kanpur's largest and most densely populated residential sectors, brings us a wide mix of patients — from young adults dealing with hormonal acne and PCOS to seniors managing diabetes and arthritis. Our Barra patients particularly value the home-delivery of medicines, since the area is a fair distance from both branches.",
+    commute: "From Barra, take the Barra Bypass road directly toward Civil Lines — cabs and shared autos run this route regularly, and the journey takes about 20–25 minutes depending on traffic near Yashoda Nagar crossing.",
+    testimonial: "A patient from Barra who came to us with PCOS-related irregular periods and weight gain regained a regular cycle within five months of personalised constitutional treatment, without any hormonal medication."
   },
   {
     name: "Kakadeo",
@@ -1024,7 +1703,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Kakadeo is approx. 6 km from our Civil Lines Clinic. It is a 12-15 min drive via Rawatpur.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Kakadeo, a busy commercial and residential hub near Kanpur University, sends us many students and young professionals struggling with stress-induced migraines, acidity and hair fall from irregular routines. We tailor our consultation timings here to fit around college and office schedules.",
+    commute: "From Kakadeo, drive via Rawatpur toward Civil Lines — a straightforward 12–15 minute journey by auto, cab, or two-wheeler, with the clinic close to the Green Park Stadium landmark.",
+    testimonial: "A patient from Kakadeo who came to us with severe exam-season migraines and acidity found lasting relief after a focused four-month constitutional treatment plan — and now recommends Dr. Iqbal to fellow university students."
   },
   {
     name: "Lajpat Nagar",
@@ -1033,7 +1715,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Civil Lines, Kanpur, Uttar Pradesh (Near Green Park Stadium)",
     landmark: "Near Green Park Stadium",
     distanceInfo: "Lajpat Nagar is only 4 km from our Civil Lines Clinic, taking about 10 mins via GT Road.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Lajpat Nagar, a quiet residential locality close to Civil Lines, is home to many of our long-term patients — particularly elderly residents managing thyroid disorders, joint pain and chronic digestive issues. Its proximity makes it one of the easiest areas to visit us from for regular follow-ups.",
+    commute: "From Lajpat Nagar, it's a short 10-minute drive via GT Road straight to our Civil Lines branch near Green Park Stadium — one of the most convenient commutes for our regular patients.",
+    testimonial: "A patient from Lajpat Nagar who came to us with long-standing hypothyroidism and fatigue was able to gradually reduce dependence on her thyroid medication (under medical supervision) after a year of consistent constitutional homeopathic care."
   },
   {
     name: "Unnao",
@@ -1042,7 +1727,10 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
     landmark: "Near Ganga Bridge",
     distanceInfo: "Unnao is located right across the Ganges bridge. Our Jajmau Clinic is approx. 15 km away, taking 25 mins via NH 27.",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Unnao, just across the Ganga from Kanpur, sends us many patients who travel for our well-known chronic disease and skin treatment programs — especially for conditions like vitiligo, psoriasis and long-standing joint pain that haven't responded to conventional treatment elsewhere.",
+    commute: "From Unnao, cross the Ganga Bridge and take NH 27 toward Jajmau — approximately 25 minutes by car or cab, bringing you directly to our Jajmau branch in the main market area.",
+    testimonial: "A patient from Unnao who came to us with widespread vitiligo patches that had been stable-but-untreated for years began seeing visible repigmentation after eight months of dedicated constitutional treatment and dietary guidance from Dr. Iqbal's team."
   },
   {
     name: "Shuklaganj",
@@ -1051,6 +1739,9 @@ export const DEFAULT_LOCATIONS: LocationData[] = [
     address: "Jajmau, Kanpur, Uttar Pradesh (Near Ganga Bridge)",
     landmark: "Near Ganga Bridge",
     distanceInfo: "Shuklaganj is situated just across the Ganga. Our Jajmau Clinic is only 10 km away (approx. 15 mins drive).",
-    phone: "9454756421"
+    phone: "8707868504",
+    intro: "Shuklaganj, sitting right across the Ganga from Jajmau, has a growing community of patients who prefer Dr. Iqbal's natural approach for managing kidney stones (pathri), digestive disorders and recurring allergies — conditions that are common in the riverside belt.",
+    commute: "From Shuklaganj, it's a short crossing over the Ganga followed by a quick drive to Jajmau — about 15 minutes in total, making our Jajmau branch the most convenient option for local residents.",
+    testimonial: "A patient from Shuklaganj who came to us with recurring kidney stones and was facing a recommended surgical procedure chose homeopathic management instead — after six months of treatment and dietary changes, follow-up scans showed the stones had dissolved without surgery."
   }
 ];

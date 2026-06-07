@@ -46,3 +46,6 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://www.hommed.org/sitemap.xml
+
+# IndexNow key (instant indexing for Bing, Yandex & other engines)
+# Key file: https://www.hommed.org/hommed-indexnow-2026.txt
