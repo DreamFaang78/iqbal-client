@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Activity, Phone, Mail, MapPin, MessageSquare, ArrowRight } from 'lucide-react';
 import { DEFAULT_LOCATIONS } from '@/lib/data';
@@ -35,7 +36,7 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="space-y-6">
             <Link href="/" className="inline-block hover:scale-[1.03] transition-transform duration-300">
-              <img src="/logo.png" alt="HomMed Logo" className="h-12 w-auto object-contain" />
+              <Image src="/logo.png" alt="HomMed Logo" width={48} height={48} className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm leading-relaxed">
               Kanpur ke logon ka bharoseband homeopathic ilaaj — jahan permanent healing aur aapki sehat hamesha pehle aati hai.

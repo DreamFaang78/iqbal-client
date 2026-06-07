@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn, Heart, Stethoscope, Users, Building } from 'lucide-react';
 
@@ -117,10 +118,12 @@ export default function ClinicGallery() {
               onClick={() => setSelectedImage(item)}
             >
               {/* Image */}
-              <img
+              <Image
                 src={item.src}
                 alt={item.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
 
               {/* Dark Overlay on Hover */}
@@ -191,11 +194,13 @@ export default function ClinicGallery() {
               {/* Lightbox content grid */}
               <div className="grid grid-cols-1 md:grid-cols-12">
                 {/* Image panel */}
-                <div className="md:col-span-8 bg-black flex items-center justify-center max-h-[70vh] md:max-h-[80vh]">
-                  <img
+                <div className="relative md:col-span-8 bg-black flex items-center justify-center max-h-[70vh] md:max-h-[80vh] min-h-[300px]">
+                  <Image
                     src={selectedImage.src}
                     alt={selectedImage.title}
-                    className="w-full h-full object-contain"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain"
                   />
                 </div>
 

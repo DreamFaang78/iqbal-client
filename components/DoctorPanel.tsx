@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, GraduationCap, Stethoscope, Phone, Award, Heart } from 'lucide-react';
 import Link from 'next/link';
@@ -115,10 +116,12 @@ export default function DoctorPanel() {
               
               {/* Doctor Photo Section with Badge */}
               <div className="relative h-72 w-full overflow-hidden bg-[#0E1F12] border-b border-[#4CAF6E]/8">
-                <img
+                <Image
                   src={doc.image}
                   alt={doc.name}
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0E1F12] via-[#0E1F12]/30 to-transparent"></div>
                 

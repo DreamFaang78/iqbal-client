@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, Bot, ShieldCheck, TrendingUp, Leaf, Star, Award, Users } from 'lucide-react';
@@ -232,10 +233,13 @@ export default function Hero() {
             {/* ── MAIN DOCTOR CARD ── */}
             <div className="relative w-[280px] sm:w-[320px] h-[360px] sm:h-[500px] rounded-[28px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.6)] border border-white/8">
               {/* Doctor photo */}
-              <img
+              <Image
                 src="/doctor-iqbal.jpg"
                 alt="Dr. Iqbal — Homeopathic Physician"
-                className="absolute inset-0 w-full h-full object-cover object-top"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover object-top"
               />
 
               {/* Gradient overlay — heavy at bottom for legibility */}

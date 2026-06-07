@@ -1,0 +1,626 @@
+'use client';
+
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Calendar as CalendarIcon, Clock, CheckCircle2, AlertCircle, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { DEFAULT_SERVICES } from '@/lib/data';
+import { generateDailySlots, groupSlotsByHour, isSunday } from '@/lib/slots';
+
+function BookForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialService = searchParams.get('service') || '';
+
+  const [user, setUser] = useState<{ id: string; name: string; email: string; phone: string } | null>(null);
+  const [formData, setFormData] = useState({
+    patientName: '',
+    patientPhone: '',
+    service: '',
+    appointmentPlace: '',
+    scheduleDate: '',
+    scheduleTime: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [minDate, setMinDate] = useState('');
+
+  const [activeHourBlock, setActiveHourBlock] = useState<string | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  // 15-minute slots for the clinic day (Mon–Sat, 10:00 AM – 9:00 PM)
+  const slotGroups = useMemo(() => groupSlotsByHour(generateDailySlots()), []);
+
+  const calendarCells = useMemo(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const startingOffset = firstDay === 0 ? 6 : firstDay - 1;
+    
+    const cells: { dateStr: string; dayNum: number; isCurrentMonth: boolean; isDisabled: boolean; isSunday: boolean }[] = [];
+    
+    const prevYear = month === 0 ? year - 1 : year;
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
+    for (let i = startingOffset - 1; i >= 0; i--) {
+      const dayNum = daysInPrevMonth - i;
+      const dateStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      cells.push({
+        dateStr,
+        dayNum,
+        isCurrentMonth: false,
+        isDisabled: true,
+        isSunday: new Date(prevYear, prevMonth, dayNum).getDay() === 0
+      });
+    }
+    
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const dayOfWeek = new Date(year, month, d).getDay();
+      const isSun = dayOfWeek === 0;
+      const isPast = dateStr < minDate;
+      cells.push({
+        dateStr,
+        dayNum: d,
+        isCurrentMonth: true,
+        isDisabled: isPast || isSun,
+        isSunday: isSun
+      });
+    }
+    
+    const remaining = 42 - cells.length;
+    const nextYear = month === 11 ? year + 1 : year;
+    const nextMonth = month === 11 ? 0 : month + 1;
+    for (let d = 1; d <= remaining; d++) {
+      const dateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      cells.push({
+        dateStr,
+        dayNum: d,
+        isCurrentMonth: false,
+        isDisabled: true,
+        isSunday: new Date(nextYear, nextMonth, d).getDay() === 0
+      });
+    }
+    
+    return cells;
+  }, [currentMonth, minDate]);
+  const filteredSlotGroups = useMemo(() => {
+  if (!formData.appointmentPlace) return [];
+  const place = formData.appointmentPlace;
+  return slotGroups.filter((group) => {
+    // Extract hour number and period from hourLabel, e.g., "1:00 PM"
+    const [hourPart, period] = group.hourLabel.split(' ');
+    const hourNum = parseInt(hourPart.split(':')[0], 10);
+    if (place === 'Online Consultation') {
+      // Allow only slots from 1 PM to 10 PM (hour groups 1-9 PM)
+      return period === 'PM' && hourNum >= 1 && hourNum <= 9;
+    }
+    if (place === 'Jajmau Clinic') {
+      return period === 'PM' && hourNum >= 1 && hourNum <= 3; // 1 PM to 4 PM slots (hour groups 1-3)
+    }
+    if (place === 'Civil Lines Clinic') {
+      return period === 'PM' && hourNum >= 5 && hourNum <= 9; // 5 PM to 10 PM slots (hour groups 5-9)
+    }
+    return false;
+  });
+}, [slotGroups, formData.appointmentPlace]);
+
+  // Slots already taken for the chosen date (so patients can't double-book)
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+
+  // Min date selector: today
+  useEffect(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    setMinDate(`${yyyy}-${mm}-${dd}`);
+  }, []);
+
+  // When the chosen date changes, load which slots are already taken that day.
+  useEffect(() => {
+    const date = formData.scheduleDate;
+    if (!date || isSunday(date)) {
+      setBookedSlots([]);
+      return;
+    }
+    let cancelled = false;
+    setSlotsLoading(true);
+    fetch(`/api/appointments/availability?date=${encodeURIComponent(date)}`)
+      .then((res) => (res.ok ? res.json() : { bookedSlots: [] }))
+      .then((data) => {
+        if (cancelled) return;
+        const taken: string[] = Array.isArray(data.bookedSlots) ? data.bookedSlots : [];
+        setBookedSlots(taken);
+        // If the currently-selected slot just became unavailable, clear it.
+        setFormData((prev) =>
+          taken.includes(prev.scheduleTime) ? { ...prev, scheduleTime: '' } : prev
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setBookedSlots([]);
+      })
+      .finally(() => {
+        if (!cancelled) setSlotsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.scheduleDate]);
+
+  useEffect(() => {
+    // Track the logged-in user for auth/redirect purposes, but DO NOT pre-fill
+    // the patient name/phone — these fields default to blank so each booking
+    // captures the details entered fresh in the form.
+    const storedUser = localStorage.getItem('hommed_user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem('hommed_user');
+      }
+    }
+    setFormData(prev => ({ ...prev, service: initialService }));
+  }, [initialService]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (e.target.name === 'appointmentPlace') {
+      setFormData(prev => ({ ...prev, appointmentPlace: e.target.value, scheduleTime: '' }));
+      setActiveHourBlock(null);
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+  };
+
+  const selectTimeSlot = (slot: string) => {
+    setFormData({ ...formData, scheduleTime: slot });
+  };
+
+  const handleBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.patientName || !formData.patientPhone || !formData.service || !formData.appointmentPlace || !formData.scheduleDate || !formData.scheduleTime) {
+      setError('Please fill in all scheduling fields.');
+      return;
+    }
+    if (isSunday(formData.scheduleDate)) {
+      setError('The clinic is closed on Sundays. Please choose another day.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('hommed_token');
+      const res = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Booking failed.');
+      }
+
+      // Celebrates booking success
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || 'Could not register booking.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0A1628] bg-grid py-16 px-4 font-sans relative overflow-hidden">
+      {/* Decorative Blobs */}
+      <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-brand-cyan/5 rounded-full filter blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-brand-gold/5 rounded-full filter blur-[120px] pointer-events-none"></div>
+
+      <div className="max-w-3xl mx-auto relative z-10">
+        {success ? (
+          <div className="glass-dark rounded-[36px] p-10 text-center space-y-6">
+            <div className="p-4 bg-emerald-500/10 text-brand-green border border-brand-green/20 rounded-full w-fit mx-auto animate-bounce">
+              <CheckCircle2 className="h-14 w-14" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="font-heading font-extrabold text-3xl text-white">Appointment Requested!</h2>
+              <p className="text-slate-300 text-base font-light max-w-md mx-auto">
+                Your consultation request has been received. Our clinic coordinator will contact you shortly via phone or WhatsApp to finalize your slot.
+              </p>
+            </div>
+
+            <div className="p-6 bg-[#162847]/40 border border-white/10 rounded-3xl max-w-sm mx-auto text-left space-y-3.5 text-sm">
+              <div className="flex justify-between border-b border-white/10 pb-2">
+                <span className="text-slate-400">Patient:</span>
+                <span className="font-bold text-white">{formData.patientName}</span>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-2">
+                <span className="text-slate-400">Your Problem:</span>
+                <span className="font-bold text-white">{formData.service}</span>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-2">
+                <span className="text-slate-400">Scheduled Date:</span>
+                <span className="font-bold text-white">{formData.scheduleDate}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Preferred Slot:</span>
+                <span className="font-bold text-brand-cyan">{formData.scheduleTime}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+              <button
+                onClick={() => router.push(user ? (user as any).role === 'admin' ? '/admin' : '/dashboard' : '/dashboard')}
+                className="px-6 h-12 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl font-semibold transition-all shadow-md shadow-brand-blue/20 cursor-pointer"
+              >
+                Go to Dashboard
+              </button>
+              <button
+                onClick={() => router.push('/')}
+                className="px-6 h-12 border border-white/15 hover:bg-white/10 text-white rounded-xl font-semibold transition-all cursor-pointer"
+              >
+                Return to Home
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="glass-dark rounded-[32px] p-8 sm:p-10 space-y-8">
+            <div className="space-y-2 text-center">
+              <span className="text-brand-cyan font-accent text-sm font-semibold uppercase tracking-wider">Appointment Form</span>
+              <h1 className="font-heading font-extrabold text-3xl text-white leading-tight">
+                Schedule a Consultation
+              </h1>
+              <p className="text-slate-300 text-sm font-light">
+                Secure your slot with Dr. Iqbal. Please verify patient info before submitting.
+              </p>
+            </div>
+
+            {error && (
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl text-xs font-semibold flex items-center space-x-2">
+                <AlertCircle className="h-4.5 w-4.5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {!user && (
+              <div className="p-4 bg-brand-cyan/10 border border-brand-cyan/20 rounded-2xl text-xs text-brand-cyan flex items-center justify-between">
+                <span>Already have a Patient Account? Log in to sync details instantly.</span>
+                <button
+                  onClick={() => router.push(`/login?redirect=book`)}
+                  className="font-bold underline hover:text-white ml-2 shrink-0 cursor-pointer"
+                >
+                  Log In
+                </button>
+              </div>
+            )}
+
+            <form onSubmit={handleBooking} className="space-y-6">
+              
+              {/* Profile Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="patientName" className="text-xs font-semibold text-slate-300">Patient Name *</label>
+                  <input
+                    type="text"
+                    name="patientName"
+                    id="patientName"
+                    required
+                    value={formData.patientName}
+                    onChange={handleChange}
+                    placeholder="Enter full name"
+                    className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20"
+                  />
+                </div>
+                
+                <div className="space-y-1.5">
+                  <label htmlFor="patientPhone" className="text-xs font-semibold text-slate-300">Phone Number *</label>
+                  <input
+                    type="tel"
+                    name="patientPhone"
+                    id="patientPhone"
+                    required
+                    value={formData.patientPhone}
+                    onChange={handleChange}
+                    placeholder="+91 XXXXX XXXXX"
+                    className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20"
+                  />
+                </div>
+              </div>
+
+              {/* Service & Date selector */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Appointment Place */}
+                <div className="space-y-1.5">
+                  <label htmlFor="appointmentPlace" className="text-xs font-semibold text-slate-300">Appointment Place *</label>
+                  <select
+                    name="appointmentPlace"
+                    id="appointmentPlace"
+                    required
+                    value={formData.appointmentPlace}
+                    onChange={handleChange}
+                    className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/45 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 appearance-none"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" disabled className="bg-[#0D1F3A] text-white/40">Select appointment location</option>
+                    <option value="Online Consultation" className="bg-[#0D1F3A] text-white">Online Consultation</option>
+                    <option value="Jajmau Clinic" className="bg-[#0D1F3A] text-white">Jajmau Clinic</option>
+                    <option value="Civil Lines Clinic" className="bg-[#0D1F3A] text-white">Civil Lines Clinic</option>
+                  </select>
+                </div>
+                {/* Service */}
+                <div className="space-y-1.5">
+                  <label htmlFor="service" className="text-xs font-semibold text-slate-300">Your Problem *</label>
+                  <select
+                    name="service"
+                    id="service"
+                    required
+                    value={formData.service}
+                    onChange={handleChange}
+                    className="w-full h-11 px-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/45 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 appearance-none"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" disabled className="bg-[#0D1F3A] text-white/40">Select your problem</option>
+                    {DEFAULT_SERVICES.map((s) => (
+                      <option key={s.slug} value={s.title} className="bg-[#0D1F3A] text-white">{s.title}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="scheduleDate" className="text-xs font-semibold text-slate-300">Preferred Date *</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    readOnly
+                    id="scheduleDate"
+                    name="scheduleDate"
+                    required
+                    value={formData.scheduleDate ? formatDateDisplay(formData.scheduleDate) : ''}
+                    onClick={() => setCalendarOpen(true)}
+                    placeholder="Select preferred date"
+                    className="w-full h-11 pl-10 pr-4 bg-[#162847]/40 border border-white/10 rounded-xl text-sm text-white placeholder:text-white/40 focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 cursor-pointer"
+                  />
+                  <CalendarIcon className="h-4.5 w-4.5 text-brand-cyan/70 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+
+                  {calendarOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setCalendarOpen(false)} />
+                      <div className="absolute left-0 right-0 top-12 z-50 bg-[#0D1F3A]/95 border border-white/10 rounded-2xl p-4 shadow-2xl space-y-4 glass-dark">
+                        <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                          <button
+                            type="button"
+                            onClick={handlePrevMonth}
+                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </button>
+                          <span className="text-sm font-bold text-white tracking-wide">
+                            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleNextMonth}
+                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-1">
+                          <span>Mon</span>
+                          <span>Tue</span>
+                          <span>Wed</span>
+                          <span>Thu</span>
+                          <span>Fri</span>
+                          <span>Sat</span>
+                          <span className="text-rose-400">Sun</span>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 text-center">
+                          {calendarCells.map((cell, idx) => {
+                            const isSelected = formData.scheduleDate === cell.dateStr;
+                            return (
+                              <button
+                                type="button"
+                                key={`${cell.dateStr}-${idx}`}
+                                disabled={cell.isDisabled}
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, scheduleDate: cell.dateStr, scheduleTime: '' }));
+                                  setCalendarOpen(false);
+                                }}
+                                className={`h-8 w-full text-xs font-medium rounded-lg transition-all flex items-center justify-center ${
+                                  cell.isDisabled
+                                    ? cell.isSunday
+                                      ? 'text-rose-500/30 bg-rose-500/5 cursor-not-allowed'
+                                      : 'text-slate-600/30 cursor-not-allowed'
+                                    : isSelected
+                                    ? 'bg-brand-gold text-brand-navy font-bold shadow-md shadow-brand-gold/25'
+                                    : cell.isCurrentMonth
+                                    ? 'text-slate-200 hover:bg-[#162847] cursor-pointer'
+                                    : 'text-slate-500/40 hover:bg-[#162847]/30 cursor-pointer'
+                                }`}
+                              >
+                                {cell.dayNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Time Slots selector — 15-minute slots, grouped by hour */}
+              <div className="space-y-4">
+                <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+                  <span className="flex items-center space-x-1.5">
+                    <Clock className="h-4 w-4 text-brand-cyan/70" />
+                    <span>Choose a 15-minute Time Slot *</span>
+                  </span>
+                  {formData.scheduleTime && (
+                    <span className="text-brand-cyan-light font-bold normal-case">
+                      Selected: {formData.scheduleTime}
+                    </span>
+                  )}
+                </label>
+
+                {!formData.appointmentPlace ? (
+                  <div className="p-6 text-center text-sm text-white/50 bg-[#162847]/30 border border-dashed border-white/10 rounded-2xl">
+                    Please select Appointment Place first.
+                  </div>
+                ) : !formData.scheduleDate ? (
+                  <div className="p-6 text-center text-sm text-white/50 bg-[#162847]/30 border border-dashed border-white/10 rounded-2xl">
+                    Please choose a preferred date above to see available slots.
+                  </div>
+                ) : isSunday(formData.scheduleDate) ? (
+                  <div className="p-6 text-center text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+                    The clinic is closed on Sundays. Please pick another day (Mon–Sat, 10:00 AM – 9:00 PM).
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {slotsLoading && (
+                      <p className="text-xs text-white/50">Checking slot availability…</p>
+                    )}
+                    
+                    {/* Hourly Blocks */}
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">Select Hour Block</p>
+                      <div className="flex flex-wrap gap-2">
+                        {filteredSlotGroups.map((group) => {
+                          const isHourActive = activeHourBlock === group.hourLabel;
+                          const hourDisplay = group.hourLabel.replace(':00', '');
+                          return (
+                            <button
+                              type="button"
+                              key={group.hourLabel}
+                              onClick={() => {
+                                setActiveHourBlock(group.hourLabel);
+                              }}
+                              className={`h-10 px-4 rounded-xl text-xs font-semibold transition-all ${
+                                isHourActive
+                                  ? 'bg-brand-blue text-white border border-brand-blue font-bold shadow-md shadow-brand-blue/20 cursor-pointer'
+                                  : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
+                              }`}
+                            >
+                              {hourDisplay}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* 15-Minute Slots under selected Hour Block */}
+                    {activeHourBlock && (() => {
+                      const activeGroup = filteredSlotGroups.find((g) => g.hourLabel === activeHourBlock);
+                      if (!activeGroup) return null;
+                      return (
+                        <div className="space-y-2 pt-2 animate-fadeIn">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+                            Available slots for {activeHourBlock.replace(':00', '')}
+                          </p>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            {activeGroup.slots.map((slot) => {
+                              const isSelected = formData.scheduleTime === slot.value;
+                              const isBooked = bookedSlots.includes(slot.value);
+                              return (
+                                <button
+                                  type="button"
+                                  key={slot.value}
+                                  disabled={isBooked}
+                                  onClick={() => selectTimeSlot(slot.value)}
+                                  title={isBooked ? 'This slot is already booked' : slot.value}
+                                  className={`h-11 rounded-xl text-[11px] font-semibold transition-all ${
+                                    isBooked
+                                      ? 'bg-[#162847]/20 text-white/25 border border-white/5 line-through cursor-not-allowed'
+                                      : isSelected
+                                      ? 'bg-brand-gold text-brand-navy shadow-md shadow-brand-gold/10 border border-brand-gold font-bold cursor-pointer'
+                                      : 'bg-[#162847]/40 hover:bg-[#162847]/70 text-slate-300 border border-white/10 cursor-pointer'
+                                  }`}
+                                >
+                                  {slot.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full h-13 btn-gold rounded-2xl flex items-center justify-center space-x-2 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {loading ? (
+                  <span className="w-5 h-5 border-2 border-brand-navy border-t-transparent rounded-full animate-spin"></span>
+                ) : (
+                  <>
+                    <Sparkles className="h-4.5 w-4.5" />
+                    <span>Confirm Consultation Booking</span>
+                  </>
+                )}
+              </button>
+
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function Book() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#0A1628]">
+        <span className="w-10 h-10 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin"></span>
+      </div>
+    }>
+      <BookForm />
+    </Suspense>
+  );
+}
