@@ -77,13 +77,13 @@ export default function Hero() {
               className="font-heading font-extrabold leading-[1.08] tracking-tight"
             >
               <span className="block text-white text-[34px] sm:text-5xl lg:text-[56px]">
-                Baar Baar
+                Tired of Temporary Relief?
               </span>
               <span className="block text-[#C8922A] text-[34px] sm:text-5xl lg:text-[56px]">
-                Doctor Badla —
+                Your Body Deserves a Cure,
               </span>
               <span className="block text-white text-[34px] sm:text-5xl lg:text-[56px]">
-                Phir Bhi Wahi Takleef?
+                Not Just a Patch.
               </span>
             </motion.h1>
 
@@ -92,7 +92,7 @@ export default function Hero() {
               variants={fadeUp}
               className="text-white/70 text-sm sm:text-base font-medium leading-relaxed max-w-[480px]"
             >
-              Kanpur ke 10,000+ patients ne skin, hair, thyroid, aur joint problems se mukti payi hai. Humari advanced homeopathy jadd se bimari khatam karti hai.
+              Kanpur&apos;s most trusted homeopathic specialists treating the root cause — so the problem never comes back.
             </motion.p>
 
             {/* Philosophy — compact pills */}

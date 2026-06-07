@@ -5,10 +5,10 @@ const db = supabaseAdmin || supabase;
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const orderId = params.id;
+    const { id: orderId } = await context.params;
 
     if (!orderId) {
       return NextResponse.json({ message: 'Order ID is required' }, { status: 400 });
