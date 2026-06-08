@@ -96,6 +96,21 @@ export default function Achievements() {
       imageSrc: '/Iqbal-Rigomo-Certificate.png',
       footerTag: 'Professional Development',
       footerDate: 'November 2023'
+    },
+    {
+      id: 'alison-certificate-2025',
+      badge: 'CPD Certified',
+      badgeIcon: <Award className="h-3.5 w-3.5" />,
+      title: 'Alison Certificate of Completion',
+      subtitle: 'Type 2 Diabetes: Understanding and Management',
+      venue: 'Alison — Empower Yourself, CPD Certification Service',
+      venueIcon: <MapPin className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      org: 'Awarded by Marc Richardson (Director of Certification, Alison) — Awarded on 19th June 2025',
+      orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
+      description: "Dr. Iqbal Quasim ne Alison ke globally recognised, CPD-certified course 'Type 2 Diabetes: Understanding and Management' ko successfully complete kiya — June 2025 mein. Yeh certification unki diabetes ke deep clinical understanding aur management approach ko aur majboot karta hai.",
+      imageSrc: '/Iqbal-Alison-Certificate.png',
+      footerTag: 'Continuing Professional Development',
+      footerDate: 'June 2025'
     }
   ];
 
