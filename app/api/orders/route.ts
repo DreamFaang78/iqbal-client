@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Calculate total amount and verify products
-    let totalAmount = 0;
+    let subtotal = 0;
     const validatedItems = [];
 
     for (const item of items) {
@@ -79,13 +79,16 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: `Product ${item.productId} is invalid or out of stock.` }, { status: 400 });
       }
 
-      totalAmount += Number(product.price) * item.quantity;
+      subtotal += Number(product.price) * item.quantity;
       validatedItems.push({
         product_id: product.id,
         quantity: item.quantity,
         price_at_purchase: product.price
       });
     }
+
+    const SHIPPING_FEE = 99;
+    const totalAmount = subtotal + SHIPPING_FEE;
 
     // 2. Create the order in DB
     const { data: order, error: orderError } = await db

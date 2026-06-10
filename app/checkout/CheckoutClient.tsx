@@ -80,7 +80,9 @@ export default function CheckoutPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shippingFee = 99;
+  const totalAmount = subtotal + shippingFee;
 
   const processPayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,11 +307,11 @@ export default function CheckoutPage() {
               <div className="space-y-3 pt-6 border-t border-white/10 mb-6">
                 <div className="flex justify-between text-white/70 text-sm">
                   <span>Subtotal</span>
-                  <span>₹{totalAmount}</span>
+                  <span>₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between text-white/70 text-sm">
                   <span>Shipping</span>
-                  <span className="text-[#4CAF6E]">Free</span>
+                  <span className="text-[#4CAF6E]">₹{shippingFee}</span>
                 </div>
                 <div className="pt-3 flex justify-between items-center border-t border-white/10 mt-3">
                   <span className="text-white font-bold">Total</span>

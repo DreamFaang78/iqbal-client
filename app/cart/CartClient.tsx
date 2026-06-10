@@ -48,7 +48,9 @@ export default function CartPage() {
     updateCart(newCart);
   };
 
-  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shippingFee = 99;
+  const totalAmount = subtotal + shippingFee;
 
   if (!isLoaded) return null;
 
@@ -142,11 +144,11 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-white/70 text-sm">
                   <span>Subtotal</span>
-                  <span>₹{totalAmount}</span>
+                  <span>₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between text-white/70 text-sm">
                   <span>Shipping</span>
-                  <span className="text-[#4CAF6E]">Calculated at checkout</span>
+                  <span className="text-[#4CAF6E]">₹{shippingFee}</span>
                 </div>
                 <div className="pt-4 border-t border-white/10 flex justify-between items-center">
                   <span className="text-white font-bold">Estimated Total</span>
