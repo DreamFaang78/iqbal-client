@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.hommed.org/',
   },
-  keywords: "homoeopathy kanpur, dr iqbal homoeopathy, homoeopathic doctor kanpur, best homeopathic doctor kanpur, advanced homoeopathic clinic, natural healing, hommed clinic, best homoeopathy clinic kanpur, skin treatment kanpur, hair fall homoeopathy, thyroid treatment kanpur, PCOS treatment kanpur, diabetes homeopathy kanpur, joint pain treatment kanpur, dr iqbal quasim kanpur",
+  keywords: "homoeopathy kanpur, dr iqbal homoeopathy, homoeopathic doctor kanpur, best homeopathic doctor kanpur, advanced homoeopathic clinic, natural healing, hommed clinic, best homoeopathy clinic kanpur, skin treatment kanpur, skin doctor kanpur, skin specialist kanpur, hair fall homoeopathy, thyroid treatment kanpur, PCOS treatment kanpur, PCOD treatment kanpur, PCOD doctor kanpur, diabetes homeopathy kanpur, joint pain treatment kanpur, dr iqbal quasim kanpur",
   verification: {
     google: "g9FB4jAnR6UT9SVxdAI7RYpdswg7K_Mkd0wH-U", // Add verification fallback from user GSC setup
   },
