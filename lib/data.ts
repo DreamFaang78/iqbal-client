@@ -53,7 +53,7 @@ export const DEFAULT_SERVICES: ServiceData[] = [
     slug: 'skin-disorders',
     icon: 'Sparkles',
     shortDescription: 'Steroid creams se thodi der ke liye chhupa lo — ya Homeopathy se hamesha ke liye khatam karo. Eczema, Psoriasis, Vitiligo — jadd se ilaaj.',
-    detailedDescription: 'Skin disorders are often an external reflection of internal imbalances. Our homeopathic approach targets the root cause—such as immune dysfunction, stress, or toxin build-up—rather than just suppressing external symptoms. We provide customized treatment plans that stimulate your body’s innate healing mechanism, restoring healthy skin naturally without harsh steroid creams.',
+    detailedDescription: 'Skin disorders are often an external reflection of internal imbalances. Our homeopathic approach targets the root cause—such as immune dysfunction, stress, or toxin build-up—rather than just suppressing external symptoms. As a trusted skin doctor and skin specialist in Kanpur, Dr. Iqbal provides customized treatment plans that stimulate your body’s innate healing mechanism, restoring healthy skin naturally without harsh steroid creams.',
     symptoms: ['Itching and redness', 'Dry, scaly patches', 'Chronic acne breakouts', 'Depigmentation (white patches)', 'Inflammation and blistering'],
     treatments: ['Constitutional Homeopathic Therapy', 'Blood purification triggers', 'Anti-inflammatory symptom matching', 'Immune regulation guidance']
   },
@@ -185,15 +185,15 @@ export const DEFAULT_BLOGS: BlogData[] = [
     `
   },
   {
-    title: 'Natural PCOS Management: Healing Hormones Safely',
+    title: 'Natural PCOS/PCOD Management: Healing Hormones Safely',
     slug: 'natural-pcos-management-hormones',
     category: 'Womens Health',
-    excerpt: 'PCOS affects 1 in 5 women. Learn how homeopathy stimulates natural hormone regulation without synthetic contraceptives.',
+    excerpt: 'PCOS/PCOD affects 1 in 5 women. Learn how homeopathy stimulates natural hormone regulation without synthetic contraceptives.',
     author: 'Dr. Iqbal Quasim',
     publishedAt: '2026-05-02T11:00:00Z',
     content: `
-      <p>Polycystic Ovary Syndrome (PCOS) is a common hormonal disorder among women of reproductive age. Conventional treatments often prescribe hormone replacement therapy or birth control pills to force regular bleeding. However, this only masks the problem and does not cure the underlying endocrine dysfunction.</p>
-      
+      <p>Polycystic Ovary Syndrome (PCOS), also commonly called PCOD (Polycystic Ovarian Disease) in India, is a common hormonal disorder among women of reproductive age. Conventional treatments often prescribe hormone replacement therapy or birth control pills to force regular bleeding. However, this only masks the problem and does not cure the underlying endocrine dysfunction. As a PCOD doctor in Kanpur, Dr. Iqbal Quasim focuses on the hormonal root cause rather than just regulating the cycle artificially.</p>
+
       <h3>Targeting the Root Cause of PCOS</h3>
       <p>In homeopathy, we treat PCOS not just as a local ovarian disorder, but as a metabolic and hormonal imbalance. Homeopathic remedies stimulate the ovaries to produce hormones naturally, assisting in regular ovulation. Over a period of few months, cysts in the ovaries start shrinking, and normal cycle rhythm is restored.</p>
       
@@ -1593,6 +1593,14 @@ export const DEFAULT_FAQS: FAQData[] = [
   {
     question: 'Appointment book karne ke baad kya hoga — call aayegi ya message?',
     answer: 'Once you book an appointment on our website, our admin team reviews the request. You will receive a WhatsApp message and an email confirming your exact slot. You can also track the status in your User Dashboard.'
+  },
+  {
+    question: 'PCOD aur PCOS mein kya fark hai? Kya HOMMED Kanpur mein PCOD ka ilaaj karte hain?',
+    answer: 'PCOD (Polycystic Ovarian Disease) aur PCOS (Polycystic Ovary Syndrome) ko aksar log ek hi samajhte hain — dono mein hormonal imbalance, irregular periods aur ovarian cysts jaisi symptoms hoti hain. HOMMED, Kanpur mein Dr. Iqbal Quasim PCOD/PCOS dono ke patients ko constitutional homeopathic treatment dete hain jo root hormonal imbalance ko target karta hai, na ki sirf periods ko force karta hai.'
+  },
+  {
+    question: 'Kanpur mein skin doctor ya skin specialist kaise choose karein?',
+    answer: 'Agar aapki skin problem (acne, eczema, psoriasis, allergy, vitiligo) baar-baar return ho rahi hai aur creams se sirf temporary relief mil raha hai, toh ek aisa skin doctor chunein jo sirf symptoms nahi balki root cause dekhe. Dr. Iqbal Quasim, HOMMED Kanpur ke homeopathic skin specialist, har case ki detailed history leke constitutional remedy prescribe karte hain — bina steroids ke, long-term results ke liye.'
   }
 ];
 
