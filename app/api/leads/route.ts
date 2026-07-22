@@ -3,6 +3,20 @@ import { supabase, supabaseAdmin } from '@/lib/supabase';
 
 const db = supabaseAdmin || supabase;
 
+// Handle CORS preflight requests from the landing page (cross-origin POST)
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
+
+
 // Helper to verify JWT token and check if user is admin
 async function verifyAdminToken(request: Request) {
   try {
