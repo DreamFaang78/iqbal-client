@@ -3,18 +3,41 @@ import { supabase, supabaseAdmin } from '@/lib/supabase';
 
 const db = supabaseAdmin || supabase;
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://localhost:4173',
+  'https://hommed.in',
+  'https://www.hommed.in',
+  'https://care.hommed.in',
+  'https://landing.hommed.in',
+  'https://hommed.org',
+  'https://www.hommed.org',
+  'https://kit.hommed.org',
+];
+
+function getCorsHeaders(request: Request) {
+  const origin = request.headers.get('origin') || '';
+  const isAllowed = allowedOrigins.includes(origin);
+  const allowedOrigin = isAllowed ? origin : 'https://www.hommed.org';
+
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
 // Handle CORS preflight requests from the landing page (cross-origin POST)
-export async function OPTIONS() {
+export async function OPTIONS(request: Request) {
+  const headers = getCorsHeaders(request);
   return new NextResponse(null, {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400',
-    },
+    headers: headers,
   });
 }
+
 
 
 // Helper to verify JWT token and check if user is admin
@@ -178,14 +201,22 @@ export async function POST(request: Request) {
       createdAt: lead.created_at
     };
 
+    const responseHeaders = getCorsHeaders(request);
     return NextResponse.json({
       message: 'Inquiry submitted successfully!',
       lead: mappedLead
-    }, { status: 201 });
+    }, { 
+      status: 201,
+      headers: responseHeaders
+    });
 
   } catch (err: any) {
     console.error("Lead creation failed: ", err);
-    return NextResponse.json({ message: err.message || 'Server error' }, { status: 500 });
+    const responseHeaders = getCorsHeaders(request);
+    return NextResponse.json({ message: err.message || 'Server error' }, { 
+      status: 500,
+      headers: responseHeaders
+    });
   }
 }
 
