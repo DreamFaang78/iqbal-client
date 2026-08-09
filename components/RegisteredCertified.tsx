@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, FileCheck, ExternalLink, Building2, MapPin, Calendar, CheckCircle2, X, Maximize2, Sparkles, Award } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ShieldCheck, FileCheck, ExternalLink, Building2, Sparkles, Award } from 'lucide-react';
 
 interface CredentialDetail {
   label: string;
@@ -21,38 +20,11 @@ interface CredentialItem {
   details: CredentialDetail[];
   verifyUrl?: string;
   description: string;
-  imageSrc: string;
-  altText: string;
   footerTag: string;
   footerDate: string;
 }
 
 export default function RegisteredCertified() {
-  const [activeImage, setActiveImage] = useState<string | null>(null);
-
-  // Close lightbox on Escape key press
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setActiveImage(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Prevent background scroll when lightbox is active
-  useEffect(() => {
-    if (activeImage) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activeImage]);
-
   const credentialsData: CredentialItem[] = [
     {
       id: 'gst-registration',
@@ -70,8 +42,6 @@ export default function RegisteredCertified() {
         { label: 'Date of Registration', value: '21 January 2026' },
       ],
       description: 'Government of India GST Act 2017 ke tehat Form GST REG-06 registration certificate — official legal business entity identity for HOM MED-DR. Iqbal\'s Homoeopathic Centre, Kanpur. Har billing aur medical service fully compliant hai.',
-      imageSrc: '/hommed-gst-certificate.jpg',
-      altText: "GST Registration Certificate for HOM MED Dr. Iqbal's Homoeopathic Centre",
       footerTag: 'Statutory Business Credential',
       footerDate: 'Registered 21 Jan 2026'
     },
@@ -90,8 +60,6 @@ export default function RegisteredCertified() {
       ],
       verifyUrl: 'https://certificate.q2acb.uk',
       description: 'Good Manufacturing Practice (GMP) compliance certification by Q2A UK Certification Board. Homoeopathic remedies, skin care products, aur clinical treatment services ke quality management standards ki international verification.',
-      imageSrc: '/hommed-gmp-certificate.jpg',
-      altText: "GMP Certificate of Compliance for HOM MED Dr. Iqbal's Homoeopathic Centre",
       footerTag: 'Good Manufacturing Practice',
       footerDate: 'Valid July 2026 – July 2029'
     },
@@ -110,8 +78,6 @@ export default function RegisteredCertified() {
       ],
       verifyUrl: 'https://certificate.q2acb.uk',
       description: 'ISO 9001:2015 Quality Management Systems certification issued by Q2A UK Certification Board. Clinical services, patient management, aur product quality standardisation par international quality benchmark.',
-      imageSrc: '/hommed-iso-certificate.jpg',
-      altText: "ISO 9001:2015 Certificate of Compliance for HOM MED Dr. Iqbal's Homoeopathic Centre",
       footerTag: 'International Quality Management',
       footerDate: 'Valid Aug 2026 – Aug 2029'
     }
@@ -122,13 +88,13 @@ export default function RegisteredCertified() {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3
+        staggerChildren: 0.2
       }
     }
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 30 },
     show: { 
       opacity: 1, 
       y: 0,
@@ -152,7 +118,7 @@ export default function RegisteredCertified() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4CAF6E]/20 bg-[#4CAF6E]/8 text-[#4CAF6E] text-xs font-semibold tracking-[0.12em] uppercase">
             <Sparkles className="h-3 w-3 animate-pulse text-[#4CAF6E]" />
             Official Business Credentials
@@ -167,49 +133,23 @@ export default function RegisteredCertified() {
 
         {/* Stack of Editorial Credential Cards */}
         <motion.div 
-          className="space-y-12"
+          className="space-y-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-100px' }}
         >
-          {credentialsData.map((item, index) => (
+          {credentialsData.map((item) => (
             <motion.div 
               key={item.id}
               variants={cardVariants}
-              className={`flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch glass-card p-6 sm:p-8 md:p-10 rounded-[32px] bg-[#1C3A22]/20 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/25 relative group overflow-hidden ${
-                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-              }`}
+              className="glass-card p-6 sm:p-8 md:p-10 rounded-[32px] bg-[#1C3A22]/20 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/25 relative group overflow-hidden"
             >
               {/* Soft background light behind the card */}
               <div className="absolute top-10 right-10 w-32 h-32 bg-[#4CAF6E]/5 rounded-full filter blur-xl group-hover:bg-[#4CAF6E]/8 transition-all duration-300 pointer-events-none" />
 
-              {/* Image Showcase Column */}
-              <div className="w-full lg:w-[45%] flex flex-col justify-center relative shrink-0">
-                <div 
-                  onClick={() => setActiveImage(item.imageSrc)}
-                  className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-[4/3] sm:aspect-video lg:aspect-[4/3] group/img cursor-pointer shadow-premium select-none"
-                >
-                  <Image
-                    src={item.imageSrc}
-                    alt={item.altText}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-contain p-2 transition-transform duration-700 group-hover/img:scale-105"
-                  />
-                  
-                  {/* Frosted zoom / click to view overlay */}
-                  <div className="absolute inset-0 bg-[#0E1F12]/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                    <div className="px-4 py-2 rounded-xl bg-[#0E1F12]/80 border border-[#4CAF6E]/30 text-white text-xs font-semibold flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform duration-300">
-                      <Maximize2 className="h-3.5 w-3.5 text-[#4CAF6E]" />
-                      <span>Expand Certificate Photo</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Content Column */}
-              <div className="w-full lg:w-[55%] flex flex-col justify-between space-y-6 lg:py-2">
+              <div className="w-full flex flex-col justify-between space-y-6">
                 <div className="space-y-5">
                   {/* Badge Header */}
                   <div className="flex items-center gap-3">
@@ -236,9 +176,9 @@ export default function RegisteredCertified() {
                   </div>
 
                   {/* Structured Details Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-[#0E1F12]/80 border border-[#4CAF6E]/15 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-4 rounded-2xl bg-[#0E1F12]/80 border border-[#4CAF6E]/15 text-xs">
                     {item.details.map((dt) => (
-                      <div key={dt.label} className={dt.label === 'Registered Address' || dt.label === 'Scope' ? 'sm:col-span-2 space-y-0.5' : 'space-y-0.5'}>
+                      <div key={dt.label} className={dt.label === 'Registered Address' || dt.label === 'Scope' ? 'sm:col-span-2 md:col-span-3 space-y-0.5' : 'space-y-0.5'}>
                         <span className="text-[#C8922A] text-[10px] font-bold uppercase tracking-wider block">{dt.label}</span>
                         <span className="text-white font-semibold block leading-relaxed">{dt.value}</span>
                       </div>
@@ -261,7 +201,7 @@ export default function RegisteredCertified() {
                   )}
 
                   {/* Body description */}
-                  <p className="text-white/70 text-sm font-light leading-relaxed max-w-2xl">
+                  <p className="text-white/70 text-sm font-light leading-relaxed max-w-3xl">
                     {item.description}
                   </p>
                 </div>
@@ -276,47 +216,7 @@ export default function RegisteredCertified() {
           ))}
         </motion.div>
       </div>
-
-      {/* Interactive Fullscreen Lightbox Modal */}
-      <AnimatePresence>
-        {activeImage && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActiveImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out select-none"
-          >
-            {/* Close Button */}
-            <button 
-              onClick={() => setActiveImage(null)}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 hover:text-[#4CAF6E] transition-all border border-white/10 z-50 cursor-pointer"
-              aria-label="Close certificate preview"
-            >
-              <X className="h-6 w-6" />
-            </button>
-
-            {/* Modal Image container */}
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl max-h-[85vh] sm:max-h-[80vh] w-full rounded-2xl overflow-hidden border border-white/10 bg-[#0E1F12] shadow-premium flex items-center justify-center cursor-default p-4"
-            >
-              <Image
-                src={activeImage}
-                alt="Enlarged certificate preview"
-                width={1200}
-                height={1600}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="max-w-full max-h-[80vh] object-contain w-auto h-auto rounded-lg"
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
+

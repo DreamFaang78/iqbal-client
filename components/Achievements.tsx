@@ -18,7 +18,7 @@ interface AchievementItem {
   topicLabel?: string;
   topic?: string;
   description: string;
-  imageSrc: string;
+  imageSrc?: string;
   footerTag: string;
   footerDate: string;
   hasVideoPlaceholder?: boolean;
@@ -93,7 +93,6 @@ export default function Achievements() {
       org: 'Issued by Vinay Tuli (Founder & Chairperson, Rigomo) & MS Ansari (Co-Founder & CTO, Rigomo) — Certificate No. 6725712943',
       orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
       description: "Dr. Iqbal Quasim ne Rigomo ke prestigious 'Integrative Diabetes Treatment Support' course ko successfully complete kiya — November 2023 mein. Yeh certification unki diabetes management mein cutting-edge integrative knowledge ki proof hai.",
-      imageSrc: '/Iqbal-Rigomo-Certificate.png',
       footerTag: 'Professional Development',
       footerDate: 'November 2023'
     },
@@ -108,7 +107,6 @@ export default function Achievements() {
       org: 'Awarded by Marc Richardson (Director of Certification, Alison) — Awarded on 19th June 2025',
       orgIcon: <Users className="h-4 w-4 text-[#4CAF6E] shrink-0 mt-0.5" />,
       description: "Dr. Iqbal Quasim ne Alison ke globally recognised, CPD-certified course 'Type 2 Diabetes: Understanding and Management' ko successfully complete kiya — June 2025 mein. Yeh certification unki diabetes ke deep clinical understanding aur management approach ko aur majboot karta hai.",
-      imageSrc: '/Iqbal-Alison-Certificate.png',
       footerTag: 'Continuing Professional Development',
       footerDate: 'June 2025'
     }
@@ -175,38 +173,40 @@ export default function Achievements() {
               key={item.id}
               variants={cardVariants}
               className={`flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch glass-card p-6 sm:p-8 md:p-10 rounded-[32px] bg-[#1C3A22]/20 border border-[#4CAF6E]/12 hover:border-[#4CAF6E]/25 relative group overflow-hidden ${
-                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                item.imageSrc && index % 2 === 1 ? 'lg:flex-row-reverse' : ''
               }`}
             >
               {/* Soft background light behind the card */}
               <div className="absolute top-10 right-10 w-32 h-32 bg-[#4CAF6E]/5 rounded-full filter blur-xl group-hover:bg-[#4CAF6E]/8 transition-all duration-300 pointer-events-none" />
 
-              {/* Image Showcase Column */}
-              <div className="w-full lg:w-[45%] flex flex-col justify-center relative shrink-0">
-                <div 
-                  onClick={() => setActiveImage(item.imageSrc)}
-                  className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-[4/3] sm:aspect-video lg:aspect-[4/3] group/img cursor-pointer shadow-premium select-none"
-                >
-                  <Image
-                    src={item.imageSrc}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover/img:scale-105"
-                  />
-                  
-                  {/* Frosted zoom / click to view overlay */}
-                  <div className="absolute inset-0 bg-[#0E1F12]/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                    <div className="px-4 py-2 rounded-xl bg-[#0E1F12]/80 border border-[#4CAF6E]/30 text-white text-xs font-semibold flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform duration-300">
-                      <Maximize2 className="h-3.5 w-3.5 text-[#4CAF6E]" />
-                      <span>Expand Achievement Photo</span>
+              {/* Image Showcase Column (rendered only if imageSrc is present) */}
+              {item.imageSrc && (
+                <div className="w-full lg:w-[45%] flex flex-col justify-center relative shrink-0">
+                  <div 
+                    onClick={() => setActiveImage(item.imageSrc!)}
+                    className="relative rounded-2xl overflow-hidden border border-[#4CAF6E]/15 bg-[#0E1F12] aspect-[4/3] sm:aspect-video lg:aspect-[4/3] group/img cursor-pointer shadow-premium select-none"
+                  >
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover/img:scale-105"
+                    />
+                    
+                    {/* Frosted zoom / click to view overlay */}
+                    <div className="absolute inset-0 bg-[#0E1F12]/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                      <div className="px-4 py-2 rounded-xl bg-[#0E1F12]/80 border border-[#4CAF6E]/30 text-white text-xs font-semibold flex items-center gap-2 transform translate-y-2 group-hover/img:translate-y-0 transition-transform duration-300">
+                        <Maximize2 className="h-3.5 w-3.5 text-[#4CAF6E]" />
+                        <span>Expand Achievement Photo</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Content Column */}
-              <div className="w-full lg:w-[55%] flex flex-col justify-between space-y-6 lg:py-2">
+              <div className={`w-full ${item.imageSrc ? 'lg:w-[55%]' : ''} flex flex-col justify-between space-y-6 lg:py-2`}>
                 <div className="space-y-5">
                   {/* Badge & Icon Header */}
                   <div className="flex items-center gap-3">
@@ -323,3 +323,4 @@ export default function Achievements() {
     </section>
   );
 }
+
