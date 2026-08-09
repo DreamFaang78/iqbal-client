@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import DoctorProfile from "@/components/DoctorProfile";
 import Achievements from "@/components/Achievements";
+import RegisteredCertified from "@/components/RegisteredCertified";
 import DoctorPanel from "@/components/DoctorPanel";
 import ClinicGallery from "@/components/ClinicGallery";
 import WhyChoose from "@/components/WhyChoose";
@@ -19,6 +20,7 @@ export default function Home() {
       <Services />
       <DoctorProfile />
       <Achievements />
+      <RegisteredCertified />
       <DoctorPanel />
       <ClinicGallery />
       <WhyChoose />
@@ -33,4 +35,3 @@ export default function Home() {
     </div>
   );
 }
-
